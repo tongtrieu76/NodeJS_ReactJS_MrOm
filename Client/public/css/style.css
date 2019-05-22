@@ -1,0 +1,41 @@
+#Title_web {
+    /* align-content: center; */
+}
+
+#img_home {
+    width: 15vh;
+}
+
+#menu {
+    background-color: aqua;
+    height: 100%;
+}
+
+#get_my_location {
+    /* position: fixed; */
+    display: inline;
+    margin-top: 0.5%;
+
+}
+
+
+#slidebar_content {
+    /* margin-top: 2%; */
+    background-color: rgb(198, 255, 255);
+}
+
+#book_xe {
+    padding-top: 1%;
+    display: block;
+}
+
+#footer_contact {
+    background-color: rgb(0,0,0);
+    color: rgb(255, 255, 255);
+}
+
+.btn-primary {
+    margin-right: 1%;
+    margin-top: 1%;
+    margin-bottom: 1%;
+}
