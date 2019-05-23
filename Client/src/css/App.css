@@ -1,0 +1,89 @@
+
+.App-logo {
+
+ height: auto;
+  margin-bottom: 0 !important;
+  max-width: 250px;
+   width: 350px;
+   display:block;
+   margin:auto 
+ 
+}
+.logo{
+  width: 100%;
+  height: auto;
+}
+
+.bg-black{
+  background-color: black;
+}
+.active{
+  background-color: white !important;
+  color:  black !important
+}
+
+@media all and (min-width: 480px) {
+  .Login {
+    padding: 60px 0;
+  }
+
+  .Login form {
+    margin: 0 auto;
+    max-width: 320px;
+  }
+}
+/*Neon*/
+p {
+ 
+  font-size: 3em;
+  margin: 20px 0 20px 0;
+}
+
+p:nth-child(1) a {
+  color: #fff;
+ 
+  -webkit-animation: neon1 0.5s ease-in-out infinite alternate;
+  -moz-animation: neon1 0.5s ease-in-out infinite alternate;
+  animation: neon1 0.5s ease-in-out infinite alternate;
+}
+
+
+
+@-webkit-keyframes neon1 {
+  from {
+    text-shadow: 0 0 10px #fff, 0 0 20px #fff, 0 0 30px #fff, 0 0 40px #ffff00, 0 0 70px #ffff00, 0 0 80px #ffff00, 0 0 100px #ffff00, 0 0 150px #ffff00;
+  }
+  to {
+    text-shadow: 0 0 5px #fff, 0 0 10px #fff, 0 0 15px #fff, 0 0 20px #ffff00, 0 0 35px #ffff00, 0 0 40px #ffff00, 0 0 50px #ffff00, 0 0 75px #ffff00;
+  }
+}
+
+
+
+@-moz-keyframes neon1 {
+  from {
+    text-shadow: 0 0 10px #fff, 0 0 20px #fff, 0 0 30px #fff, 0 0 40px #ffff00, 0 0 70px #ffff00, 0 0 80px #ffff00, 0 0 100px #ffff00, 0 0 150px #ffff00;
+  }
+  to {
+    text-shadow: 0 0 5px #fff, 0 0 10px #fff, 0 0 15px #fff, 0 0 20px #ffff00, 0 0 35px #ffff00, 0 0 40px #ffff00, 0 0 50px #ffff00, 0 0 75px #ffff00;
+  }
+}
+
+@keyframes neon1 {
+  from {
+    text-shadow: 0 0 10px #fff, 0 0 20px #fff, 0 0 30px #fff, 0 0 40px #ffff00, 0 0 70px #ffff00, 0 0 80px #ffff00, 0 0 100px #ffff00, 0 0 150px #ffff00;
+  }
+  to {
+    text-shadow: 0 0 5px #fff, 0 0 10px #fff, 0 0 15px #fff, 0 0 20px #ffff00, 0 0 35px #ffff00, 0 0 40px #ffff00, 0 0 50px #ffff00, 0 0 75px #ffff00;
+  }
+}
+a:hover{
+  text-decoration: none;
+}
+
+.btn-default{
+  color: #000;
+  background-color: #fff;
+  border-color: #fff;
+  font-weight: bold
+}
