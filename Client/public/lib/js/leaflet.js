@@ -5,22 +5,22 @@
 // }
 // end error 1.
 
-var mymap = new L.map("mapid").setView([40.776, -73.972], 16);
-L.tileLayer(
-  "https://api.tiles.mapbox.com/v4/{id}/{z}/{x}/{y}.png?access_token={accessToken}",
-  {
-    attribution:
-      'Map data &copy; <a href="https://www.openstreetmap.org/">OpenStreetMap</a> contributors, <a href="https://creativecommons.org/licenses/by-sa/2.0/">CC-BY-SA</a>, Imagery © <a href="https://www.mapbox.com/">Mapbox</a>',
-    id: "mapbox.streets", //streets,satellite
-    accessToken:
-      "pk.eyJ1IjoiY2hpZXVjaGlldSIsImEiOiJjanZhazdpaWUwa3puM3lubTY1MGJ0azhkIn0.X4Q45YxQ2HUGCjXBDCkahQ",
-    zoom: 16,
-    minZoom: 10,
-    maxZoom: 18,
-    maxNativeZoom: 20,
-    zoomAnimation: true
-  }
-).addTo(mymap);
+// var mymap = new L.map("mapid").setView([40.776, -73.972], 16);
+// L.tileLayer(
+//   "https://api.tiles.mapbox.com/v4/{id}/{z}/{x}/{y}.png?access_token={accessToken}",
+//   {
+//     attribution:
+//       'Map data &copy; <a href="https://www.openstreetmap.org/">OpenStreetMap</a> contributors, <a href="https://creativecommons.org/licenses/by-sa/2.0/">CC-BY-SA</a>, Imagery © <a href="https://www.mapbox.com/">Mapbox</a>',
+//     id: "mapbox.streets", //streets,satellite
+//     accessToken:
+//       "pk.eyJ1IjoiY2hpZXVjaGlldSIsImEiOiJjanZhazdpaWUwa3puM3lubTY1MGJ0azhkIn0.X4Q45YxQ2HUGCjXBDCkahQ",
+//     zoom: 16,
+//     minZoom: 10,
+//     maxZoom: 18,
+//     maxNativeZoom: 20,
+//     zoomAnimation: true
+//   }
+// ).addTo(mymap);
 
 var x = 0,
   y = 0;
@@ -43,7 +43,8 @@ function showcoor(pos) {
   var coord = pos.coords;
   var long = coord.longitude;
   var lat = coord.latitude;
-  x = lat;y = long;
+  x = lat;
+  y = long;
   mymap.setView([lat, long], 16);
   marker = L.marker([lat, long]).addTo(mymap);
   marker.bindPopup("<b>Bạn đang ở đây.</b>").openPopup();
