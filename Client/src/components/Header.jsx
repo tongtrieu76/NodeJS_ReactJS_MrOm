@@ -4,6 +4,7 @@ import '../css/App.css';
 import Home from './app/Home';
 import Login from './app/Login';
 import Register from './app/Register';
+import Admin from './app/Admin';
 // import { connect } from 'react-redux';
 import Autho from './app/setAutho';
 
@@ -12,30 +13,68 @@ const isActive = (path, match, location) => !!(match || path === location.pathna
 
 class Header extends React.Component {
   logout(e) {
-   
-   localStorage.removeItem('jwtToken');
-   Autho(false);
-   this.props.history.push("/");
+
+    localStorage.removeItem('jwtToken');
+    localStorage.removeItem('jwtUser');
+    Autho(false);
+    this.props.history.push("/");
     window.location.reload();
   }
-  
-  
+
+
   render() {
-    const  isAuthenticated  = localStorage.getItem('jwtToken');
-    const userLinks = (
-      
+    const isAuthenticated = localStorage.getItem('jwtToken');
+
+    const role = localStorage.getItem('jwtUser');
+    const isAdmin = (
       <li>
         <NavLink
           exact
-            activeClassName="active"
-          className="nav-link text-light font-weight-bold" onClick={this.logout.bind(this)} to='#'>
-          Đăng Xuất
-    </NavLink>
-      </li>
+          activeClassName="active"
+          isActive={isActive.bind(this, '/admin')}
+          className="nav-link text-light font-weight-bold" to='/admin'>
+          Admin
+</NavLink>
 
+      </li>
     );
-    const guestLinks = (  
-      <div>
+    const userLinks = (
+      <ul className="navbar-nav ml-auto text-center">
+        <li>
+          <NavLink
+            exact
+            activeClassName="active"
+            isActive={isActive.bind(this, '/')}
+            className="nav-link text-light font-weight-bold" to='/'>
+            Trang Chủ
+  </NavLink>
+
+        </li>
+        {
+          role ? null : isAdmin
+        }
+        <li>
+          <NavLink
+            exact
+            activeClassName="active"
+            className="nav-link text-light font-weight-bold" onClick={this.logout.bind(this)} to='#'>
+            Đăng Xuất
+    </NavLink>
+        </li>
+      </ul>
+    );
+    const guestLinks = (
+      <ul className="navbar-nav ml-auto text-center">
+        <li>
+          <NavLink
+            exact
+            activeClassName="active"
+            isActive={isActive.bind(this, '/')}
+            className="nav-link text-light font-weight-bold" to='/'>
+            Trang Chủ
+  </NavLink>
+
+        </li>
         <li >
           <NavLink
             exact
@@ -54,9 +93,9 @@ class Header extends React.Component {
             className="nav-link text-light font-weight-bold" to='/register'>
             Đăng Ký
               </NavLink>
-      
+
         </li>
-      </div>
+      </ul>
 
     );
 
@@ -84,21 +123,12 @@ class Header extends React.Component {
               <span className="navbar-toggler-icon" />
             </button>
             <div className="collapse navbar-collapse text-info" id="navbarResponsive">
-              <ul className="navbar-nav ml-auto text-center">
-                <li>
-                  <NavLink
-                    exact
-                    activeClassName="active"
-                    isActive={isActive.bind(this, '/')}
-                    className="nav-link text-light font-weight-bold" to='/'>
-                    Trang Chủ
-              </NavLink>
 
-                </li>
 
-                {isAuthenticated ? userLinks : guestLinks}
 
-              </ul>
+              {isAuthenticated ? userLinks : guestLinks}
+
+
             </div>
           </div>
         </nav>
@@ -106,6 +136,7 @@ class Header extends React.Component {
         <Route path='/' exact component={Home} />
         <Route path='/login' component={Login} />
         <Route path='/register' component={Register} />
+        <Route path='/admin' component={Admin} />
       </Router>
     );
   }

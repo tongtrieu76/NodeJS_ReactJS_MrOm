@@ -20,8 +20,17 @@ router.post('/', function (req, res) {
                 if (user.verify == 1) {
                     if(Password === user.password)
                     {
-                        const token = jwt.sign({email:Email,password:Password }, 'shhhhh');
-                                 return res.json({token});
+                        if(user.role ==="user")
+                        {
+                            const token = jwt.sign({email:Email,password:Password }, 'shhhhh');
+                            const user = jwt.sign("user", 'shhhhh');
+                            return res.json({token,user});
+                        }
+                        else{
+                            const token = jwt.sign({email:Email,password:Password }, 'shhhhh');
+                            return res.json({token});
+                        }
+                       
                     }
                     else
                     {

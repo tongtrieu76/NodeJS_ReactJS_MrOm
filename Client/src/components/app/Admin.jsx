@@ -14,10 +14,13 @@ export default class Home extends React.Component {
                         <div className="col-md-6 order-md-1 text-md-left pr-md-5">
                             <img src={logo} className="App-logo" alt="logo" />
 
-                        <h1>
-                            admin
-                            adminadminadminadminadminadminadminadminadmin
-                        </h1>
+                            <div class="text-wrap" >
+                                <h1 className="text-white">
+                                    ADmin
+
+                                        </h1>
+                            </div>
+
                         </div>
                     </div>
                 </div>

@@ -5,7 +5,7 @@ export default class Home extends React.Component {
     render() {
         return (
 
-            <main className="bd-masthead mt-5 mb-5" id="content" role="main">
+            <main className="bd-masthead" id="content" role="main">
                 <div className="container">
                     <div className="row align-items-center">
                         <div className="col-6 mx-auto col-md-6 order-md-2">

@@ -84,9 +84,9 @@ class Register extends React.Component {
         }
         if(res.data.token)
         {
-          const token = res.data.token;
-          localStorage.setItem('jwtToken', token);
-          Autho(token);
+          // const token = res.data.token;
+          // localStorage.setItem('jwtToken', token);
+          // Autho(token);
            alert("Tạo Tài Khoản Thành Công");
           this.props.history.push("/");
          

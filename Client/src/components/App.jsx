@@ -72,14 +72,14 @@ class App extends Component {
 
     return (
       <div className="App">
-        <div className="content">
-          <div className="header">
+      
+          <div className="full">
             <Header />
           </div>
           {/* <div className="main"></div> */}
           {this.prindata()}
           <Maps/>
-        </div>
+        
       </div>
 
     );

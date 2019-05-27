@@ -2,100 +2,138 @@ import React from 'react';
 // import leaflet from '../js/leaflet.js';
 import L from 'leaflet';
 import IMG from '../img/location.png';
+import io from 'socket.io-client';
+import { Map, Marker, Popup, TileLayer } from 'react-leaflet'
+import 'leaflet/dist/leaflet.js';
+
+var icon_book = L.icon({
+    iconUrl: IMG,
+    iconSize: [40, 50]
+})
+
 
 export default class Maps extends React.Component {
     constructor(props) {
         super(props);
+        this.socket = io.connect('/', {
+            jsonp: false
+        });
         this.state = {
 
-            lng: null,
-            lat: null
-
+            L_X: 10.0000,
+            L_Y: 10.2222,
+            data_pos: null,
         };
+        this.socket.on("server_send", (data) => {
+            this.setState({
+                data_pos: data
+            })
+        })
+    }
+    send_pos() {
+
+        var x;
+        var y;
+        //    console.log(document.getElementById('L_X').value);
+        if (document.getElementById('L_X').value === "" && document.getElementById('L_Y').value === "") {
+            x = 0;
+            y = 0;
+
+        }
+        else {
+            if (document.getElementById('L_X').value === "") {
+                x = 0;
+                y = document.getElementById('L_Y').value;
+
+            }
+            if (document.getElementById('L_Y').value === "") {
+                x = document.getElementById('L_X').value;
+                y = 0;
+
+
+            }
+
+        }
+
+
+        if (document.getElementById('L_X').value !== "" && document.getElementById('L_Y').value !== "") {
+            x = document.getElementById('L_X').value;
+
+            y = document.getElementById('L_Y').value;
+
+
+        }
+        var data = [x, y];
+        this.socket.emit("client_send", data);
+        // var maket = L.marker([this.state.lat, this.state.lng], { icon: icon_book }).addTo(this.mymap);
+        // maket.bindPopup("<b>Bạn đang ở đây.</b>").openPopup();
     }
     componentWillMount() {
         navigator.geolocation.getCurrentPosition(
-          position => {
-            this.setState({ lat: position.coords.latitude, lng: position.coords.longitude});
-          },
-          error => console.log(error)
+            position => {
+                this.setState({ L_X: position.coords.latitude, L_Y: position.coords.longitude });
+            },
+            error => console.log(error)
         );
-      }
-    componentDidMount() {
-        
-     
-        this.mymap = new L.map("mapid", {
-            center: [10.73773, 106.67904],
-            zoom: 50,
-            zoomControl: false
-
-
-        });
-
-        L.tileLayer(
-            "https://api.tiles.mapbox.com/v4/{id}/{z}/{x}/{y}.png?access_token={accessToken}",
-
-            {
-                attribution:
-                    'Map data &copy; <a href="https://www.openstreetmap.org/">OpenStreetMap</a> contributors, <a href="https://creativecommons.org/licenses/by-sa/2.0/">CC-BY-SA</a>, Imagery © <a href="https://www.mapbox.com/">Mapbox</a>',
-                id: "mapbox.satellite", //streets,satellite
-                accessToken:
-                    "pk.eyJ1IjoiY2hpZXVjaGlldSIsImEiOiJjanZhazdpaWUwa3puM3lubTY1MGJ0azhkIn0.X4Q45YxQ2HUGCjXBDCkahQ",
-                zoom: 16,
-                minZoom: 10,
-                maxZoom: 18,
-                maxNativeZoom: 20,
-                zoomAnimation: true
-            }
-        ).addTo(this.mymap);
-
-
-
     }
-   
+ 
+
     handleClick() {
-        var icon_book = L.icon({
-            iconUrl: IMG,
-            iconSize: [40, 50]
-        })
-
-
-        var maket = L.marker([this.state.lat, this.state.lng], { icon: icon_book }).addTo(this.mymap);
-        maket.bindPopup("<b>Bạn đang ở đây.</b>").openPopup();
+        // var maket = L.marker([this.state.lat, this.state.lng], { icon: icon_book }).addTo(this.mymap);
+        // maket.bindPopup("<b>Bạn đang ở đây.</b>").openPopup();
+        var data = [this.state.L_X, this.state.L_Y];
+        this.socket.emit("client_send", data);
 
     }
     render() {
+        const Local = [this.state.L_X, this.state.L_Y];
+        //  const Local1 = this.state.lat + "," +this.state.lat;
+        console.log(this.state.data_pos)
         return (
 
-            <div className="maps">
-                <div className="container-fluid" >
+            <div className="full slidebar_content">
 
-                    <div className="row">
-                        <div className="col-sm-12" id="menu">
-                            <div className="form-group" id="book_xe">
-                                <div className="input-group">
-                                    <input type="text" className="form-control" placeholder="Điểm đón..." />
-                                    <input type="text" className="form-control" placeholder="Điểm đến..." />
-                                    <div className="input-group-prepend">
-                                        <button className="input-group-text" id="btn-timxe">Tìm xe</button>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                        <div className="col-sm-12" id="slidebar_content">
-                            <div>
-                                <button type="button" className="btn btn-info" id="get_my_location" onClick={(e) => this.handleClick(e)}>
-                                    Vị trí của tôi
-                </button>
-                            </div>
-                            <div id="mapid">
+                <div className="form-group" id="book_xe">
+                    <div className="input-group mt-5">
+                        <input type="text" className="form-control" id="L_X" required placeholder="X.." />
 
-                            </div>
+                        <input type="text" className="form-control" id="L_Y" required placeholder="Y.." />
 
 
+                        <div className="input-group-prepend">
+                            <button className="input-group-text" id="btn-timxe" onClick={() => this.send_pos()}>Xác Định</button>
                         </div>
                     </div>
                 </div>
+                <div className="text-center">
+                    <button type="button" className="btn btn-info" id="get_my_location" onClick={(e) => this.handleClick(e)}>
+                        Vị trí của tôi
+                                </button>
+                    {/* <input type="text" className="form-control" placeholder="X.." value={Local}/> */}
+
+                </div>
+                <div className="text-center"> <label > {Local}</label></div>
+
+
+                <Map className="mapid" center={Local} zoom={10}>
+                    <TileLayer
+                        url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
+                        attribution="&copy; <a href=&quot;http://osm.org/copyright&quot;>OpenStreetMap</a> contributors"
+                    />
+                    {this.state.data_pos != null ?
+                        (this.state.data_pos).map((data, i) => {
+                            return (
+                                <Marker key={i} position={data} icon={icon_book}>
+                                    <Popup>A pretty CSS3 popup.<br />Easily customizable.</Popup>
+                                </Marker>
+                            )
+
+                        })
+                        : ""
+
+                    }
+                </Map>
+
 
             </div>
         );

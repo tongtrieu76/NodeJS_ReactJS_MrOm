@@ -6,10 +6,10 @@
     width: 15vh;
 }
 
-#menu {
+/* #menu {
     background-color: aqua;
     height: 100%;
-}
+} */
 
 #get_my_location {
     /* position: fixed; */
@@ -19,7 +19,7 @@
 }
 
 
-#slidebar_content {
+.slidebar_content {
     /* margin-top: 2%; */
     background-color: rgb(198, 255, 255);
 }
@@ -39,3 +39,4 @@
     margin-top: 1%;
     margin-bottom: 1%;
 }
+

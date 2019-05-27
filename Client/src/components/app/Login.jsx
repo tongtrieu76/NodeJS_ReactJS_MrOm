@@ -33,7 +33,7 @@ export default class Login extends Component {
 
       email: this.state.email,
       password: this.state.password,
-
+      
     }
     
     axios.post('/login', newUser)
@@ -44,11 +44,28 @@ export default class Login extends Component {
         }
         if(res.data.token)
         {
-          const token = res.data.token;
-          localStorage.setItem('jwtToken', token);
-          Autho(token);
-         // this.props.history.push("/");
-          window.location.reload();
+          if(res.data.user)
+          {
+            const token = res.data.token;
+            const user  = res.data.user ;
+            localStorage.setItem('jwtToken', token);
+            localStorage.setItem('jwtUser', user);
+            Autho(token);
+  
+           // this.props.history.push("/");
+            window.location.reload();
+          }
+          else{
+            const token = res.data.token;
+            
+            localStorage.setItem('jwtToken', token);
+           
+            Autho(token);
+  
+        
+            window.location.reload();
+          }
+         
         }
        
         
@@ -64,6 +81,7 @@ export default class Login extends Component {
       return(<Redirect to={"/"}/>)
     }
     const errors = this.state.errors;
+   
     return (
 
       <div className="Login mt-5 mb-5">

@@ -51,6 +51,29 @@ const User = mongoose.model('user', userSchema);
 
 exports.User = User;
 
+
+var localSchema = new mongoose.Schema({
+	
+	local_X: {
+		type:  Number,
+		default: 0
+	},
+	local_Y: {
+		type:  Number,
+		default: 0
+	},
+	dateAdded: {
+		type: Date,
+		default: Date.now
+	},
+	
+});
+
+const Local = mongoose.model('local', localSchema);
+
+
+exports.Local = Local;
+
 // const TaiXeSchema = new mongoose.Schema({
 //     Name: String,
 //     Avt: String,

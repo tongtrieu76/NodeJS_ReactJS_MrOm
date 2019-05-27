@@ -4,9 +4,13 @@
  * Module dependencies.
  */
 
+
 var app = require('../app');
 var debug = require('debug')('app:server');
 var http = require('http');
+
+var db = require('../db/nosql');
+
 
 /**
  * Get port from environment and store in Express.
@@ -19,8 +23,55 @@ app.set('port', port);
  * Create HTTP server.
  */
 
-var server = http.createServer(app);
+// var server = http.createServer(app);
 
+var server = require("http").Server(app);
+var io = require("socket.io")(server);
+
+
+
+
+// Local.Local.find().exec((err,local)=>
+// {
+// console.log(local);
+// })
+var arr = [];
+
+
+io.on("connection", function (socket) {
+
+  // io.sockets.emit("server_send",arr)
+  console.log("da co ket noi" + socket.id);
+  socket.on("client_send", function (data) {
+    var arrTemp = [];
+    arrTemp.push(data);
+
+    var iterator = arrTemp[0].values();
+
+
+
+     db.Local.create( { local_X: iterator.next().value, local_Y: iterator.next().value });
+
+
+      db.Local.find().exec((err, local) => {
+     for (let i = 0; i < local.length; i++) {
+        arr.push([local[i].local_X, local[i].local_Y]);
+      }
+      console.log(arr);
+    
+    })
+    io.sockets.emit("server_send", arr)
+   
+  });
+  while (arr.length) {
+    arr.pop();
+  }
+  // socket.on("Client-sent-data", function(data)
+  // 	{
+
+  //             socket.emit("Server-sent-data", data);
+  // 	});
+});
 /**
  * Listen on provided port, on all network interfaces.
  */
