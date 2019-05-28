@@ -6,6 +6,9 @@ import io from 'socket.io-client';
 import { Map, Marker, Popup, TileLayer } from 'react-leaflet'
 import 'leaflet/dist/leaflet.js';
 
+import "leaflet-routing-machine"
+
+
 var icon_book = L.icon({
     iconUrl: IMG,
     iconSize: [40, 50]
@@ -76,7 +79,21 @@ export default class Maps extends React.Component {
             error => console.log(error)
         );
     }
- 
+//  componentDidMount(){
+//     this.map = L.map('map123');
+
+//     L.tileLayer('http://{s}.tile.osm.org/{z}/{x}/{y}.png', {
+//         attribution: '&copy; <a href="http://osm.org/copyright">OpenStreetMap</a> contributors'
+//     }).addTo(this.map);
+        
+//         L.Routing.control({
+//             waypoints: [
+//                 L.latLng(57.74, 11.94),
+//                 L.latLng(57.6792, 11.949)
+//             ],
+//             routeWhileDragging: true
+//         }).addTo(this.map);
+//  }
 
     handleClick() {
         // var maket = L.marker([this.state.lat, this.state.lng], { icon: icon_book }).addTo(this.mymap);
@@ -124,7 +141,7 @@ export default class Maps extends React.Component {
                         (this.state.data_pos).map((data, i) => {
                             return (
                                 <Marker key={i} position={data} icon={icon_book}>
-                                    <Popup>A pretty CSS3 popup.<br />Easily customizable.</Popup>
+                                    <Popup>A pretty CSS3 popup.<br />Easily customizable.<br/> {data[0]}, {data[1]} </Popup>
                                 </Marker>
                             )
 
@@ -132,9 +149,10 @@ export default class Maps extends React.Component {
                         : ""
 
                     }
+                    {/* <Routing from={[57.74, 11.94]} to={[57.6792, 11.949]} map={this.refs.map}/> */}
                 </Map>
 
-
+{/* <div id="map123"> </div> */}
             </div>
         );
     }

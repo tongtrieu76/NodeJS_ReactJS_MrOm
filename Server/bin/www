@@ -39,28 +39,30 @@ var arr = [];
 
 
 io.on("connection", function (socket) {
-
+ 
   // io.sockets.emit("server_send",arr)
+  db.Local.find().exec((err, local) => {
+    for (let i = 0; i < local.length; i++) {
+       arr.push([local[i].local_X, local[i].local_Y]);
+     }
+     console.log(arr);
+   
+   })
   console.log("da co ket noi" + socket.id);
+  io.sockets.emit("server_send", arr)
   socket.on("client_send", function (data) {
-    var arrTemp = [];
-    arrTemp.push(data);
+    // var arrTemp = [];
+    // arrTemp.push(data);
 
-    var iterator = arrTemp[0].values();
-
-
-
-     db.Local.create( { local_X: iterator.next().value, local_Y: iterator.next().value });
+    // var iterator = arrTemp[0].values();
 
 
-      db.Local.find().exec((err, local) => {
-     for (let i = 0; i < local.length; i++) {
-        arr.push([local[i].local_X, local[i].local_Y]);
-      }
-      console.log(arr);
+
+    //  db.Local.create( { local_X: iterator.next().value, local_Y: iterator.next().value });
+
+
     
-    })
-    io.sockets.emit("server_send", arr)
+    
    
   });
   while (arr.length) {
