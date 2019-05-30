@@ -1,0 +1,4 @@
+{"_id":{"$oid":"5cf0132b1c4b6c34fc277c20"},"AccountID":"5cf0111d1c4b6c34fc277c1f","location_X":"10","location_Y":"11","Date":{"$date":{"$numberLong":"1463587200000"}},"Status":{"$numberInt":"0"}}
+{"_id":{"$oid":"5cf015bf1c4b6c34fc277c23"},"AccountID":"5cf0111d1c4b6c34fc277c1f","location_X":"10.01","location_Y":"11.01","Date":{"$date":{"$numberLong":"1462381200000"}},"Status":{"$numberInt":"1"}}
+{"_id":{"$oid":"5cf0163b995d3534fc741eaf"},"AccountID":"5cf0111d1c4b6c34fc277c1f","location_X":"10","location_Y":"11","Date":{"$date":{"$numberLong":"1463587200000"}},"Status":{"$numberInt":"0"}}
+{"_id":{"$oid":"5cf0163b995d3534fc741eb0"},"AccountID":"5cf0111d1c4b6c34fc277c1f","location_X":"10.01","location_Y":"11.01","Date":{"$date":{"$numberLong":"1462381200000"}},"Status":{"$numberInt":"1"}}
