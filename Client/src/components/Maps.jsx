@@ -18,20 +18,18 @@ var icon_book = L.icon({
 export default class Maps extends React.Component {
     constructor(props) {
         super(props);
-        // this.socket = io.connect('/api/location', {
-        //     jsonp: false
-        // });
+        this.socket = io.connect();
         this.state = {
 
             L_X: 10.0000,
             L_Y: 10.2222,
             data_pos: null,
         };
-        // this.socket.on("server_send", (data) => {
-        //     this.setState({
-        //         data_pos: data
-        //     })
-        // })
+        this.socket.on("location_driver_online", (data) => {
+            this.setState({
+                data_pos: data
+            })
+        })
     }
     send_pos() {
 
@@ -94,21 +92,21 @@ export default class Maps extends React.Component {
 //             routeWhileDragging: true
 //         }).addTo(this.map);
 //  }
-componentDidMount() {
-    axios.get('/api/location')
-      .then(response => {
-        if (response.status === 200 && response != null) {
-          this.setState({
-            data_pos: response.data
-          });
-        } else {
-          console.log('problem');
-        } 
-      })
-      .catch(error => {
-        console.log(error);
-      });
-  }
+    // componentDidMount() {
+    //     axios.get('/api/location', {  timeout: 1000})
+    //       .then(response => {
+    //         if (response.status === 200 && response != null) {
+    //           this.setState({
+    //             data_pos: response.data
+    //           });
+    //         } else {
+    //           console.log('problem');
+    //         } 
+    //       })
+    //       .catch(error => {
+    //         console.log(error);
+    //       });
+    //   }
     handleClick() {
         // var maket = L.marker([this.state.lat, this.state.lng], { icon: icon_book }).addTo(this.mymap);
         // maket.bindPopup("<b>Bạn đang ở đây.</b>").openPopup();
@@ -155,7 +153,7 @@ componentDidMount() {
                         (this.state.data_pos).map((data, i) => {
                             return (
                                 <Marker key={i} position={[data.Location_X,data.Location_Y]} icon={icon_book}>
-                                    <Popup>A pretty CSS3 popup.<br />Easily customizable.<br/> {data[0]}, {data[1]} </Popup>
+                                    <Popup>A pretty CSS3 popup.<br />Easily customizable.<br/> {data.Location_X}, {data.Location_Y} </Popup>
                                 </Marker>
                             )
 
