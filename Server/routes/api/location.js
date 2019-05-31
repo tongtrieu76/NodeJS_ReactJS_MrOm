@@ -10,20 +10,56 @@ app.use(bodyParser.json()); // support json encoded bodies
 app.use(bodyParser.urlencoded({ extended: true })); // support encoded bodies
 
 /* GET users listing. */
+//GET
+// -- location
+// -- -- location all
 app.get("/location", function(req, res, next) {
   db.Locations.find().exec(function(err, result) {
     if (err) return handleError(err);
     res.send(result);
   });
 });
-
+// -- -- location theo id
 app.get("/location/:id", function(req, res, next) {
-  db.Locations.find().exec(function(err, result) {
+  db.Locations.findOne({AccountID: req.params.id},function(err, result) {
     if (err) return handleError(err);
     res.send(result);
   });
 });
 
+
+// -- user
+// -- -- user all
+app.get("/user", function(req, res, next) {
+  db.InformationUsers.find().exec(function(err, result) {
+    if (err) return handleError(err);
+    res.send(result);
+  });
+});
+// -- -- user theo id
+app.get("/user/:id", function(req, res, next) {
+  db.InformationUsers.findOne({AccountID: req.params.id},function(err, result) {
+    if (err) return handleError(err);
+    res.send(result);
+  });
+});
+// -- driver
+// -- -- driver all
+app.get("/driver",(req,res,next) => {
+  db.InformationDrivers.find().exec((err,result) =>{
+    if(err) return handleError(err);
+    res.send(result);
+  })
+})
+// -- -- driver theo id
+app.get("/driver/:id", function(req, res, next) {
+  db.InformationUsers.findOne({AccountID: req.params.id},function(err, result) {
+    if (err) return handleError(err);
+    res.send(result);
+  });
+});
+
+// method POST
 app.post("/addLocation/:id", function(req, res, next) {
   //định dạng respone header theo content type là form và charset là utf8
 
