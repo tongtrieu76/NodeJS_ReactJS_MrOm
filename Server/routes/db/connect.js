@@ -21,12 +21,12 @@ var SchemaLocations = new mongoose.Schema({
 		default: "no_id"
 	},
 	Location_X: {
-		type:  String,
-		default: "0"
+		type:  Number,
+		default: 0
 	},
 	Location_Y: {
-		type:  String,
-		default: "0"
+		type:  Number,
+		default: 0
 	},
 	Date: {
 		type: Date,

@@ -12,7 +12,7 @@ app.use(bodyParser.urlencoded({ extended: true })); // support encoded bodies
 //GET
 // -- location
 // -- -- location all
-app.get("/location", function(req, res, next) {
+app.get("/location", async function(req, res, next) {
   db.Locations.find().exec(function(err, result) {
     if (err) return handleError(err);
     res.send(result);

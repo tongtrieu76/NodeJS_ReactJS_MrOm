@@ -148,10 +148,7 @@ componentDidMount() {
 
                 <Map className="mapid" center={Local} zoom={10}>
                     <TileLayer
-                        url="https://api.tiles.mapbox.com/v4/{id}/{z}/{x}/{y}.png?access_token={accessToken}"
-                        maxZoom= "18"
-    id= 'mapbox.streets'
-    accessToken= 'your.mapbox.access.token'
+                        url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
                         attribution="&copy; <a href=&quot;http://osm.org/copyright&quot;>OpenStreetMap</a> contributors"
                     />
                     {this.state.data_pos != null ?
