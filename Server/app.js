@@ -72,14 +72,14 @@ io.on("connection", socket => {
 
     // send location: token, userID, local_X , local_Y
     socket.on("send_location_driver_online", data => {
-      var locations = { userID: "", local_X: "", local_Y: "" };
+      var locations = { AccountID: "", Location_X: "", Location_Y: "" };
       Object.keys(data).map(key => {
-        locations.userID = data[key].userID;
-        locations.local_X = data[key].local_X;
-        locations.local_Y = data[key].local_Y;
+        locations.AccountID = data[key].AccountID;
+        locations.Location_X = data[key].Location_X;
+        locations.Location_Y = data[key].Location_Y;
       });
       //update data for database , userID
-      db.Local.findOne({ userID: locations.userID }, function(err, data) {
+      db.Locations.findOne({ AccountID: locations.AccountID }, function(err, data) {
         if (err) {
           console.log(err);
           res.status(500).send();
@@ -88,13 +88,13 @@ io.on("connection", socket => {
             res.status(400).send();
           } else {
             if (locations.local_X) {
-              data.local_X = locations.local_X;
+              data.Location_X = locations.Location_X;
             }
             if (locations.local_Y) {
-              data.local_Y = locations.local_Y;
+              data.Location_Y = locations.Location_Y;
             }
 
-            data.dateAdded = Date();
+            data.Date = Date();
             // console.log(Date.parse(date_t));
             data.save(function(err, rs) {
               if (err) {
@@ -171,4 +171,5 @@ function onListening() {
   var addr = server.address();
   var bind = typeof addr === "string" ? "pipe " + addr : "port " + addr.port;
   debug("Listening on " + bind);
+  console.log("Server running address: "  + " port: " + port);
 }
