@@ -30,6 +30,7 @@ var Schemalocal = new mongoose.Schema({
 	
 });
 var Local = new mongoose.model('local', Schemalocal);
+
 setInterval(function(){
 	Local = new mongoose.model('local', Schemalocal);
 },1000);
