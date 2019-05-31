@@ -33,13 +33,14 @@ var SchemaLocations = new mongoose.Schema({
 		default: Date.now
 	},
 	Status: {
-		type: String,
-		default: "no_name"
+		type: Number,
+		default: 0
 	}
 });
-var locations = new mongoose.model('local', SchemaLocations);
+var locations = new mongoose.model('location', SchemaLocations);
+
 setInterval(function(){
-	locations = new mongoose.model('local', SchemaLocations);
+	locations = new mongoose.model('location', SchemaLocations);
 },1000);
 
 //Account
