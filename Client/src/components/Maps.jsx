@@ -7,7 +7,7 @@ import { Map, Marker, Popup, TileLayer } from 'react-leaflet'
 import 'leaflet/dist/leaflet.js';
 
 import "leaflet-routing-machine"
-
+import axios from 'axios';
 
 var icon_book = L.icon({
     iconUrl: IMG,
@@ -18,20 +18,20 @@ var icon_book = L.icon({
 export default class Maps extends React.Component {
     constructor(props) {
         super(props);
-        this.socket = io.connect('/', {
-            jsonp: false
-        });
+        // this.socket = io.connect('/api/location', {
+        //     jsonp: false
+        // });
         this.state = {
 
             L_X: 10.0000,
             L_Y: 10.2222,
             data_pos: null,
         };
-        this.socket.on("server_send", (data) => {
-            this.setState({
-                data_pos: data
-            })
-        })
+        // this.socket.on("server_send", (data) => {
+        //     this.setState({
+        //         data_pos: data
+        //     })
+        // })
     }
     send_pos() {
 
@@ -71,14 +71,14 @@ export default class Maps extends React.Component {
         // var maket = L.marker([this.state.lat, this.state.lng], { icon: icon_book }).addTo(this.mymap);
         // maket.bindPopup("<b>Bạn đang ở đây.</b>").openPopup();
     }
-    componentWillMount() {
-        navigator.geolocation.getCurrentPosition(
-            position => {
-                this.setState({ L_X: position.coords.latitude, L_Y: position.coords.longitude });
-            },
-            error => console.log(error)
-        );
-    }
+    // componentWillMount() {
+    //     navigator.geolocation.getCurrentPosition(
+    //         position => {
+    //             this.setState({ L_X: position.coords.latitude, L_Y: position.coords.longitude });
+    //         },
+    //         error => console.log(error)
+    //     );
+    // }
 //  componentDidMount(){
 //     this.map = L.map('map123');
 
@@ -94,7 +94,21 @@ export default class Maps extends React.Component {
 //             routeWhileDragging: true
 //         }).addTo(this.map);
 //  }
-
+componentDidMount() {
+    axios.get('/api/location')
+      .then(response => {
+        if (response.status === 200 && response != null) {
+          this.setState({
+            data_pos: response.data
+          });
+        } else {
+          console.log('problem');
+        } 
+      })
+      .catch(error => {
+        console.log(error);
+      });
+  }
     handleClick() {
         // var maket = L.marker([this.state.lat, this.state.lng], { icon: icon_book }).addTo(this.mymap);
         // maket.bindPopup("<b>Bạn đang ở đây.</b>").openPopup();
@@ -134,13 +148,16 @@ export default class Maps extends React.Component {
 
                 <Map className="mapid" center={Local} zoom={10}>
                     <TileLayer
-                        url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
+                        url="https://api.tiles.mapbox.com/v4/{id}/{z}/{x}/{y}.png?access_token={accessToken}"
+                        maxZoom= "18"
+    id= 'mapbox.streets'
+    accessToken= 'your.mapbox.access.token'
                         attribution="&copy; <a href=&quot;http://osm.org/copyright&quot;>OpenStreetMap</a> contributors"
                     />
                     {this.state.data_pos != null ?
                         (this.state.data_pos).map((data, i) => {
                             return (
-                                <Marker key={i} position={data} icon={icon_book}>
+                                <Marker key={i} position={[data.Location_X,data.Location_Y]} icon={icon_book}>
                                     <Popup>A pretty CSS3 popup.<br />Easily customizable.<br/> {data[0]}, {data[1]} </Popup>
                                 </Marker>
                             )
