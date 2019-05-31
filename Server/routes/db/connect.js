@@ -52,9 +52,56 @@ var SchemaAccount = new mongoose.Schema({
 	UserName: {
 		type: String,
 		default: "no_name"
+	},
+	Password: {
+		type: String,
+		default: "no_password"
+	},
+	Name: {
+		type: String,
+		default: "no_name"
+	},
+	Status: {
+		type: Number,
+		default: 96
+	},
+	WhyLock: {
+		type: String,
+		default: "no_whylock"
+	},
+	Token: {
+		type: String,
+		default: "no_token"
+	},
+	StatusConnect: {
+		type: Number,
+		default: 0
+	},
+	OldPassword: [String],
+	Rate: {
+		type: Number,
+		default: 0
+	},
+	CreateDate: {
+		type: Date,
+		default: Date.now
 	}
 });
-var account = new mongoose.model('Account',SchemaAccount);
+var account = new mongoose.model('account',SchemaAccount);
 
+
+//Information Drivers
+var SchemaIfDrivers = new mongoose.Schema({
+
+})
+var drivers = new mongoose.model('informationdriver',SchemaIfDrivers);
+//Information Users
+var SchemaIfUsers = new mongoose.Schema({
+
+})
+var users = new mongoose.model('informationuser',SchemaIfUsers);
+//exports
 exports.Locations = locations;
 exports.Accounts = account;
+exports.InformationDrivers = drivers;
+exports.InformationUsers = users;
