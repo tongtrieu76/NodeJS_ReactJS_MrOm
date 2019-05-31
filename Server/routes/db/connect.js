@@ -10,29 +10,36 @@ mongoose.connect('mongodb://localhost/MyDrivers',{useNewUrlParser: true},(error)
 })
 
 var Schemalocal = new mongoose.Schema({
-	
-	local_X: {
+	_id: {
+		type: String,
+		default: "no_id"
+	},
+	AccountID: {
+		type: String,
+		default: "no_id"
+	},
+	Location_X: {
 		type:  Number,
 		default: 0
 	},
-	local_Y: {
+	Location_X: {
 		type:  Number,
 		default: 0
 	},
-	dateAdded: {
+	Date: {
 		type: Date,
 		default: Date.now
 	},
-	userID: {
+	Status: {
 		type: String,
 		default: "no_name"
 	}
-	
 });
-var Local = new mongoose.model('local', Schemalocal);
+
+var Locations = new mongoose.model('Locations', Schemalocal);
 
 setInterval(function(){
-	Local = new mongoose.model('local', Schemalocal);
+	Locations = new mongoose.model('Locations', Schemalocal);
 },1000);
 
-exports.Local = Local;
+exports.Local = Locations;
