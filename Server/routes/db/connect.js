@@ -9,7 +9,9 @@ mongoose.connect('mongodb://localhost/MyDrivers',{useNewUrlParser: true},(error)
     }
 })
 
-var Schemalocal = new mongoose.Schema({
+
+//Locations
+var SchemaLocations = new mongoose.Schema({
 	_id: {
 		type: String,
 		default: "no_id"
@@ -19,27 +21,39 @@ var Schemalocal = new mongoose.Schema({
 		default: "no_id"
 	},
 	Location_X: {
-		type:  Number,
-		default: 0
+		type:  String,
+		default: "0"
 	},
-	Location_X: {
-		type:  Number,
-		default: 0
+	Location_Y: {
+		type:  String,
+		default: "0"
 	},
 	Date: {
 		type: Date,
 		default: Date.now
 	},
 	Status: {
+		type: Number,
+		default: "no_name"
+	}
+});
+var locations = new mongoose.model('Location', SchemaLocations);
+setInterval(function(){
+	locations = new mongoose.model('Location', SchemaLocations);
+},1000);
+
+//Account
+var SchemaAccount = new mongoose.Schema({
+	_id: {
+		type: String,
+		default: "no_id"
+	},
+	UserName: {
 		type: String,
 		default: "no_name"
 	}
 });
+var account = new mongoose.model('Account',SchemaAccount);
 
-var Locations = new mongoose.model('Locations', Schemalocal);
-
-setInterval(function(){
-	Locations = new mongoose.model('Locations', Schemalocal);
-},1000);
-
-exports.Local = Locations;
+exports.Locations = locations;
+exports.Accounts = account;
