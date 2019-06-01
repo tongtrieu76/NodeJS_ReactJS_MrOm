@@ -41,7 +41,7 @@ var locations = new mongoose.model('location', SchemaLocations);
 
 setInterval(function(){
 	locations = new mongoose.model('location', SchemaLocations);
-},1000);
+},5000);
 
 //Account
 var SchemaAccount = new mongoose.Schema({
@@ -63,7 +63,7 @@ var SchemaAccount = new mongoose.Schema({
 	},
 	Status: {
 		type: Number,
-		default: 96
+		default: 0
 	},
 	WhyLock: {
 		type: String,
@@ -85,6 +85,10 @@ var SchemaAccount = new mongoose.Schema({
 	CreateDate: {
 		type: Date,
 		default: Date.now
+	},
+	verify: {
+		type:  Number,
+		default: 0
 	}
 });
 var account = new mongoose.model('account',SchemaAccount);
@@ -92,12 +96,96 @@ var account = new mongoose.model('account',SchemaAccount);
 
 //Information Drivers
 var SchemaIfDrivers = new mongoose.Schema({
+	_id: {
+		type: String,
+		default: "no_id"
+	},
+	AccountID:{
+		type: String,
+		default: "no_name"
+	},
+	Birthday:{
+		type: Date,
+		default: Date.now
+	},
+	IdentityCard:{
+		type: Number,
+		default: 0
+	},
+	Address:{
+		type: String,
+		default: "no_name"
+	},
+	Email:{
+		type: String,
+		default: "no_name"
+	},
+	NumberPhone:{
+		type: Number,
+		default: 0
+	},
+	CarNumber:{
+		type: String,
+		default: "no_name"
+	},
+	CarInformation:{
+		type: String,
+		default: "no_name"
+	},
+	CarLicense:{
+		type: String,
+		default: "no_name"
+	},
+	CarSpecials:{
+		type: String,
+		default: "no_name"
+	},
+	DateSignup:{
+		type: Date,
+		default: Date.now
+	},
+	Rate:{
+		type: Number,
+		default: 0
+	},
+
 
 })
 var drivers = new mongoose.model('informationdriver',SchemaIfDrivers);
 //Information Users
 var SchemaIfUsers = new mongoose.Schema({
-
+	_id: {
+		type: String,
+		default: "no_id"
+	},
+	AccountID:{
+		type: String,
+		default: "no_name"
+	},
+	Birthday:{
+		type: Date,
+		default: Date.now
+	},
+	IdentityCard:{
+		type: Number,
+		default: 0
+	},
+	Address:{
+		type: String,
+		default: "no_name"
+	},
+	Email:{
+		type: String,
+		default: "no_name"
+	},
+	NumberPhone:{
+		type: Number,
+		default: 0
+	},
+	Point:{
+		type: Number,
+		default: 0
+	},
 })
 var users = new mongoose.model('informationuser',SchemaIfUsers);
 //exports
