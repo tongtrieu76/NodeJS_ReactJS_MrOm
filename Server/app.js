@@ -21,6 +21,13 @@ var socketIO = require("socket.io");
 var db = require("./routes/db/connect");
 
 var app = express();
+
+/// BUG1: fix bug lỗi Access-Control-Allow-Origin khi client get api của server vì thiếu cors header
+var cors = require('cors');
+app.use(cors());
+/// end BUG1.
+
+
 app.set("port", port);
 // view engine setup
 app.set("views", path.join(__dirname, "views"));
@@ -35,6 +42,8 @@ app.use(express.static(path.join(__dirname, "public")));
 app.use("/", indexRouter);
 app.use("/users", usersRouter);
 app.use("/api", LocationRouter);
+
+
 
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {

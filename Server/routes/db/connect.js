@@ -21,12 +21,12 @@ var SchemaLocations = new mongoose.Schema({
 		default: "no_id"
 	},
 	Location_X: {
-		type:  Number,
-		default: 0
+		type:  String,
+		default: "0"
 	},
 	Location_Y: {
-		type:  Number,
-		default: 0
+		type:  String,
+		default: "0"
 	},
 	Date: {
 		type: Date,
@@ -92,12 +92,86 @@ var account = new mongoose.model('account',SchemaAccount);
 
 //Information Drivers
 var SchemaIfDrivers = new mongoose.Schema({
-
+	AccountID: {
+		type: String,
+		default: "no_id"
+	},
+	Birthday: {
+		type: Date,
+		default: Date.now
+	},
+	IdentityCard: {
+		type: String,
+		default: "no_IdentityCard"
+	},
+	Address: {
+		type: String,
+		default: "no_Address"
+	},
+	Email: {
+		type: String,
+		default: "no_Email"
+	},
+	NumberPhone: {
+		type: String,
+		default: "no_NumberPhone"
+	},
+	CarNumber: {
+		type: String,
+		default: "no_CarNumber"
+	},
+	CarInformation: {
+		type: String,
+		default: "no_CarInformation"
+	},
+	CarLicense: {
+		type: String,
+		default: "no_CarLicense"
+	},
+	CarSpecials: {
+		type: String,
+		default: "no_CarSpecials"
+	},
+	DateSignup: {
+		type: Date,
+		default: Date.now
+	},
+	Rate: {
+		type: String,
+		default: 5
+	}
 })
 var drivers = new mongoose.model('informationdriver',SchemaIfDrivers);
 //Information Users
 var SchemaIfUsers = new mongoose.Schema({
-
+	AccountID: {
+		type: String,
+		default: "no_id"
+	},
+	Birthday: {
+		type: Date,
+		default: Date.now
+	},
+	IdentityCard: {
+		type: String,
+		default: "no_IdentityCard"
+	},
+	Address: {
+		type: String,
+		default: "no_Address"
+	},
+	Email: {
+		type: String,
+		default: "no_Email"
+	},
+	NumberPhone: {
+		type: String,
+		default: "no_NumberPhone"
+	},
+	Point: {
+		type: Number,
+		default: 0
+	}
 })
 var users = new mongoose.model('informationuser',SchemaIfUsers);
 //exports
