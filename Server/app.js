@@ -44,10 +44,6 @@ app.use("/users", usersRouter);
 app.use("/api", LocationRouter);
 
 
-<<<<<<< HEAD
-=======
-
->>>>>>> a20717ba072526652c44e43254d423b733112490
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {
   next(createError(404));

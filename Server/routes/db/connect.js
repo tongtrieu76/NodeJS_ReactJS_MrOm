@@ -96,62 +96,7 @@ var account = new mongoose.model('account',SchemaAccount);
 
 //Information Drivers
 var SchemaIfDrivers = new mongoose.Schema({
-<<<<<<< HEAD
-	_id: {
-		type: String,
-		default: "no_id"
-	},
-	AccountID:{
-		type: String,
-		default: "no_name"
-	},
-	Birthday:{
-		type: Date,
-		default: Date.now
-	},
-	IdentityCard:{
-		type: Number,
-		default: 0
-	},
-	Address:{
-		type: String,
-		default: "no_name"
-	},
-	Email:{
-		type: String,
-		default: "no_name"
-	},
-	NumberPhone:{
-		type: Number,
-		default: 0
-	},
-	CarNumber:{
-		type: String,
-		default: "no_name"
-	},
-	CarInformation:{
-		type: String,
-		default: "no_name"
-	},
-	CarLicense:{
-		type: String,
-		default: "no_name"
-	},
-	CarSpecials:{
-		type: String,
-		default: "no_name"
-	},
-	DateSignup:{
-		type: Date,
-		default: Date.now
-	},
-	Rate:{
-		type: Number,
-		default: 0
-	},
 
-
-=======
 	AccountID: {
 		type: String,
 		default: "no_id"
@@ -200,50 +145,18 @@ var SchemaIfDrivers = new mongoose.Schema({
 		type: String,
 		default: 5
 	}
->>>>>>> a20717ba072526652c44e43254d423b733112490
+
+
 })
 var drivers = new mongoose.model('informationdriver',SchemaIfDrivers);
 //Information Users
 var SchemaIfUsers = new mongoose.Schema({
-<<<<<<< HEAD
-	_id: {
-		type: String,
-		default: "no_id"
-	},
+
 	AccountID:{
 		type: String,
-		default: "no_name"
-	},
-	Birthday:{
-		type: Date,
-		default: Date.now
-	},
-	IdentityCard:{
-		type: Number,
-		default: 0
-	},
-	Address:{
-		type: String,
-		default: "no_name"
-	},
-	Email:{
-		type: String,
-		default: "no_name"
-	},
-	NumberPhone:{
-		type: Number,
-		default: 0
-	},
-	Point:{
-		type: Number,
-		default: 0
-	},
-=======
-	AccountID: {
-		type: String,
 		default: "no_id"
 	},
-	Birthday: {
+	Birthday:{
 		type: Date,
 		default: Date.now
 	},
@@ -263,11 +176,11 @@ var SchemaIfUsers = new mongoose.Schema({
 		type: String,
 		default: "no_NumberPhone"
 	},
-	Point: {
+	Point:{
 		type: Number,
 		default: 0
-	}
->>>>>>> a20717ba072526652c44e43254d423b733112490
+	},
+
 })
 var users = new mongoose.model('informationuser',SchemaIfUsers);
 //exports

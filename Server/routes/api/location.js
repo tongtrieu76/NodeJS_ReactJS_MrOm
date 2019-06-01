@@ -1,10 +1,6 @@
 var express = require("express");
 const db = require("../db/connect");
 var app = express();
-<<<<<<< HEAD
-
-=======
->>>>>>> a20717ba072526652c44e43254d423b733112490
 
 var bodyParser = require("body-parser");
 
