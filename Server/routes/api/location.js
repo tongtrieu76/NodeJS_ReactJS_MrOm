@@ -1,7 +1,10 @@
 var express = require("express");
 const db = require("../db/connect");
 var app = express();
+<<<<<<< HEAD
 
+=======
+>>>>>>> a20717ba072526652c44e43254d423b733112490
 
 var bodyParser = require("body-parser");
 
@@ -12,10 +15,8 @@ app.use(bodyParser.urlencoded({ extended: true })); // support encoded bodies
 //GET
 // -- location
 // -- -- location all
-app.get("/location", async function(req, res, next) {
-  db.Locations.find( {
-    Status: 0,
-  }).exec(function(err, result) {
+app.get("/location", function(req, res, next) {
+  db.Locations.find().exec(function(err, result) {
     if (err) return handleError(err);
     res.send(result);
   });
@@ -67,6 +68,28 @@ app.get("/driver/:id", function(req, res, next) {
     res.send(result);
   });
 });
+
+
+//
+// -- account
+// -- -- account all
+app.get("/account", (req, res, next) => {
+  db.Accounts.find().exec((err, result) => {
+    if (err) return handleError(err);
+    res.send(result);
+  });
+});
+// -- -- driver theo id
+app.get("/driver/:id", function(req, res, next) {
+  db.Accounts.findOne({ AccountID: req.params.id }, function(
+    err,
+    result
+  ) {
+    if (err) return handleError(err);
+    res.send(result);
+  });
+});
+
 
 //
 // method POST
@@ -216,7 +239,7 @@ app.post("/driver", function(req, res, next) {
 });
 
 // account
-app.post("account", function(req,res,next){
+app.post("/account", function(req,res,next){
   db.InformationUsers.findOne({ UserName: req.body.UserName }, function(
     err,
     data
@@ -270,4 +293,74 @@ app.post("account", function(req,res,next){
     }
   });
 });
+
+app.post('/login',function(req,res,next){
+  db.Accounts.findOne({ UserName: req.body.UserName }, function(
+    err,
+    data
+  ) {
+    if (err) {
+      console.log(err);
+      res.status(500).send();
+    } else {
+      if (!data) {
+        res.status(400).send();
+      } else {
+        var username = req.body.UserName;
+        var password = req.body.Password;
+        if (username == data.UserName && password == data.Password) {
+          var token = {id: data.AccountID, token: data.Token, Role: data.Role};
+          res.status(200).send(token);
+        } else {
+          res.status(400).send(false);
+        }
+        // console.log(Date.parse(date_t));
+        data.save(function(err, rs) {
+          if (err) {
+            console.log(err);
+            res.status(500).send();
+          } else {
+            res.send(rs);
+          }
+        });
+      }
+    }
+  });
+})
+
+app.post('/checktoken',function(req,res,next){
+  db.Accounts.findOne({ AccountID: req.body.AccountID }, function(
+    err,
+    data
+  ) {
+    if (err) {
+      console.log(err);
+      res.status(500).send();
+    } else {
+      if (!data) {
+        res.status(400).send();
+      } else {
+        var id = req.body.AccountID;
+        var token = req.body.Token;
+        var role = req.body.Role;
+        if (id == data.AccountID && token == data.Token && role == data.Role) {
+          res.status(200).send(true);
+        } else {
+          res.status(400).send(false);
+        }
+        // console.log(Date.parse(date_t));
+        data.save(function(err, rs) {
+          if (err) {
+            console.log(err);
+            res.status(500).send();
+          } else {
+            res.send(rs);
+          }
+        });
+      }
+    }
+  });
+})
+
+
 module.exports = app;
