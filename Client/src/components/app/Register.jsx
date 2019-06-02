@@ -1,7 +1,14 @@
-import registerUser from './registerUser';
+
 import React, { Component } from "react";
 import { BrowserRouter as Router, Route, NavLink } from "react-router-dom";
+
+import registerUser from './registerUser';
+import registerDriver from './registerDriver';
+
+
+
 const isActive = (path, match, location) => !!(match || path === location.pathname);
+
 
 export default class Register extends Component {
 
@@ -18,7 +25,7 @@ export default class Register extends Component {
             activeClassName="active"
             isActive={isActive.bind(this, '/register/user')}
             className="nav-link text-light text-center font-weight-bold" to='/register/user'>
-            Đăng Ký
+            Đăng Ký Người Dùng
               </NavLink>
               </div>
 
@@ -28,7 +35,7 @@ export default class Register extends Component {
             activeClassName="active"
             isActive={isActive.bind(this, '/register/driver')}
             className="nav-link text-light text-center font-weight-bold" to='/register/driver'>
-            Đăng Ký
+            Đăng Ký Tài Xế
               </NavLink>
               </div>
               <div className="col-md-3"> </div>
@@ -37,7 +44,7 @@ export default class Register extends Component {
       </div>
        
         <Route path='/register/user' exact component={registerUser} />
-        <Route path='/register/driver' exact component={registerUser} />
+        <Route path='/register/driver' exact component={registerDriver} />
       </Router>
 
     );

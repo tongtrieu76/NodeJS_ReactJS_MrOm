@@ -7,7 +7,7 @@ import { Map, Marker, Popup, TileLayer } from 'react-leaflet'
 import 'leaflet/dist/leaflet.js';
 
 import "leaflet-routing-machine"
-import axios from 'axios';
+// import axios from 'axios';
 
 var icon_book = L.icon({
     iconUrl: IMG,

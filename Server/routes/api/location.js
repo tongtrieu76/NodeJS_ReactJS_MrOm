@@ -1,5 +1,10 @@
 var express = require("express");
 const db = require("../db/connect");
+
+
+var isEmpty = require('lodash/isEmpty');
+var commonValidations = require('../validations/registerUser');
+
 var app = express();
 
 var bodyParser = require("body-parser");
@@ -11,15 +16,15 @@ app.use(bodyParser.urlencoded({ extended: true })); // support encoded bodies
 //GET
 // -- location
 // -- -- location all
-app.get("/location", function(req, res, next) {
-  db.Locations.find().exec(function(err, result) {
+app.get("/location", function (req, res, next) {
+  db.Locations.find().exec(function (err, result) {
     if (err) return handleError(err);
     res.send(result);
   });
 });
 // -- -- location theo id
-app.get("/location/:id", function(req, res, next) {
-  db.Locations.findOne({ AccountID: req.params.id }, function(err, result) {
+app.get("/location/:id", function (req, res, next) {
+  db.Locations.findOne({ AccountID: req.params.id }, function (err, result) {
     if (err) return handleError(err);
     res.send(result);
   });
@@ -28,15 +33,15 @@ app.get("/location/:id", function(req, res, next) {
 //
 // -- user
 // -- -- user all
-app.get("/user", function(req, res, next) {
-  db.InformationUsers.find().exec(function(err, result) {
+app.get("/user", function (req, res, next) {
+  db.InformationUsers.find().exec(function (err, result) {
     if (err) return handleError(err);
     res.send(result);
   });
 });
 // -- -- user theo id
-app.get("/user/:id", function(req, res, next) {
-  db.InformationUsers.findOne({ AccountID: req.params.id }, function(
+app.get("/user/:id", function (req, res, next) {
+  db.InformationUsers.findOne({ AccountID: req.params.id }, function (
     err,
     result
   ) {
@@ -55,8 +60,8 @@ app.get("/driver", (req, res, next) => {
   });
 });
 // -- -- driver theo id
-app.get("/driver/:id", function(req, res, next) {
-  db.InformationUsers.findOne({ AccountID: req.params.id }, function(
+app.get("/driver/:id", function (req, res, next) {
+  db.InformationUsers.findOne({ AccountID: req.params.id }, function (
     err,
     result
   ) {
@@ -76,8 +81,8 @@ app.get("/account", (req, res, next) => {
   });
 });
 // -- -- driver theo id
-app.get("/driver/:id", function(req, res, next) {
-  db.Accounts.findOne({ AccountID: req.params.id }, function(
+app.get("/driver/:id", function (req, res, next) {
+  db.Accounts.findOne({ AccountID: req.params.id }, function (
     err,
     result
   ) {
@@ -90,8 +95,8 @@ app.get("/driver/:id", function(req, res, next) {
 //
 // method POST
 // location
-app.post("/location", function(req, res, next) {
-  db.Locations.findOne({ AccountID: "5cf0111d1c4b6c34fc277c1f" }, function(
+app.post("/location", function (req, res, next) {
+  db.Locations.findOne({ AccountID: "5cf0111d1c4b6c34fc277c1f" }, function (
     err,
     data
   ) {
@@ -114,8 +119,8 @@ app.post("/location", function(req, res, next) {
         // if (req.body.Date) {
         //   data.Date = req.body.Date;
         // }
-        
-        data.save(function(err, rs) {
+
+        data.save(function (err, rs) {
           if (err) {
             console.log(err);
             res.status(500).send();
@@ -129,8 +134,8 @@ app.post("/location", function(req, res, next) {
 });
 
 // user
-app.post("/user", function(req, res, next) {
-  db.InformationUsers.findOne({ AccountID: req.body.AccountID }, function(
+app.post("/user", function (req, res, next) {
+  db.InformationUsers.findOne({ AccountID: req.body.AccountID }, function (
     err,
     data
   ) {
@@ -160,7 +165,7 @@ app.post("/user", function(req, res, next) {
           data.Point = req.body.Point;
         }
         // console.log(Date.parse(date_t));
-        data.save(function(err, rs) {
+        data.save(function (err, rs) {
           if (err) {
             console.log(err);
             res.status(500).send();
@@ -175,8 +180,8 @@ app.post("/user", function(req, res, next) {
 
 //driver 
 // driver khong duoc edit thong tin ca nhan.
-app.post("/driver", function(req, res, next) {
-  db.InformationUsers.findOne({ AccountID: req.body.AccountID }, function(
+app.post("/driver", function (req, res, next) {
+  db.InformationUsers.findOne({ AccountID: req.body.AccountID }, function (
     err,
     data
   ) {
@@ -221,7 +226,7 @@ app.post("/driver", function(req, res, next) {
           data.Rate = req.body.Rate;
         }
         // console.log(Date.parse(date_t));
-        data.save(function(err, rs) {
+        data.save(function (err, rs) {
           if (err) {
             console.log(err);
             res.status(500).send();
@@ -235,8 +240,8 @@ app.post("/driver", function(req, res, next) {
 });
 
 // account
-app.post("/account", function(req,res,next){
-  db.InformationUsers.findOne({ UserName: req.body.UserName }, function(
+app.post("/account", function (req, res, next) {
+  db.InformationUsers.findOne({ UserName: req.body.UserName }, function (
     err,
     data
   ) {
@@ -277,7 +282,7 @@ app.post("/account", function(req,res,next){
         // if (req.body.CreateDate) {
         //   data.CreateDate = req.body.CreateDate;
         // }
-        data.save(function(err, rs) {
+        data.save(function (err, rs) {
           if (err) {
             console.log(err);
             res.status(500).send();
@@ -290,8 +295,8 @@ app.post("/account", function(req,res,next){
   });
 });
 
-app.post('/login',function(req,res,next){
-  db.Accounts.findOne({ UserName: req.body.UserName }, function(
+app.post('/login', function (req, res, next) {
+  db.Accounts.findOne({ UserName: req.body.UserName }, function (
     err,
     data
   ) {
@@ -305,13 +310,13 @@ app.post('/login',function(req,res,next){
         var username = req.body.UserName;
         var password = req.body.Password;
         if (username == data.UserName && password == data.Password) {
-          var token = {id: data.AccountID, token: data.Token, Role: data.Role};
+          var token = { id: data.AccountID, token: data.Token, Role: data.Role };
           res.status(200).send(token);
         } else {
           res.status(400).send(false);
         }
         // console.log(Date.parse(date_t));
-        data.save(function(err, rs) {
+        data.save(function (err, rs) {
           if (err) {
             console.log(err);
             res.status(500).send();
@@ -324,8 +329,8 @@ app.post('/login',function(req,res,next){
   });
 })
 
-app.post('/checktoken',function(req,res,next){
-  db.Accounts.findOne({ AccountID: req.body.AccountID }, function(
+app.post('/checktoken', function (req, res, next) {
+  db.Accounts.findOne({ AccountID: req.body.AccountID }, function (
     err,
     data
   ) {
@@ -345,7 +350,7 @@ app.post('/checktoken',function(req,res,next){
           res.status(400).send(false);
         }
         // console.log(Date.parse(date_t));
-        data.save(function(err, rs) {
+        data.save(function (err, rs) {
           if (err) {
             console.log(err);
             res.status(500).send();
@@ -357,6 +362,124 @@ app.post('/checktoken',function(req,res,next){
     }
   });
 })
+
+
+
+
+
+
+
+
+// function validateInput(data, otherValidations) {
+//   let { errors } = otherValidations(data);
+
+//   return db.Accounts.findOne({
+//     where: { email: data.email },
+
+//   }).then(user => {
+//     if (user) {
+
+//       if (user.email === data.email) {
+//         errors.email = 'Email đã tồn tại';
+//       }
+//     }
+
+//     return {
+//       errors,
+//       // isValid: isEmpty(errors)
+//     };
+//   })
+
+// }
+
+
+
+app.post('/registerUser',async function (req, res) {
+  console.log(req.body)
+  let { errors, isValid } = await commonValidations(req.body);
+
+  console.log(isValid);
+  if (isValid) {
+
+    const { name, username, password, passwordConfim } = req.body;
+
+    await  db.Accounts.create({ Name: name, UserName: username, Password: password }, function (err, small) {
+      if (err) {
+        return res.status(500).json({ errorMessage: err });
+      }
+      else {
+        return res.json({ success: true });
+      }
+
+    })
+
+
+  } else {
+    res.status(400).json({ errors });
+
+  }
+
+
+
+  // var username = req.body.username;
+
+  // var email = req.body.email;
+  // var password = req.body.password;
+  // var password2= req.body.password2;
+  // db.User.findOne({ email: email }).then(result => {
+  //   if (result) {
+  //     let errors = "Tài khoản đã tồn tại";
+
+  //     return res.json({errors});
+  //   } else {
+  //     db.User.create({userName:username,email:email,password:password});
+  //     const token = jwt.sign({email:email,password:password }, 'shhhhh');
+  //     return res.json({token});
+  //   }
+  //  // return result
+  // }).catch(err => {
+  //   let errors = `Failed to find document: ${err}`;
+  //   res.json({ errors });
+  // });
+
+  // db.User.find({email: email}).countDocuments((err,num)=>{
+  //   if(err) {
+  //     return console.log(err);
+  // }
+  // if(num ==0)
+  // {
+  //   db.User.create({userName:username,email:email,password:password});
+  //   const token = jwt.sign({email:email,password:password }, 'shhhhh');
+  //    res.json({token});
+  // }
+  // else{
+  //   let errors = "Tài khoản đã tồn tại";
+
+  //  console.log("qwewqeqweqweqwe");
+  //   res.json({errors});
+
+  // }
+
+  // });
+
+  // db.User.update(
+  //   {
+  //   userName : "weeqw"
+  // },
+  // {
+  //     email : "NewMartin123123"
+  // }).exec() ;
+
+  // if(user_name=='sadsad2@ww' && password=='sadsad2@ww'){
+  //     res.send('success');
+  // }
+  // else{
+  //   res.send('Failure');
+  // }
+
+})
+
+
 
 
 module.exports = app;

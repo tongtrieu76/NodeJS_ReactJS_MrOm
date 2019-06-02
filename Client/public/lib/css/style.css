@@ -40,3 +40,29 @@
     margin-bottom: 1%;
 }
 
+
+.invalid-feedback {
+   
+    font-size: 100% !important;
+    font-weight: bold !important;
+}
+.is-invalid {
+  border: 2px solid red;
+}
+      body {
+        
+    overflow-x:hidden;
+}
+      #map123 {
+        height: 500px;
+       
+      }
+      .mapid {
+        height: 80vh;
+       
+      }
+      .full{
+       height: 100vh; 
+       
+      }
+     

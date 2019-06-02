@@ -45,10 +45,10 @@ setInterval(function(){
 
 //Account
 var SchemaAccount = new mongoose.Schema({
-	_id: {
-		type: String,
-		default: "no_id"
-	},
+	// _id: {
+	// 	type: String,
+	// 	default: "no_id"
+	// },
 	UserName: {
 		type: String,
 		default: "no_name"
