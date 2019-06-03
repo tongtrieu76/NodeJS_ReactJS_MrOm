@@ -12,10 +12,6 @@ mongoose.connect('mongodb://localhost/MyDrivers',{useNewUrlParser: true},(error)
 
 //Locations
 var SchemaLocations = new mongoose.Schema({
-	_id: {
-		type: String,
-		default: "no_id"
-	},
 	AccountID: {
 		type: String,
 		default: "no_id"
@@ -41,14 +37,10 @@ var locations = new mongoose.model('location', SchemaLocations);
 
 setInterval(function(){
 	locations = new mongoose.model('location', SchemaLocations);
-},5000);
+},1000);
 
 //Account
 var SchemaAccount = new mongoose.Schema({
-	// _id: {
-	// 	type: String,
-	// 	default: "no_id"
-	// },
 	UserName: {
 		type: String,
 		default: "no_name"
@@ -63,7 +55,7 @@ var SchemaAccount = new mongoose.Schema({
 	},
 	Status: {
 		type: Number,
-		default: 0
+		default: 96
 	},
 	WhyLock: {
 		type: String,
@@ -86,8 +78,8 @@ var SchemaAccount = new mongoose.Schema({
 		type: Date,
 		default: Date.now
 	},
-	verify: {
-		type:  Number,
+	Role: {
+		type: Number,
 		default: 0
 	}
 });
@@ -96,11 +88,6 @@ var account = new mongoose.model('account',SchemaAccount);
 
 //Information Drivers
 var SchemaIfDrivers = new mongoose.Schema({
-
-	AccountID: {
-		type: String,
-		default: "no_id"
-	},
 	Birthday: {
 		type: Date,
 		default: Date.now
@@ -145,18 +132,15 @@ var SchemaIfDrivers = new mongoose.Schema({
 		type: String,
 		default: 5
 	}
-
-
 })
 var drivers = new mongoose.model('informationdriver',SchemaIfDrivers);
 //Information Users
 var SchemaIfUsers = new mongoose.Schema({
-
-	AccountID:{
+	AccountID: {
 		type: String,
 		default: "no_id"
 	},
-	Birthday:{
+	Birthday: {
 		type: Date,
 		default: Date.now
 	},
@@ -176,11 +160,10 @@ var SchemaIfUsers = new mongoose.Schema({
 		type: String,
 		default: "no_NumberPhone"
 	},
-	Point:{
+	Point: {
 		type: Number,
 		default: 0
-	},
-
+	}
 })
 var users = new mongoose.model('informationuser',SchemaIfUsers);
 //exports
