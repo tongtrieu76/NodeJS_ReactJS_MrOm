@@ -78,7 +78,7 @@ class App extends Component {
           </div>
           {/* <div className="main"></div> */}
           {/* {this.prindata()} */}
-          <Maps/>
+          {/* <Maps/> */}
         
       </div>
 

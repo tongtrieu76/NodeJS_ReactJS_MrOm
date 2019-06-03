@@ -1,7 +1,6 @@
 
 import React from "react";
 import axios from 'axios';
-import classnames from 'classnames';
 // import {userPostFetch} from '../redux/actions';
 // import {connect} from 'react-redux';
 // import { browserHistory } from 'react-router';
@@ -136,12 +135,12 @@ export default class RegisterUser extends React.Component {
   
     return (
     
-        <div className="Login mt-5 mb-5">
+        <div className="Login1 mt-5 mb-5">
 
 
 
         
-          <h1 className="text-white text-center"> Đăng Ký </h1>
+          <h1 className="text-white text-center"> Đăng Ký Người Dùng </h1>
           <form onSubmit={this.handleSubmit} method="POST">
 
           <div className="form-group text-light ">
@@ -185,7 +184,7 @@ export default class RegisterUser extends React.Component {
 
 
             <div className="text-center">
-              <button type="submit" className="btn btn-default" >Đăng Nhập</button>
+              <button type="submit" className="btn btn-default" >Đăng Ký </button>
               {/* disabled={!this.validateForm()} */}
            
             </div>

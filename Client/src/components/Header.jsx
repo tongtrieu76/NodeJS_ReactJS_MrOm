@@ -2,13 +2,14 @@ import React from 'react';
 
 import '../css/App.css';
 import Home from './app/Home';
+import Error404 from './app/Error404';
 import Login from './app/Login';
 import Register from './app/Register';
 import Admin from './app/Admin';
 // import { connect } from 'react-redux';
 import Autho from './app/setAutho';
 
-import { BrowserRouter as Router, Route, NavLink } from "react-router-dom";
+import { BrowserRouter , Route, NavLink, Switch } from "react-router-dom";
 const isActive = (path, match, location) => !!(match || path === location.pathname);
 
 class Header extends React.Component {
@@ -89,8 +90,8 @@ class Header extends React.Component {
           <NavLink
             exact
             activeClassName="active"
-            isActive={isActive.bind(this, '/register')}
-            className="nav-link text-light font-weight-bold" to='/register'>
+            isActive={isActive.bind(this, '/register/user')}
+            className="nav-link text-light font-weight-bold" to='/register/user'>
             Đăng Ký
               </NavLink>
 
@@ -100,7 +101,10 @@ class Header extends React.Component {
     );
 
     return (
-      <Router>
+      <BrowserRouter>
+    
+
+      
         <nav className="navbar navbar-expand-sm navbar-light static-top">
           <div className="container">
 
@@ -132,12 +136,15 @@ class Header extends React.Component {
             </div>
           </div>
         </nav>
-
-        <Route path='/' exact component={Home} />
-        <Route path='/login' component={Login} />
-        <Route path='/register' component={Register} />
-        <Route path='/admin' component={Admin} />
-      </Router>
+        <Switch>
+        <Route  path='/' exact component={Home} />
+        <Route  path='/login' component={Login} />
+        <Route  path='/register/user' component={Register} />
+        <Route  path='/admin' component={Admin} />
+        <Route  path='/*' component={Error404} />
+        
+        </Switch>
+      </BrowserRouter>
     );
   }
 }

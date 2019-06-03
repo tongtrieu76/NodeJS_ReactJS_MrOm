@@ -1,9 +1,10 @@
 import React, { Component } from "react";
 import axios from 'axios';
 import Autho from './setAutho';
-
-import { BrowserRouter as Link, Redirect } from "react-router-dom";
+import Error404 from './Error404';
+import { Route, Link, Redirect} from "react-router-dom";
 // import {connect} from 'react-redux';
+// import { BrowserRouter , Route, Link, Switch ,Redirect} from "react-router-dom";
 
 export default class Login extends Component {
   constructor(props) {
@@ -83,7 +84,7 @@ export default class Login extends Component {
     const errors = this.state.errors;
    
     return (
-
+      
       <div className="Login mt-5 mb-5">
         <h1 className="text-white text-center"> Đăng Nhập </h1>
         <form onSubmit={this.handleSubmit}>
@@ -108,14 +109,18 @@ export default class Login extends Component {
             Bạn chưa có tài khoản, hãy
             &nbsp;
               <Link
-              className="text-light font-weight-bold" to='/dangky'>
+              className="text-light font-weight-bold" to='/register/user'>
               Đăng Ký !
               </Link> </div>
 
         </form>
+        {/* <Route exact path='/login/*' component={Error404} /> */}
+
+        {/* <Redirect to="/404" /> */}
       </div>
 
-
+  
+       
     );
   }
 }

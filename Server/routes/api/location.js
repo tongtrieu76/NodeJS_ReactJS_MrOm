@@ -365,36 +365,7 @@ app.post('/checktoken', function (req, res, next) {
 
 
 
-
-
-
-
-
-// function validateInput(data, otherValidations) {
-//   let { errors } = otherValidations(data);
-
-//   return db.Accounts.findOne({
-//     where: { email: data.email },
-
-//   }).then(user => {
-//     if (user) {
-
-//       if (user.email === data.email) {
-//         errors.email = 'Email đã tồn tại';
-//       }
-//     }
-
-//     return {
-//       errors,
-//       // isValid: isEmpty(errors)
-//     };
-//   })
-
-// }
-
-
-
-app.post('/registerUser',async function (req, res) {
+app.post('/registerUser', async function (req, res) {
   console.log(req.body)
   let { errors, isValid } = await commonValidations(req.body);
 
@@ -404,7 +375,7 @@ app.post('/registerUser',async function (req, res) {
     const { name, username, password, passwordConfim } = req.body;
 
     await  db.Accounts.create({ Name: name, UserName: username, Password: password }, function (err, small) {
-      if (err) {
+      if (err) { 
         return res.status(500).json({ errorMessage: err });
       }
       else {
@@ -418,67 +389,34 @@ app.post('/registerUser',async function (req, res) {
     res.status(400).json({ errors });
 
   }
-
-
-
-  // var username = req.body.username;
-
-  // var email = req.body.email;
-  // var password = req.body.password;
-  // var password2= req.body.password2;
-  // db.User.findOne({ email: email }).then(result => {
-  //   if (result) {
-  //     let errors = "Tài khoản đã tồn tại";
-
-  //     return res.json({errors});
-  //   } else {
-  //     db.User.create({userName:username,email:email,password:password});
-  //     const token = jwt.sign({email:email,password:password }, 'shhhhh');
-  //     return res.json({token});
-  //   }
-  //  // return result
-  // }).catch(err => {
-  //   let errors = `Failed to find document: ${err}`;
-  //   res.json({ errors });
-  // });
-
-  // db.User.find({email: email}).countDocuments((err,num)=>{
-  //   if(err) {
-  //     return console.log(err);
-  // }
-  // if(num ==0)
-  // {
-  //   db.User.create({userName:username,email:email,password:password});
-  //   const token = jwt.sign({email:email,password:password }, 'shhhhh');
-  //    res.json({token});
-  // }
-  // else{
-  //   let errors = "Tài khoản đã tồn tại";
-
-  //  console.log("qwewqeqweqweqwe");
-  //   res.json({errors});
-
-  // }
-
-  // });
-
-  // db.User.update(
-  //   {
-  //   userName : "weeqw"
-  // },
-  // {
-  //     email : "NewMartin123123"
-  // }).exec() ;
-
-  // if(user_name=='sadsad2@ww' && password=='sadsad2@ww'){
-  //     res.send('success');
-  // }
-  // else{
-  //   res.send('Failure');
-  // }
-
 })
 
+
+app.post('/registerDriver', async function (req, res) {
+  console.log(req.body)
+  let { errors, isValid } = await commonValidations(req.body);
+
+  console.log(isValid);
+  if (isValid) {
+
+    const { name, username, password, passwordConfim } = req.body;
+
+    await  db.Accounts.create({ Name: name, UserName: username, Password: password }, function (err, small) {
+      if (err) { 
+        return res.status(500).json({ errorMessage: err });
+      }
+      else {
+        return res.json({ success: true });
+      }
+
+    })
+
+
+  } else {
+    res.status(400).json({ errors });
+
+  }
+})
 
 
 
