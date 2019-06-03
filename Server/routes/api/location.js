@@ -350,55 +350,11 @@ app.post("/checktoken", function(req, res, next) {
       }
     }
   });
-<<<<<<< HEAD
+
 })
 
 
 
-app.post('/registerUser', async function (req, res) {
-  console.log(req.body)
-  let { errors, isValid } = await commonValidations(req.body);
-
-  console.log(isValid);
-  if (isValid) {
-
-    const { name, username, password, passwordConfim } = req.body;
-
-    await  db.Accounts.create({ Name: name, UserName: username, Password: password }, function (err, small) {
-      if (err) { 
-        return res.status(500).json({ errorMessage: err });
-      }
-      else {
-        return res.json({ success: true });
-      }
-
-    })
-
-
-  } else {
-    res.status(400).json({ errors });
-
-  }
-})
-
-
-app.post('/registerDriver', async function (req, res) {
-  console.log(req.body)
-  let { errors, isValid } = await commonValidations(req.body);
-
-  console.log(isValid);
-  if (isValid) {
-
-    const { name, username, password, passwordConfim } = req.body;
-
-    await  db.Accounts.create({ Name: name, UserName: username, Password: password }, function (err, small) {
-      if (err) { 
-        return res.status(500).json({ errorMessage: err });
-      }
-      else {
-        return res.json({ success: true });
-=======
-});
 
 app.post("/registerUser", async function(req, res, next) {
   const Name = req.body.Name;
@@ -415,7 +371,7 @@ app.post("/registerUser", async function(req, res, next) {
       if (result != null) {
         //nếu có trả về 1
         res.status(200).end("1");
->>>>>>> 55dfe79f40c508c01cc44f7649e94c5984a2316e
+
       }
     });
 
@@ -446,12 +402,7 @@ app.post("/registerUser", async function(req, res, next) {
     console.log("ERROR" + err);
     res.end("0");
   }
-<<<<<<< HEAD
 })
 
-
-=======
-});
->>>>>>> 55dfe79f40c508c01cc44f7649e94c5984a2316e
 
 module.exports = app;
