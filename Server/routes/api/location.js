@@ -358,7 +358,7 @@ app.post("/registerUser", async function(req, res, next) {
     req.body.UserName == null || req.body.UserName == "" ||
     req.body.Password == null || req.body.Password == ""
   ) {
-    res.setHeader("Content-Type", "text/xml; charset=UTF-16LE");
+    res.setHeader("Content-Type", "text/xml; charset=UTF-8");
     res.status(400).end("Không được phép truy cập!");
   } else {
     const Name = req.body.Name;

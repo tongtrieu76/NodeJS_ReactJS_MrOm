@@ -49,6 +49,10 @@
 .is-invalid {
   border: 2px solid red;
 }
+
+.is-valid {
+    border: 2px solid #28a745;
+  }
       body {
         
     overflow-x:hidden;
