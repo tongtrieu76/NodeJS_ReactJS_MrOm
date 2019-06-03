@@ -350,13 +350,10 @@ app.post("/checktoken", function (req, res, next) {
       }
     }
   });
-
-})
-
-
-
+});
 
 app.post("/registerUser", async function(req, res, next) {
+<<<<<<< HEAD
   const Name = req.body.Name;
   const UserName = req.body.UserName;
   const Password = req.body.Password;
@@ -376,11 +373,37 @@ app.post("/registerUser", async function(req, res, next) {
 
       }
     });
+=======
+  if (
+    req.body.Name == null || req.body.Name == "" ||
+    req.body.UserName == null || req.body.UserName == "" ||
+    req.body.Password == null || req.body.Password == ""
+  ) {
+    res.status(400).end("Không được phép truy cập!");
+  } else {
+    const Name = req.body.Name;
+    const UserName = req.body.UserName;
+    const Password = req.body.Password;
+    let Token;
+    try {
+      //Check tài khoản có trong db chưa? 1: có, 0: bị lỗi bất ngờ.
+      await db.Accounts.findOne({ UserName: UserName }).exec(function(
+        err,
+        result
+      ) {
+        if (err) return res.end(0);
+        if (result != null) {
+          //nếu có trả về 1
+          res.status(200).end("1");
+        }
+      });
+>>>>>>> 0d4ecbbe1b86add498c8149f3bbdaf12104841fc
 
-    //Tao Token cho account
-    const code = Name + UserName + Password + Math.floor(Math.random() * 10);
-    Token = md5(code);
+      //Tao Token cho account
+      const code = Name + UserName + Password + Math.floor(Math.random() * 10);
+      Token = md5(code);
 
+<<<<<<< HEAD
     //tao document Account
     await db.Accounts.create({
       Name: Name,
@@ -432,5 +455,35 @@ app.post("/registerUser", async function(req, res, next) {
 //   }
 // });
 
+=======
+      //tao document Account
+      await db.Accounts.create({
+        Name: Name,
+        UserName: UserName,
+        Password: Password,
+        Token: Token,
+        Status: 96,
+        Role: 0
+      });
+
+      //tim xem acc tao thanh cong de lay id,token,role
+      await db.Accounts.findOne({ Name: Name, UserName: UserName }).exec(
+        function(err, result) {
+          if (err) handleError(err);
+          const trave = {
+            id: result._id,
+            Token: result.Token,
+            Role: result.Role
+          };
+          res.end(JSON.stringify(trave));
+        }
+      );
+    } catch (err) {
+      console.log("ERROR" + err);
+      res.end("0");
+    }
+  }
+});
+>>>>>>> 0d4ecbbe1b86add498c8149f3bbdaf12104841fc
 
 module.exports = app;
