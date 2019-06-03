@@ -2,7 +2,7 @@ var express = require("express");
 const db = require("../db/connect");
 var app = express();
 var md5 = require("md5");
-
+var commonValidations = require('../validations/registerUser');
 var bodyParser = require("body-parser");
 
 app.use(bodyParser.json()); // support json encoded bodies
@@ -12,15 +12,15 @@ app.use(bodyParser.urlencoded({ extended: true })); // support encoded bodies
 //GET
 // -- location
 // -- -- location all
-app.get("/location", function(req, res, next) {
-  db.Locations.find().exec(function(err, result) {
+app.get("/location", function (req, res, next) {
+  db.Locations.find().exec(function (err, result) {
     if (err) return handleError(err);
     res.send(result);
   });
 });
 // -- -- location theo id
-app.get("/location/:id", function(req, res, next) {
-  db.Locations.findOne({ AccountID: req.params.id }, function(err, result) {
+app.get("/location/:id", function (req, res, next) {
+  db.Locations.findOne({ AccountID: req.params.id }, function (err, result) {
     if (err) return handleError(err);
     res.send(result);
   });
@@ -29,15 +29,15 @@ app.get("/location/:id", function(req, res, next) {
 //
 // -- user
 // -- -- user all
-app.get("/user", function(req, res, next) {
-  db.InformationUsers.find().exec(function(err, result) {
+app.get("/user", function (req, res, next) {
+  db.InformationUsers.find().exec(function (err, result) {
     if (err) return handleError(err);
     res.send(result);
   });
 });
 // -- -- user theo id
-app.get("/user/:id", function(req, res, next) {
-  db.InformationUsers.findOne({ AccountID: req.params.id }, function(
+app.get("/user/:id", function (req, res, next) {
+  db.InformationUsers.findOne({ AccountID: req.params.id }, function (
     err,
     result
   ) {
@@ -56,8 +56,8 @@ app.get("/driver", (req, res, next) => {
   });
 });
 // -- -- driver theo id
-app.get("/driver/:id", function(req, res, next) {
-  db.InformationUsers.findOne({ AccountID: req.params.id }, function(
+app.get("/driver/:id", function (req, res, next) {
+  db.InformationUsers.findOne({ AccountID: req.params.id }, function (
     err,
     result
   ) {
@@ -76,8 +76,8 @@ app.get("/account", (req, res, next) => {
   });
 });
 // -- -- driver theo id
-app.get("/driver/:id", function(req, res, next) {
-  db.Accounts.findOne({ AccountID: req.params.id }, function(err, result) {
+app.get("/driver/:id", function (req, res, next) {
+  db.Accounts.findOne({ AccountID: req.params.id }, function (err, result) {
     if (err) return handleError(err);
     res.send(result);
   });
@@ -86,8 +86,8 @@ app.get("/driver/:id", function(req, res, next) {
 //
 // method POST
 // location
-app.post("/location", function(req, res, next) {
-  db.Locations.findOne({ AccountID: "5cf0111d1c4b6c34fc277c1f" }, function(
+app.post("/location", function (req, res, next) {
+  db.Locations.findOne({ AccountID: "5cf0111d1c4b6c34fc277c1f" }, function (
     err,
     data
   ) {
@@ -111,7 +111,7 @@ app.post("/location", function(req, res, next) {
         //   data.Date = req.body.Date;
         // }
 
-        data.save(function(err, rs) {
+        data.save(function (err, rs) {
           if (err) {
             console.log(err);
             res.status(500).send();
@@ -125,8 +125,8 @@ app.post("/location", function(req, res, next) {
 });
 
 // user
-app.post("/user", function(req, res, next) {
-  db.InformationUsers.findOne({ AccountID: req.body.AccountID }, function(
+app.post("/user", function (req, res, next) {
+  db.InformationUsers.findOne({ AccountID: req.body.AccountID }, function (
     err,
     data
   ) {
@@ -156,7 +156,7 @@ app.post("/user", function(req, res, next) {
           data.Point = req.body.Point;
         }
         // console.log(Date.parse(date_t));
-        data.save(function(err, rs) {
+        data.save(function (err, rs) {
           if (err) {
             console.log(err);
             res.status(500).send();
@@ -171,8 +171,8 @@ app.post("/user", function(req, res, next) {
 
 //driver
 // driver khong duoc edit thong tin ca nhan.
-app.post("/driver", function(req, res, next) {
-  db.InformationUsers.findOne({ AccountID: req.body.AccountID }, function(
+app.post("/driver", function (req, res, next) {
+  db.InformationUsers.findOne({ AccountID: req.body.AccountID }, function (
     err,
     data
   ) {
@@ -217,7 +217,7 @@ app.post("/driver", function(req, res, next) {
           data.Rate = req.body.Rate;
         }
         // console.log(Date.parse(date_t));
-        data.save(function(err, rs) {
+        data.save(function (err, rs) {
           if (err) {
             console.log(err);
             res.status(500).send();
@@ -231,8 +231,8 @@ app.post("/driver", function(req, res, next) {
 });
 
 // account
-app.post("/account", function(req, res, next) {
-  db.InformationUsers.findOne({ UserName: req.body.UserName }, function(
+app.post("/account", function (req, res, next) {
+  db.InformationUsers.findOne({ UserName: req.body.UserName }, function (
     err,
     data
   ) {
@@ -273,7 +273,7 @@ app.post("/account", function(req, res, next) {
         // if (req.body.CreateDate) {
         //   data.CreateDate = req.body.CreateDate;
         // }
-        data.save(function(err, rs) {
+        data.save(function (err, rs) {
           if (err) {
             console.log(err);
             res.status(500).send();
@@ -286,8 +286,8 @@ app.post("/account", function(req, res, next) {
   });
 });
 
-app.post("/login", function(req, res, next) {
-  db.Accounts.findOne({ UserName: req.body.UserName }, function(err, data) {
+app.post("/login", function (req, res, next) {
+  db.Accounts.findOne({ UserName: req.body.UserName }, function (err, data) {
     if (err) {
       console.log(err);
       res.status(500).send();
@@ -308,7 +308,7 @@ app.post("/login", function(req, res, next) {
           res.status(400).send(false);
         }
         // console.log(Date.parse(date_t));
-        data.save(function(err, rs) {
+        data.save(function (err, rs) {
           if (err) {
             console.log(err);
             res.status(500).send();
@@ -321,8 +321,8 @@ app.post("/login", function(req, res, next) {
   });
 });
 
-app.post("/checktoken", function(req, res, next) {
-  db.Accounts.findOne({ AccountID: req.body.AccountID }, function(err, data) {
+app.post("/checktoken", function (req, res, next) {
+  db.Accounts.findOne({ AccountID: req.body.AccountID }, function (err, data) {
     if (err) {
       console.log(err);
       res.status(500).end();
@@ -362,11 +362,13 @@ app.post("/registerUser", async function(req, res, next) {
   const Password = req.body.Password;
   let Token;
   try {
+    console.log("object")
     //Check tài khoản có trong db chưa? 1: có, 0: bị lỗi bất ngờ.
     await db.Accounts.findOne({ UserName: UserName }).exec(function(
       err,
       result
     ) {
+      console.log('1')
       if (err) return res.end(0);
       if (result != null) {
         //nếu có trả về 1
@@ -387,6 +389,8 @@ app.post("/registerUser", async function(req, res, next) {
       Token: Token,
       Status: 96,
       Role: 0
+    }, function (err, small){
+      console.log("2");
     });
 
     //tim xem acc tao thanh cong de lay id,token,role
@@ -394,15 +398,39 @@ app.post("/registerUser", async function(req, res, next) {
       err,
       result
     ) {
+      console.log("3");
       if (err) handleError(err);
       const trave = { id: result._id, Token: result.Token, Role: result.Role };
-      res.end(trave);
+      res.end(JSON.stringify(trave));
     });
   } catch (err) {
     console.log("ERROR" + err);
     res.end("0");
   }
 })
+
+// app.post('/registerUser', async function (req, res) {
+//   console.log(req.body)
+//   let { errors, isValid } = await commonValidations(req.body);
+
+//   console.log(isValid);
+//   if (isValid) {
+
+//     const { name, username, password, passwordConfim } = req.body;
+
+//     await db.Accounts.create({ Name: name, UserName: username, Password: password }, function (err, small) {
+//       if (err) {
+//         return res.status(500).json({ errorMessage: err });
+//       }
+//       else {
+//         return res.json({ success: true });
+//       }
+//     });
+//   }
+//   else {
+//     res.status(400).json({ errors });
+//   }
+// });
 
 
 module.exports = app;

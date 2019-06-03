@@ -47,39 +47,39 @@ export default class RegisterUser extends React.Component {
     
 
     const newUser = {
-      name: this.state.username,
-      username: this.state.email,
-      password: this.state.password ,
+      Name: this.state.username,
+      UserName: this.state.email,
+      password: this.state.Password ,
       passwordConfim: this.state.passwordConfim
     }
     // axios.post('http://localhost:4000/users/signin',{user: this.state})
     axios.post('/api/registerUser', newUser)
-      .then(response=> {
-        if (response != null) {
+      // .then(response=> {
+      //   if (response != null) {
           
-          this.setState({
-            errors: response.data.success
-          });
-        } else {
-          console.log('problem');
-        } 
-      })
+      //     this.setState({
+      //       errors: response.data.success
+      //     });
+      //   } else {
+      //     console.log('problem');
+      //   } 
+      // })
    
-      .catch(err => {
-        // console.log(err.response);
-        if(err.response.data.errors)
-        {
-          this.setState( {errors: err.response.data.errors })
-          // console.log(err.response);
-        }
-        if(err.response.data.errorMessage)
-        {
-          this.setState( {errors: err.response.data.errorMessage.message })
-          // console.log(err.response);
-        }
+      // .catch(err => {
+      //   // console.log(err.response);
+      //   if(err.response.data.errors)
+      //   {
+      //     this.setState( {errors: err.response.data.errors })
+      //     // console.log(err.response);
+      //   }
+      //   if(err.response.data.errorMessage)
+      //   {
+      //     this.setState( {errors: err.response.data.errorMessage.message })
+      //     // console.log(err.response);
+      //   }
       
         
-      });
+      // });
 
   }
   classnames1 = () => {
