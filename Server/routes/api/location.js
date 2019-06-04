@@ -360,7 +360,11 @@ app.post("/registerUser", async function(req, res, next) {
     req.body.UserName == null ||
     req.body.UserName == "" ||
     req.body.Password == null ||
-    req.body.Password == ""
+    req.body.Password == "" ||
+    req.body.PasswordConfim == null ||
+    req.body.PasswordConfim == "" ||
+    req.body.Password == "d41d8cd98f00b204e9800998ecf8427e"||
+    req.body.PasswordConfim == "d41d8cd98f00b204e9800998ecf8427e" 
   ) {
     res.setHeader("Content-Type", "text/xml; charset=UTF-16LE");
     res.status(400).end("Không được phép truy cập!");
@@ -379,7 +383,7 @@ app.post("/registerUser", async function(req, res, next) {
         if (err) return res.end(0);
         else if (result != null) {
           //nếu có trả về 1
-          res.status(200).send("TonTai");
+          res.status(401).send("TonTai");
         } else {
           //Tao Token cho account
           const code =
@@ -421,8 +425,27 @@ app.post("/registerUser", async function(req, res, next) {
 //signup driver(POST)
 app.post("/registerDriver", async function(req,res,next){
   //check req body
-  if(req.body == null){
-    
+  if(
+    req.body.Name == null ||
+    req.body.Name == "" ||
+    req.body.UserName == null ||
+    req.body.UserName == "" ||
+    req.body.Password == null ||
+    req.body.Password == "" ||
+    req.body.PasswordConfim == null ||
+    req.body.PasswordConfim == ""  ||
+    req.body.IdentityCard == null ||
+    req.body.IdentityCard == "" ||
+    req.body.NumberPhone == null ||
+    req.body.NumberPhone == "" ||
+    req.body.CarNumber == null ||
+    req.body.CarNumber == "" ||
+    req.body.Password == "d41d8cd98f00b204e9800998ecf8427e"||
+    req.body.PasswordConfim == "d41d8cd98f00b204e9800998ecf8427e" 
+
+  ){
+    res.setHeader("Content-Type", "text/xml; charset=UTF-16LE");
+    res.status(400).end("Không được phép truy cập!");
   } else {
     const Name = req.body.Name;
     const UserName = req.body.UserName;
@@ -451,7 +474,7 @@ app.post("/registerDriver", async function(req,res,next){
             Password: Password,
             Token: Token,
             Status: 0, //chưa active để có thể dùng tài khoản.
-            Role: 0
+            Role: 2
           });
 
           //tim xem acc tao thanh cong de lay id,token,role

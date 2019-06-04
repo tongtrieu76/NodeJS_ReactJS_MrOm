@@ -21,10 +21,12 @@ export default class RegisterUser extends React.Component {
 
 
   handleChange = event => {
-
+      
     this.setState({
       [event.target.id]: event.target.value
     });
+   
+    
   }
 
   handleSubmit = event => {
@@ -40,6 +42,8 @@ export default class RegisterUser extends React.Component {
     }
 
 
+
+    
 
     axios.post('/api/registerUser', newUser)
       .then(res => {
@@ -86,30 +90,26 @@ export default class RegisterUser extends React.Component {
         }
         if (err.response.status === 401) {
           console.log("Lỗi 401");
-
+          if (!validator.equals(this.state.password, this.state.passwordConfim)) {
+            errors.passwordConfim = 'Passwords không khớp';
+          }
           errors.email = 'Email đã được đăng ký';
          
         }
 
-
-
         this.setState({
           errors: errors
         });
-  
-        
+      
       })
-
-      errors={};
-
   }
   classnames1 = () => {
-    if (this.state.username) {
+    // if (this.state.username) {
 
-      return "form-control is-valid";
-    }
+    //   return "form-control is-valid";
+    // }
     if (this.state.errors.username) {
-
+      
       return "form-control is-invalid";
     }
 
@@ -117,26 +117,22 @@ export default class RegisterUser extends React.Component {
 
   }
   classnames2 = () => {
-    if (this.state.email) {
-      if (this.state.errors.email) {
-
-        return "form-control is-invalid";
-      }
-      return "form-control is-valid";
-    }
+    // if (this.state.email) {
+      
+    //   return "form-control is-valid";
+    // }
 
     if (this.state.errors.email) {
-
       return "form-control is-invalid";
     }
     return "form-control";
 
   }
   classnames3 = () => {
-    if (this.state.password) {
+    // if (this.state.password) {
 
-      return "form-control is-valid";
-    }
+    //   return "form-control is-valid";
+    // }
     if (this.state.errors.password) {
 
       return "form-control is-invalid";
@@ -146,13 +142,13 @@ export default class RegisterUser extends React.Component {
 
   }
   classnames4 = () => {
-    if (this.state.passwordConfim) {
-      if (this.state.errors.passwordConfim) {
+    // if (this.state.passwordConfim) {
+      // if (this.state.errors.passwordConfim) {
 
-        return "form-control is-invalid";
-      }
-      return "form-control is-valid";
-    }
+        // return "form-control is-invalid";
+      // }
+      // return "form-control is-valid";
+    // }
     if (this.state.errors.passwordConfim) {
 
       return "form-control is-invalid";
@@ -161,12 +157,13 @@ export default class RegisterUser extends React.Component {
     return "form-control";
 
   }
+  
   render() {
     if (localStorage.getItem('jwtToken')) {
       return (<Redirect to={"/"} />)
     }
-    console.log(this.state);
-
+    
+console.log(this.state);
     return (
 
       <div className="Login1 mt-5 mb-5">
@@ -183,7 +180,7 @@ export default class RegisterUser extends React.Component {
               onChange={this.handleChange} />
 
             <div className="invalid-feedback">
-              {this.state.errors.username}
+              {this.state.errors.username }
             </div>
           </div>
 
@@ -227,7 +224,18 @@ export default class RegisterUser extends React.Component {
       </div>
 
     );
+  
   }
+ 
 }
+
+
+
+
+
+
+
+
+
 
 

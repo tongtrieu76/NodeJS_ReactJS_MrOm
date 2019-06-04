@@ -91,6 +91,8 @@ let errors = {};
           if (!validator.equals(this.state.password, this.state.passwordConfim)) {
             errors.passwordConfim = 'Passwords không khớp';
           }
+
+
           if (validator.isEmpty(this.state.IdentityCard)) {
 
             errors.IdentityCard = 'Không được để trống';
@@ -184,7 +186,7 @@ let errors = {};
 
 
   classnames5 = () => {
-    if (this.state.errors.IdentityCard) {
+    if (this.state.IdentityCard) {
 
       return "form-control is-valid";
     }
@@ -199,9 +201,9 @@ let errors = {};
 
 
   classnames6 = () => {
-    if (this.state.errors.NumberPhone) {
+    if (this.state.NumberPhone) {
 
-      return "form-control is-invalid";
+      return "form-control is-valid";
     }
     
  
@@ -215,9 +217,9 @@ let errors = {};
 
 
   classnames7 = () => {
-    if (this.state.errors.CarNumber) {
+    if (this.state.CarNumber) {
 
-      return "form-control is-invalid";
+      return "form-control is-valid";
     }
     
     if (this.state.errors.CarNumber) {
