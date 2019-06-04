@@ -295,27 +295,41 @@ app.post("/login", function(req, res, next) {
       if (!data) {
         res.status(400).send();
       } else {
-        var username = req.body.UserName;
-        var password = req.body.Password;
-        if (username == data.UserName && password == data.Password) {
-          var token = {
-            id: data.AccountID,
-            token: data.Token,
-            Role: data.Role
-          };
-          res.status(200).send(token);
-        } else {
-          res.status(400).send(false);
-        }
-        // console.log(Date.parse(date_t));
-        data.save(function(err, rs) {
-          if (err) {
-            console.log(err);
-            res.status(500).send();
+        if (data.Status == 96) {
+          // 96 = status active
+          var username = req.body.UserName;
+          var password = req.body.Password;
+          if (username == data.UserName && password == data.Password) {
+            var token = {
+              id: data.AccountID,
+              token: data.Token,
+              Role: data.Role
+            };
+            res.status(200).send(token);
           } else {
-            res.send(rs);
+            res.status(400).send(false);
           }
-        });
+          data.save(function(err, rs) {
+            if (err) {
+              console.log(err);
+              res.status(500).send();
+            } else {
+              res.send(rs);
+            }
+          });
+        } else if(data.Status == 69){
+          // 69 = status lock
+          var trave = {UserName: data.UserName, Name: data.Name, WhyLock: data.WhyLock};
+          res.send(400,trave);
+        }
+        else if(data.Status == 0){
+          //0 = status chưa active
+          var trave = {UserName: data.UserName, Name: data.Name,CreateDate: data.CreateDate};
+          res.send(200,trave);
+        }
+        else {
+          res.send(400,"Bug!");
+        }
       }
     }
   });
@@ -334,19 +348,20 @@ app.post("/checktoken", function(req, res, next) {
         var token = req.body.Token;
         var role = req.body.Role;
         if (id == data.AccountID && token == data.Token && role == data.Role) {
-          res.status(200).end(true);
+          if(data.Status == 96){
+            res.status(200).end(true);
+          }
+          else if(data.Status == 69){
+            res.status(400).end("Lock");
+          }
+          else if(data.Status == 0){
+            res.status(200).end("UnActive");
+          } else {
+            res.status(400).end("Bug!")
+          }
         } else {
           res.status(400).end(false);
         }
-        // console.log(Date.parse(date_t));
-        // data.save(function(err, rs) {
-        //   if (err) {
-        //     console.log(err);
-        //     res.status(500).end();
-        //   } else {
-        //     res.end(rs);
-        //   }
-        // });
       }
     }
   });
@@ -402,7 +417,7 @@ app.post("/registerUser", async function(req, res, next) {
           //tim xem acc tao thanh cong de lay id,token,role
           await db.Accounts.findOne({ Name: Name, UserName: UserName }).exec(
             function(err, result) {
-              if (err)  return res.end(0);
+              if (err) return res.end(0);
               else {
                 const trave = {
                   id: result._id,
@@ -423,8 +438,9 @@ app.post("/registerUser", async function(req, res, next) {
 });
 
 //signup driver(POST)
-app.post("/registerDriver", async function(req,res,next){
+app.post("/registerDriver", async function(req, res, next) {
   //check req body
+<<<<<<< HEAD
   if(
     req.body.Name == null ||
     req.body.Name == "" ||
@@ -446,6 +462,9 @@ app.post("/registerDriver", async function(req,res,next){
   ){
     res.setHeader("Content-Type", "text/xml; charset=UTF-16LE");
     res.status(400).end("Không được phép truy cập!");
+=======
+  if (req.body == null) {
+>>>>>>> 97cf32ec2818a8d7c288f975fc321f2b59bdc4b4
   } else {
     const Name = req.body.Name;
     const UserName = req.body.UserName;
@@ -456,7 +475,10 @@ app.post("/registerDriver", async function(req,res,next){
 
     try {
       //xác minh tên user chưa tồn tại
-      await db.Accounts.findOne({ UserName: UserName }).exec(async function(err,result) {
+      await db.Accounts.findOne({ UserName: UserName }).exec(async function(
+        err,
+        result
+      ) {
         if (err) return res.end(0);
         else if (result != null) {
           //nếu có trả về 1
@@ -487,33 +509,36 @@ app.post("/registerDriver", async function(req,res,next){
                   Token: result.Token,
                   Role: result.Role
                 };
-                await db.InformationDrivers.findOne({AccountID: trave.id}).exec(function(err,result){
-                  if(err) return res.end(0);
-                  else if(result != null){
+                await db.InformationDrivers.findOne({
+                  AccountID: trave.id
+                }).exec(function(err, result) {
+                  if (err) return res.end(0);
+                  else if (result != null) {
                     return res.end(0);
-                  }
-                  else {
-                    db.InformationDrivers.create({AccountID: AccountID, IdentityCard: IdentityCard,NumberPhone: NumberPhone, CarNumber: CarNumber},function(err,result){
-                      if(err) res.send(400,err);
-                      else {
-                        res.send(200,trave);
+                  } else {
+                    db.InformationDrivers.create(
+                      {
+                        AccountID: AccountID,
+                        IdentityCard: IdentityCard,
+                        NumberPhone: NumberPhone,
+                        CarNumber: CarNumber
+                      },
+                      function(err, result) {
+                        if (err) res.send(400, err);
+                        else {
+                          res.send(200, trave);
+                        }
                       }
-                    });
+                    );
                   }
-                })
+                });
               }
             }
           );
         }
-      })
-    } catch(err) {
-
-    }
+      });
+    } catch (err) {}
   }
-})
+});
 
-
-/* this.state.IdentityCard,
-      NumberPhone: this.state.NumberPhone,
-      CarNumber: this.state.CarNumber,*/
 module.exports = app;
