@@ -81,11 +81,7 @@ var SchemaAccount = new mongoose.Schema({
 	Role: {
 		type: Number,
 		default: 0
-	},
-	Veryfy: {
-		type: Number,
-		default: 0
-	},
+	}
 });
 var account = new mongoose.model('account',SchemaAccount);
 
