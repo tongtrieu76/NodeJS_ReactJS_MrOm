@@ -309,7 +309,6 @@ app.post("/login", function(req, res, next) {
           } else {
             res.status(400).send(false);
           }
-          // console.log(Date.parse(date_t));
           data.save(function(err, rs) {
             if (err) {
               console.log(err);
@@ -349,19 +348,20 @@ app.post("/checktoken", function(req, res, next) {
         var token = req.body.Token;
         var role = req.body.Role;
         if (id == data.AccountID && token == data.Token && role == data.Role) {
-          res.status(200).end(true);
+          if(data.Status == 96){
+            res.status(200).end(true);
+          }
+          else if(data.Status == 69){
+            res.status(400).end("Lock");
+          }
+          else if(data.Status == 0){
+            res.status(200).end("UnActive");
+          } else {
+            res.status(400).end("Bug!")
+          }
         } else {
           res.status(400).end(false);
         }
-        // console.log(Date.parse(date_t));
-        // data.save(function(err, rs) {
-        //   if (err) {
-        //     console.log(err);
-        //     res.status(500).end();
-        //   } else {
-        //     res.end(rs);
-        //   }
-        // });
       }
     }
   });
