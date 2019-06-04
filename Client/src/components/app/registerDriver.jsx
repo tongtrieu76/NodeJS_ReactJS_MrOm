@@ -91,7 +91,20 @@ let errors = {};
           if (!validator.equals(this.state.password, this.state.passwordConfim)) {
             errors.passwordConfim = 'Passwords không khớp';
           }
-        
+          if (validator.isEmpty(this.state.IdentityCard)) {
+
+            errors.IdentityCard = 'Không được để trống';
+          }
+          if (validator.isEmpty(this.state.NumberPhone)) {
+
+            errors.NumberPhone = 'Không được để trống';
+          }
+          if (validator.isEmpty(this.state.CarNumber)) {
+
+            errors.CarNumber = 'Không được để trống';
+          }
+          
+          
     
         }
         if (err.response.status === 401) {
@@ -173,12 +186,15 @@ let errors = {};
   classnames5 = () => {
     if (this.state.errors.IdentityCard) {
 
+      return "form-control is-valid";
+    }
+    
+    if (this.state.errors.IdentityCard) {
+
       return "form-control is-invalid";
     }
-    else {
-
       return "form-control";
-    }
+    
   }
 
 
@@ -187,10 +203,14 @@ let errors = {};
 
       return "form-control is-invalid";
     }
-    else {
+    
+ 
+    if (this.state.errors.NumberPhone) {
 
-      return "form-control";
+      return "form-control is-invalid";
     }
+      return "form-control";
+    
   }
 
 
@@ -199,10 +219,13 @@ let errors = {};
 
       return "form-control is-invalid";
     }
-    else {
+    
+    if (this.state.errors.CarNumber) {
 
-      return "form-control";
+      return "form-control is-invalid";
     }
+      return "form-control";
+    
   }
   render() {
     if (localStorage.getItem('jwtToken')) {

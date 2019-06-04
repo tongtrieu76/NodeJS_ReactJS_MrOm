@@ -139,7 +139,7 @@ class Header extends React.Component {
         <Switch>
         <Route  path='/' exact component={Home} />
         <Route  path='/login' component={Login} />
-        <Route  path='/register/user' component={Register} />
+        <Route  path='/register' component={Register} />
         <Route  path='/admin' component={Admin} />
         <Route  path='/*' component={Error404} />
         
