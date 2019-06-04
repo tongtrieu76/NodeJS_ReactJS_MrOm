@@ -359,7 +359,9 @@ app.post("/registerUser", async function(req, res, next) {
     req.body.UserName == null ||
     req.body.UserName == "" ||
     req.body.Password == null ||
-    req.body.Password == ""
+    req.body.Password == "" ||
+    req.body.PasswordConfim == null ||
+    req.body.PasswordConfim == "" 
   ) {
     res.setHeader("Content-Type", "text/xml; charset=UTF-8");
     res.status(400).end("Không được phép truy cập!");
@@ -381,7 +383,7 @@ app.post("/registerUser", async function(req, res, next) {
           //nếu có trả về 1
           // res.shouldKeepAlive = false;
           flag = 0;
-          res.status(200).send("TonTai");
+          res.status(401).send("1");
         } else {
           //Tao Token cho account
           const code =
@@ -395,7 +397,8 @@ app.post("/registerUser", async function(req, res, next) {
             Password: Password,
             Token: Token,
             Status: 96,
-            Role: 0
+            Role: 0,
+          
           });
           //tim xem acc tao thanh cong de lay id,token,role
           await db.Accounts.findOne({ Name: Name, UserName: UserName }).exec(

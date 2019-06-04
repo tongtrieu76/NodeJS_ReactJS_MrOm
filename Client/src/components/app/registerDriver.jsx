@@ -1,11 +1,9 @@
-
 import React from "react";
+import validator from 'validator';
 import axios from 'axios';
-
 import { BrowserRouter as Redirect } from "react-router-dom";
-// import Autho from './setAutho';
-// import md5 from 'md5';
-
+import Autho from './setAutho';
+import md5 from 'md5';
 
 
 export default class RegisterDriver extends React.Component {
@@ -33,87 +31,142 @@ export default class RegisterDriver extends React.Component {
     });
   }
 
+
+
   handleSubmit = event => {
     event.preventDefault();
-
+let errors = {};
 
 
     const newUser = {
-      name: this.state.username,
-      username: this.state.email,
-      password: this.state.password,
-      passwordConfim: this.state.passwordConfim,
+      Name: this.state.username,
+      UserName: this.state.email,
+      Password: md5(this.state.password),
+      PasswordConfim: md5(this.state.passwordConfim),
       IdentityCard: this.state.IdentityCard,
       NumberPhone: this.state.NumberPhone,
       CarNumber: this.state.CarNumber,
     }
-    // axios.post('http://localhost:4000/users/signin',{user: this.state})
+
+
     axios.post('/api/registerDriver', newUser)
-      .then(response => {
-        if (response != null) {
+      .then(res => {
+        console.log(res.data)
+       
 
-          this.setState({
-            errors: response.data.success
-          });
-        } else {
-          console.log('problem');
-        }
+         localStorage.setItem('jwtToken', res.data.Token);
+         localStorage.setItem('jwtid', res.data.id);
+         localStorage.setItem('jwtRole', res.data.Role);
+          Autho(res.data.Token);
+        // alert("Tạo Tài Khoản Thành Công");
+        //  this.props.history.push("/");
+       
+        // window.location.reload();
+
       })
-
       .catch(err => {
-        // console.log(err.response);
-        if (err.response.data.errors) {
-          this.setState({ errors: err.response.data.errors })
-          // console.log(err.response);
+       if (err.response.status === 400) {
+          console.log("Lỗi 400");
+
+
+          if (validator.isEmpty(this.state.username)) {
+
+            errors.username = 'Không được để trống';
+          }
+          if (validator.isEmpty(this.state.email)) {
+
+            errors.email = 'Không được để trống';
+          }
+
+
+          if (validator.isEmpty(this.state.password)) {
+
+            errors.password = 'Không được để trống';
+          }
+          if (validator.isEmpty(this.state.passwordConfim)) {
+
+            errors.passwordConfim = 'Không được để trống';
+          }
+
+          if (!validator.equals(this.state.password, this.state.passwordConfim)) {
+            errors.passwordConfim = 'Passwords không khớp';
+          }
+        
+    
         }
-        if (err.response.data.errorMessage) {
-          this.setState({ errors: err.response.data.errorMessage.message })
-          // console.log(err.response);
+        if (err.response.status === 401) {
+          console.log("Lỗi 401");
+
+          errors.email = 'Email đã được đăng ký';
+         
         }
 
 
+
+        this.setState({
+          errors: errors
+        });
       });
 
+      errors={};
   }
   classnames1 = () => {
+   if (this.state.username) {
+
+      return "form-control is-valid";
+    }
     if (this.state.errors.username) {
 
       return "form-control is-invalid";
     }
-    else {
 
-      return "form-control";
-    }
+    return "form-control ";
+
   }
   classnames2 = () => {
+    if (this.state.email) {
+      if (this.state.errors.email) {
+
+        return "form-control is-invalid";
+      }
+      return "form-control is-valid";
+    }
+
     if (this.state.errors.email) {
 
       return "form-control is-invalid";
     }
-    else {
+    return "form-control";
 
-      return "form-control";
-    }
   }
   classnames3 = () => {
+   if (this.state.password) {
+
+      return "form-control is-valid";
+    }
     if (this.state.errors.password) {
 
       return "form-control is-invalid";
     }
-    else {
 
-      return "form-control";
-    }
+    return "form-control";
+
   }
   classnames4 = () => {
+   if (this.state.passwordConfim) {
+      if (this.state.errors.passwordConfim) {
+
+        return "form-control is-invalid";
+      }
+      return "form-control is-valid";
+    }
     if (this.state.errors.passwordConfim) {
 
       return "form-control is-invalid";
     }
-    else {
 
-      return "form-control";
-    }
+    return "form-control";
+
   }
 
 
