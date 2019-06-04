@@ -352,6 +352,7 @@ app.post("/checktoken", function(req, res, next) {
   });
 });
 
+//signup user (POST)
 app.post("/registerUser", async function(req, res, next) {
   if (
     req.body.Name == null ||
@@ -359,11 +360,9 @@ app.post("/registerUser", async function(req, res, next) {
     req.body.UserName == null ||
     req.body.UserName == "" ||
     req.body.Password == null ||
-    req.body.Password == "" ||
-    req.body.PasswordConfim == null ||
-    req.body.PasswordConfim == "" 
+    req.body.Password == ""
   ) {
-    res.setHeader("Content-Type", "text/xml; charset=UTF-8");
+    res.setHeader("Content-Type", "text/xml; charset=UTF-16LE");
     res.status(400).end("Không được phép truy cập!");
   } else {
     const Name = req.body.Name;
@@ -371,7 +370,6 @@ app.post("/registerUser", async function(req, res, next) {
     const Password = req.body.Password;
     let Token;
 
-    var flag = 1;
     try {
       //Check tài khoản có trong db chưa? 1: có, 0: bị lỗi bất ngờ.
       await db.Accounts.findOne({ UserName: UserName }).exec(async function(
@@ -381,9 +379,7 @@ app.post("/registerUser", async function(req, res, next) {
         if (err) return res.end(0);
         else if (result != null) {
           //nếu có trả về 1
-          // res.shouldKeepAlive = false;
-          flag = 0;
-          res.status(401).send("1");
+          res.status(200).send("TonTai");
         } else {
           //Tao Token cho account
           const code =
@@ -396,20 +392,21 @@ app.post("/registerUser", async function(req, res, next) {
             UserName: UserName,
             Password: Password,
             Token: Token,
-            Status: 96,
-            Role: 0,
-          
+            Status: 96, //active
+            Role: 0
           });
           //tim xem acc tao thanh cong de lay id,token,role
           await db.Accounts.findOne({ Name: Name, UserName: UserName }).exec(
             function(err, result) {
-              if (err) handleError(err);
-              const trave = {
-                id: result._id,
-                Token: result.Token,
-                Role: result.Role
-              };
-              res.end(JSON.stringify(trave));
+              if (err)  return res.end(0);
+              else {
+                const trave = {
+                  id: result._id,
+                  Token: result.Token,
+                  Role: result.Role
+                };
+                res.end(JSON.stringify(trave));
+              }
             }
           );
         }
@@ -421,4 +418,79 @@ app.post("/registerUser", async function(req, res, next) {
   }
 });
 
+//signup driver(POST)
+app.post("/registerDriver", async function(req,res,next){
+  //check req body
+  if(req.body == null){
+    
+  } else {
+    const Name = req.body.Name;
+    const UserName = req.body.UserName;
+    const Password = req.body.Password;
+    const IdentityCard = req.body.IdentityCard;
+    const NumberPhone = req.body.NumberPhone;
+    const CarNumber = req.body.CarNumber;
+
+    try {
+      //xác minh tên user chưa tồn tại
+      await db.Accounts.findOne({ UserName: UserName }).exec(async function(err,result) {
+        if (err) return res.end(0);
+        else if (result != null) {
+          //nếu có trả về 1
+          res.status(200).send("TonTai");
+        } else {
+          //Tao Token cho account
+          const code =
+            Name + UserName + Password + Math.floor(Math.random() * 10);
+          code = md5(code);
+
+          //tao document Account
+          await db.Accounts.create({
+            Name: Name,
+            UserName: UserName,
+            Password: Password,
+            Token: Token,
+            Status: 0, //chưa active để có thể dùng tài khoản.
+            Role: 0
+          });
+
+          //tim xem acc tao thanh cong de lay id,token,role
+          await db.Accounts.findOne({ Name: Name, UserName: UserName }).exec(
+            async function(err, result) {
+              if (err) return res.end(0);
+              else {
+                var trave = {
+                  id: result._id,
+                  Token: result.Token,
+                  Role: result.Role
+                };
+                await db.InformationDrivers.findOne({AccountID: trave.id}).exec(function(err,result){
+                  if(err) return res.end(0);
+                  else if(result != null){
+                    return res.end(0);
+                  }
+                  else {
+                    db.InformationDrivers.create({AccountID: AccountID, IdentityCard: IdentityCard,NumberPhone: NumberPhone, CarNumber: CarNumber},function(err,result){
+                      if(err) res.send(400,err);
+                      else {
+                        res.send(200,trave);
+                      }
+                    });
+                  }
+                })
+              }
+            }
+          );
+        }
+      })
+    } catch(err) {
+
+    }
+  }
+})
+
+
+/* this.state.IdentityCard,
+      NumberPhone: this.state.NumberPhone,
+      CarNumber: this.state.CarNumber,*/
 module.exports = app;
