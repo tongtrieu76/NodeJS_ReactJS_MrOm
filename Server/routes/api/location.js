@@ -76,7 +76,7 @@ app.get("/account", (req, res, next) => {
   });
 });
 // -- -- driver theo id
-app.get("/driver/:id", function(req, res, next) {
+app.get("/Account/:id", function(req, res, next) {
   db.Accounts.findOne({ AccountID: req.params.id }, function(err, result) {
     if (err) return handleError(err);
     res.send(result);
@@ -155,7 +155,6 @@ app.post("/user", function(req, res, next) {
         if (req.body.Point) {
           data.Point = req.body.Point;
         }
-        // console.log(Date.parse(date_t));
         data.save(function(err, rs) {
           if (err) {
             console.log(err);
@@ -167,6 +166,129 @@ app.post("/user", function(req, res, next) {
       }
     }
   });
+});
+// -- -- lock,unlock,active
+app.post("/user/setstatus", function(req, res, next) {
+  db.Accounts.findOne({ _id: req.body._id }, function(err, data) {
+    if (err) res.status(500).send("Xay ra loi bat ngo");
+    else {
+      if (!data) {
+        res.status(400).send("Khong tim thay bat ky tai khoan nao");
+      } else {
+        if (req.body.Status == "Hoạt động") {
+          data.Status = 69;
+          data.save(function(err, rs) {
+            if (err) {
+              console.log(err);
+              res.status(500).send();
+            } else {
+              res.status(200).send("success");
+            }
+          });
+        } else if (req.body.Status == "Khoá") {
+          data.Status = 96;
+          data.save(function(err, rs) {
+            if (err) {
+              console.log(err);
+              res.status(500).send();
+            } else {
+              res.send(200, "success");
+            }
+          });
+        } else if (req.body.Status == "Chưa kích hoạt") {
+          data.Status = 96;
+          data.save(function(err, rs) {
+            if (err) {
+              console.log(err);
+              res.status(500).send();
+            } else {
+              res.status(200).send("success");
+            }
+          });
+        } else {
+          data.Status = 96;
+          data.save(function(err, rs) {
+            if (err) {
+              console.log(err);
+              res.status(500).send();
+            } else {
+              res.send(200, "success");
+            }
+          });
+        }
+      }
+    }
+  });
+});
+// -- -- doi mat khau.
+app.post("/user/changepassword", function(req, res, next) {
+  db.Accounts.findOne({ _id: req.body._id, Token: req.body.Token }, function(
+    err,
+    data
+  ) {
+    if (err) res.status(500).send("Xay ra loi bat ngo");
+    else {
+      if (!data) {
+        res.status(400).send("Khong tim thay bat ky tai khoan nao");
+      } else {
+        if (req.body.Newpass != null) {
+          var dem = 0;
+          data.OldPassword.forEach(item => {
+            if (item === req.body.Newpass) {
+              dem++;
+            }
+          });
+          if(data.Password === req.body.Newpass){
+            dem++;
+          }
+          if (dem === 0) {
+            if (data.OldPassword.length >= 5) {
+              data.OldPassword.shift();
+            }
+            data.OldPassword.push(data.Password);
+            data.Password = req.body.Newpass;
+            data.save((err, rs) => {
+              if (err) {
+                console.log(err);
+                res.status(500).send();
+              } else {
+                res.send(200, "success");
+              }
+            });
+          } else {
+            res
+              .status(400)
+              .send(
+                "Vui lòng đổi mật khẩu khác vì mật khẩu này đã được đổi gần đây"
+              ); //Vui long doi mat khau khac vi mat khau nay da duoc doi gan day
+          }
+        } else {
+          res.status(400).send("Du lieu khong hop le");
+        }
+      }
+    }
+  });
+});
+// -- -- delete acc
+app.post("/user/deleteacc", function(req, res, next) {
+  db.Accounts.findOne(
+    { _id: req.body._id, Token: req.body.Token },
+    async function(err, data) {
+      if (err) res.status(500).send("Xay ra loi bat ngo");
+      else {
+        if (!data) {
+          res.status(400).send("Khong tim thay bat ky tai khoan nao");
+        } else {
+          try {
+            await db.Accounts.deleteOne({ _id: req.body._id });
+            res.status(200).send("success");
+          } catch (err) {
+            res.status(500).send("Xoa khong thanh cong");
+          }
+        }
+      }
+    }
+  );
 });
 
 //driver
@@ -317,18 +439,24 @@ app.post("/login", function(req, res, next) {
               res.send(rs);
             }
           });
-        } else if(data.Status == 69){
+        } else if (data.Status == 69) {
           // 69 = status lock
-          var trave = {UserName: data.UserName, Name: data.Name, WhyLock: data.WhyLock};
-          res.send(400,trave);
-        }
-        else if(data.Status == 0){
+          var trave = {
+            UserName: data.UserName,
+            Name: data.Name,
+            WhyLock: data.WhyLock
+          };
+          res.send(400, trave);
+        } else if (data.Status == 0) {
           //0 = status chưa active
-          var trave = {UserName: data.UserName, Name: data.Name,CreateDate: data.CreateDate};
-          res.send(200,trave);
-        }
-        else {
-          res.send(400,"Bug!");
+          var trave = {
+            UserName: data.UserName,
+            Name: data.Name,
+            CreateDate: data.CreateDate
+          };
+          res.send(200, trave);
+        } else {
+          res.send(400, "Bug!");
         }
       }
     }
@@ -348,16 +476,14 @@ app.post("/checktoken", function(req, res, next) {
         var token = req.body.Token;
         var role = req.body.Role;
         if (id == data.AccountID && token == data.Token && role == data.Role) {
-          if(data.Status == 96){
+          if (data.Status == 96) {
             res.status(200).end(true);
-          }
-          else if(data.Status == 69){
+          } else if (data.Status == 69) {
             res.status(400).end("Lock");
-          }
-          else if(data.Status == 0){
+          } else if (data.Status == 0) {
             res.status(200).end("UnActive");
           } else {
-            res.status(400).end("Bug!")
+            res.status(400).end("Bug!");
           }
         } else {
           res.status(400).end(false);
@@ -375,11 +501,7 @@ app.post("/registerUser", async function(req, res, next) {
     req.body.UserName == null ||
     req.body.UserName == "" ||
     req.body.Password == null ||
-    req.body.Password == "" ||
-    req.body.PasswordConfim == null ||
-    req.body.PasswordConfim == "" ||
-    req.body.Password == "d41d8cd98f00b204e9800998ecf8427e"||
-    req.body.PasswordConfim == "d41d8cd98f00b204e9800998ecf8427e" 
+    req.body.Password == ""
   ) {
     res.setHeader("Content-Type", "text/xml; charset=UTF-16LE");
     res.status(400).end("Không được phép truy cập!");
@@ -398,7 +520,7 @@ app.post("/registerUser", async function(req, res, next) {
         if (err) return res.end(0);
         else if (result != null) {
           //nếu có trả về 1
-          res.status(401).send("TonTai");
+          res.status(200).send("TonTai");
         } else {
           //Tao Token cho account
           const code =
@@ -440,28 +562,7 @@ app.post("/registerUser", async function(req, res, next) {
 //signup driver(POST)
 app.post("/registerDriver", async function(req, res, next) {
   //check req body
-  if(
-    req.body.Name == null ||
-    req.body.Name == "" ||
-    req.body.UserName == null ||
-    req.body.UserName == "" ||
-    req.body.Password == null ||
-    req.body.Password == "" ||
-    req.body.PasswordConfim == null ||
-    req.body.PasswordConfim == ""  ||
-    req.body.IdentityCard == null ||
-    req.body.IdentityCard == "" ||
-    req.body.NumberPhone == null ||
-    req.body.NumberPhone == "" ||
-    req.body.CarNumber == null ||
-    req.body.CarNumber == "" ||
-    req.body.Password == "d41d8cd98f00b204e9800998ecf8427e"||
-    req.body.PasswordConfim == "d41d8cd98f00b204e9800998ecf8427e" 
-
-  ){
-    res.setHeader("Content-Type", "text/xml; charset=UTF-8");
-    res.status(400).end("Không được phép truy cập!");
-
+  if (req.body == null) {
   } else {
     const Name = req.body.Name;
     const UserName = req.body.UserName;
@@ -469,7 +570,7 @@ app.post("/registerDriver", async function(req, res, next) {
     const IdentityCard = req.body.IdentityCard;
     const NumberPhone = req.body.NumberPhone;
     const CarNumber = req.body.CarNumber;
- let Token;
+
     try {
       //xác minh tên user chưa tồn tại
       await db.Accounts.findOne({ UserName: UserName }).exec(async function(
@@ -479,12 +580,12 @@ app.post("/registerDriver", async function(req, res, next) {
         if (err) return res.end(0);
         else if (result != null) {
           //nếu có trả về 1
-          res.status(401).send("TonTai");
+          res.status(200).send("TonTai");
         } else {
           //Tao Token cho account
           const code =
             Name + UserName + Password + Math.floor(Math.random() * 10);
-            Token = md5(code);
+          code = md5(code);
 
           //tao document Account
           await db.Accounts.create({
@@ -508,22 +609,22 @@ app.post("/registerDriver", async function(req, res, next) {
                 };
                 await db.InformationDrivers.findOne({
                   AccountID: trave.id
-                }).exec(async function(err, result) {
+                }).exec(function(err, result) {
                   if (err) return res.end(0);
                   else if (result != null) {
                     return res.end(0);
                   } else {
-                await  db.InformationDrivers.create(
+                    db.InformationDrivers.create(
                       {
-                        AccountID:  trave.id,
+                        AccountID: AccountID,
                         IdentityCard: IdentityCard,
                         NumberPhone: NumberPhone,
                         CarNumber: CarNumber
                       },
                       function(err, result) {
-                        if (err) res.status(400).send(err);
+                        if (err) res.send(400, err);
                         else {
-                          res.send(JSON.stringify(trave));
+                          res.send(200, trave);
                         }
                       }
                     );
@@ -534,9 +635,7 @@ app.post("/registerDriver", async function(req, res, next) {
           );
         }
       });
-    } catch (err) { 
-       console.log("ERROR" + err);
-    res.end("0");}
+    } catch (err) {}
   }
 });
 

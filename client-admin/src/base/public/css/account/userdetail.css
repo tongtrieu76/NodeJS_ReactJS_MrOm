@@ -1,0 +1,19 @@
+
+#btn-close {
+    float: right;
+}
+
+.title-viewdetail {
+    font-size: 3vh;
+    text-align: center;
+    color: rgb(45, 84, 136);
+}
+
+#view-detail {
+    margin-left: 5vh;
+}
+
+
+.span-must {
+    color: red;
+}

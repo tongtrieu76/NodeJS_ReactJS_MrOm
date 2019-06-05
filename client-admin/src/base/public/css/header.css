@@ -1,0 +1,15 @@
+
+#hd {
+    background-color: #61dafb;
+    height: 100px;
+    width: 100%;
+}
+#logo {
+  display: inline-block;
+  width: 16vh;
+  height: 100%;
+  background-image: url("http://tuanbaovannghetphcm.vn/uploads/images/Anh-minh-hoa---Goc-nho-Sai-Gon---Xe-om-Sai-Gon_1024x699.png");
+  background-repeat: no-repeat;
+  background-position: center center;
+  background-size: cover;
+}

@@ -1,0 +1,26 @@
+#f1 {
+    width: 100%;
+    margin: 0px;
+    padding: 0px;
+}
+
+#f2 {
+    width: 100%;
+    padding: 0px;
+    margin: 0px;
+    min-height: 90vh;
+    height: auto;
+    /* height: 90vh; */
+    background-color: rgb(241, 250, 241);
+    /* overflow: auto; */
+}
+
+#f3 {
+    margin: 0px;
+    padding: 0px;
+}
+
+body {
+    margin: 0px;
+    padding: 0px;
+}
