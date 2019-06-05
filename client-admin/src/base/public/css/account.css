@@ -1,0 +1,89 @@
+#title-content {
+    font-size: 3vh;
+    text-align: center;
+}
+
+#content-content {
+    /* adsdadad */
+}
+
+#them-nguoi-dung {
+    display: none;
+    margin-top: 2%;
+}
+
+#them-tai-xe {
+    display: none;
+    margin-top: 2%;
+}
+
+.span-must {
+    color: red;
+}
+
+#specials {
+    font-size: 2vh;
+}
+
+table tr td {
+    /* text-align: left; */
+}
+
+#btn-edit, #btn-lock{
+    margin-right: 1vh;
+}
+
+hr {
+    display: block; height: 1px;
+    border: 0; border-top: 1px solid rgb(218, 216, 216);
+    margin: 1em 0; padding: 0; 
+}
+
+#title-content {
+    margin-bottom: 2%;
+    margin-top: 2%;
+    font-size: 3vh;
+}
+
+.title-them {
+    font-size: 3vh;
+}
+
+.btn-them {
+    margin-right: 1%;
+}
+
+.btn-huybo {
+    margin-left: 1%;
+}
+
+.group-them {
+    display: block;
+}
+
+#content-1 {
+    min-height: 100vh;
+    height: auto;
+}
+
+.input-group .form-control{
+    position: static;
+}
+
+.input-group-btn>.btn {
+    position: static;
+}
+
+#btn-close {
+    background-color: rgb(253, 253, 253);
+
+}
+
+.table {
+    height: 100%;
+    overflow: scroll;
+}
+
+.label-add {
+    text-align: left;
+}

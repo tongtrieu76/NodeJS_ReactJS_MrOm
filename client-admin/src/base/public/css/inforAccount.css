@@ -1,0 +1,28 @@
+
+/* #btnsearch {
+    padding: 0px;
+    margin: 0px;
+} */
+
+#input-search {
+    padding: 0px;
+    margin: 0px;
+}
+
+.input-group {
+    padding-top: 1%;
+    padding-bottom: 1%;
+}
+
+.btn-filter {
+    background-color: rgb(158, 221, 250);
+    font-size: 2vh;
+    color: rgb(0,0,0);
+    border-color: rgb(97, 139, 255);
+    margin-bottom: 1%;
+}
+
+#content-2 {
+    min-height: 90vh;
+    overflow: auto;
+}
