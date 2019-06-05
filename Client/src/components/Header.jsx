@@ -38,9 +38,13 @@ if (localStorage.jwtToken) {
     console.log(setCurrentUser(jwt.decode(localStorage.jwtToken)).user.Role) 
     
   }
+  const role =null;
     const isAuthenticated = localStorage.getItem('jwtToken');
+  // if(setCurrentUser(jwt.decode(localStorage.jwtToken)).user.Role)
+  // {
+  //    role = setCurrentUser(jwt.decode(localStorage.jwtToken)).user.Role
 
-    const role = setCurrentUser(jwt.decode(localStorage.jwtToken)).user.Role
+  // }
     const isAdmin = (
       <li>
         <NavLink

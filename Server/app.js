@@ -12,7 +12,7 @@ var LocationRouter = require("./routes/api/location");
 //server
 var debug = require("debug")("server:server");
 var http = require("http");
-var port = normalizePort(process.env.PORT || "4000");
+var port = normalizePort(process.env.PORT || "5000");
 
 //socketIO
 var socketIO = require("socket.io");
@@ -75,7 +75,7 @@ io.on("connection", socket => {
   save_IO.socket = socket;
   console.log("New client connected");
 
-  interval = setInterval(() => getApiAndEmit(socket), 3000);
+  interval = setInterval(() => getApiAndEmit(socket), 10000);
   socket.on("disconnect", () => {
     console.log("Client disconnected");
 
@@ -124,7 +124,7 @@ io.on("connection", socket => {
 const getApiAndEmit = async socket => {
   try {
     const axios = require("axios");
-    axios.get("http://localhost:4000/api/location").then(data_data => {
+    axios.get("http://localhost:5000/api/location").then(data_data => {
       console.log(data_data.data);
       socket.emit("location_driver_online", data_data.data);
     });

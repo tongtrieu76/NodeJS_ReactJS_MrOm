@@ -1,18 +1,22 @@
 import React from 'react';
 // import leaflet from '../js/leaflet.js';
-import L from 'leaflet';
-import IMG from '../img/location.png';
+// import * as L from 'leaflet';
+// import IMG from '../img/location.png';
 import io from 'socket.io-client';
-import { Map, Marker, Popup, TileLayer } from 'react-leaflet'
+import { Map as LeafletMap, Marker, Popup, TileLayer } from 'react-leaflet'
 import 'leaflet/dist/leaflet.js';
+import Routing from './Routing'
+import 'leaflet'
+import "leaflet-routing-machine" 
+import axios from 'axios';
 
-import "leaflet-routing-machine"
-// import axios from 'axios';
 
-var icon_book = L.icon({
-    iconUrl: IMG,
-    iconSize: [40, 50]
-})
+
+
+// var icon_book = L.icon({
+//     iconUrl: IMG,
+//     iconSize: [40, 50]
+// })
 
 
 export default class Maps extends React.Component {
@@ -24,6 +28,7 @@ export default class Maps extends React.Component {
             L_X: 10.0000,
             L_Y: 10.2222,
             data_pos: null,
+            getadd: null,
         };
         this.socket.on("location_driver_online", (data) => {
             this.setState({
@@ -69,14 +74,14 @@ export default class Maps extends React.Component {
         // var maket = L.marker([this.state.lat, this.state.lng], { icon: icon_book }).addTo(this.mymap);
         // maket.bindPopup("<b>Bạn đang ở đây.</b>").openPopup();
     }
-    // componentWillMount() {
-    //     navigator.geolocation.getCurrentPosition(
-    //         position => {
-    //             this.setState({ L_X: position.coords.latitude, L_Y: position.coords.longitude });
-    //         },
-    //         error => console.log(error)
-    //     );
-    // }
+    componentDidMount() {
+        navigator.geolocation.watchPosition(
+            position => {
+                this.setState({ L_X: position.coords.latitude, L_Y: position.coords.longitude });
+            },
+            error => console.log(error)
+        );
+    }
 //  componentDidMount(){
 //     this.map = L.map('map123');
 
@@ -110,14 +115,44 @@ export default class Maps extends React.Component {
     handleClick() {
         // var maket = L.marker([this.state.lat, this.state.lng], { icon: icon_book }).addTo(this.mymap);
         // maket.bindPopup("<b>Bạn đang ở đây.</b>").openPopup();
-        var data = [this.state.L_X, this.state.L_Y];
-        this.socket.emit("client_send", data);
+        // var data = [this.state.L_X, this.state.L_Y];
+        // this.socket.emit("client_send", data);
 
     }
+    aaaa=(e)=>
+    {
+     
+    // console.log(e.latlng)
+    //     axios.post("https://nominatim.openstreetmap.org/reverse?format=json&lat="+e.latlng["lat"] + "&lon="+e.latlng["lng"], {
+    //     withCredentials: true
+    //   })
+    // .then(res=>
+    //     {
+    //         console.log(res.data) 
+            // var get=   "<Marker position=["+[res.data.lat,res.data.lon]+"] > <Popup>A pretty CSS3 popup.<br />Easily customizable.<br/>"+[res.data.lat,res.data.lon]+" </Popup></Marker>";
+            this.setState({ getadd: [{a:e.latlng["lat"],b:e.latlng["lng"]}]});
+          
+        // }
+        
+        // )
+    // .then(data=>setAddress(data.display_name))
+    // .catch(function (error) {
+    //     console.log(error);
+    // });
+        // this.props.setToLocation(toLocation);
+    }
+    saveMap = (map) => {
+        this.map = map;
+        // console.log(L.routing)
+        this.setState({isMapInit:true});
+      }
     render() {
         const Local = [this.state.L_X, this.state.L_Y];
         //  const Local1 = this.state.lat + "," +this.state.lat;
-        console.log(this.state.data_pos)
+        console.log(this.map)
+        console.log(this.state)
+
+        // const showgetadd =this.state.getadd;
         return (
 
             <div className="full slidebar_content">
@@ -144,15 +179,33 @@ export default class Maps extends React.Component {
                 <div className="text-center"> <label > {Local}</label></div>
 
 
-                <Map className="mapid" center={Local} zoom={10}>
+                <LeafletMap  ref={this.saveMap} className="mapid" center={Local} zoom={18} onclick={this.aaaa}>
                     <TileLayer
                         url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
-                        attribution="&copy; <a href=&quot;http://osm.org/copyright&quot;>OpenStreetMap</a> contributors"
+                           // attribution="&copy; <a href=&quot;http://osm.org/copyright&quot;>OpenStreetMap</a> contributors"
                     />
+
+                                <Marker position={[Local[0],Local[1]]} >
+                                    <Popup>A pretty CSS3 popup.<br />Easily customizable.<br/> {Local[0]}, {Local[0]} </Popup>
+                                </Marker>
+
+                                {this.state.getadd != null ? (this.state.getadd).map((data, i) => {
+                            return (
+                                <Marker key={i} position={[data.a,data.b]}>
+                                    <Popup>A pretty CSS3 popup.<br />Easily customizable.<br/> {data.a}, {data.b} </Popup>
+                                </Marker>
+                            )
+
+                        }) :""}
+
+
+
+                        {/* icon={icon_book} */}
+
                     {this.state.data_pos != null ?
                         (this.state.data_pos).map((data, i) => {
                             return (
-                                <Marker key={i} position={[data.Location_X,data.Location_Y]} icon={icon_book}>
+                                <Marker key={i} position={[data.Location_X,data.Location_Y]} >
                                     <Popup>A pretty CSS3 popup.<br />Easily customizable.<br/> {data.Location_X}, {data.Location_Y} </Popup>
                                 </Marker>
                             )
@@ -161,11 +214,16 @@ export default class Maps extends React.Component {
                         : ""
 
                     }
-                    {/* <Routing from={[57.74, 11.94]} to={[57.6792, 11.949]} map={this.refs.map}/> */}
-                </Map>
 
-{/* <div id="map123"> </div> */}
-            </div>
+                    {/* <Routing  map={this.map}/> */}
+                    {/* <Routing from={[57.74, 11.94]} to={[57.6792, 11.949]} map={this.map}/> */}
+                   
+                   {/* <div id="map123"> </div> */}
+                    </LeafletMap>
+                </div>
+
+
+            
         );
     }
 }
