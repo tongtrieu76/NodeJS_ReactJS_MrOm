@@ -440,7 +440,6 @@ app.post("/registerUser", async function(req, res, next) {
 //signup driver(POST)
 app.post("/registerDriver", async function(req, res, next) {
   //check req body
-<<<<<<< HEAD
   if(
     req.body.Name == null ||
     req.body.Name == "" ||
@@ -460,11 +459,9 @@ app.post("/registerDriver", async function(req, res, next) {
     req.body.PasswordConfim == "d41d8cd98f00b204e9800998ecf8427e" 
 
   ){
-    res.setHeader("Content-Type", "text/xml; charset=UTF-16LE");
+    res.setHeader("Content-Type", "text/xml; charset=UTF-8");
     res.status(400).end("Không được phép truy cập!");
-=======
-  if (req.body == null) {
->>>>>>> 97cf32ec2818a8d7c288f975fc321f2b59bdc4b4
+
   } else {
     const Name = req.body.Name;
     const UserName = req.body.UserName;
@@ -472,7 +469,7 @@ app.post("/registerDriver", async function(req, res, next) {
     const IdentityCard = req.body.IdentityCard;
     const NumberPhone = req.body.NumberPhone;
     const CarNumber = req.body.CarNumber;
-
+ let Token;
     try {
       //xác minh tên user chưa tồn tại
       await db.Accounts.findOne({ UserName: UserName }).exec(async function(
@@ -482,12 +479,12 @@ app.post("/registerDriver", async function(req, res, next) {
         if (err) return res.end(0);
         else if (result != null) {
           //nếu có trả về 1
-          res.status(200).send("TonTai");
+          res.status(401).send("TonTai");
         } else {
           //Tao Token cho account
           const code =
             Name + UserName + Password + Math.floor(Math.random() * 10);
-          code = md5(code);
+            Token = md5(code);
 
           //tao document Account
           await db.Accounts.create({
@@ -511,22 +508,22 @@ app.post("/registerDriver", async function(req, res, next) {
                 };
                 await db.InformationDrivers.findOne({
                   AccountID: trave.id
-                }).exec(function(err, result) {
+                }).exec(async function(err, result) {
                   if (err) return res.end(0);
                   else if (result != null) {
                     return res.end(0);
                   } else {
-                    db.InformationDrivers.create(
+                await  db.InformationDrivers.create(
                       {
-                        AccountID: AccountID,
+                        AccountID:  trave.id,
                         IdentityCard: IdentityCard,
                         NumberPhone: NumberPhone,
                         CarNumber: CarNumber
                       },
                       function(err, result) {
-                        if (err) res.send(400, err);
+                        if (err) res.status(400).send(err);
                         else {
-                          res.send(200, trave);
+                          res.send(JSON.stringify(trave));
                         }
                       }
                     );
@@ -537,7 +534,9 @@ app.post("/registerDriver", async function(req, res, next) {
           );
         }
       });
-    } catch (err) {}
+    } catch (err) { 
+       console.log("ERROR" + err);
+    res.end("0");}
   }
 });
 

@@ -6,27 +6,41 @@ import Error404 from './app/Error404';
 import Login from './app/Login';
 import Register from './app/Register';
 import Admin from './app/Admin';
-// import { connect } from 'react-redux';
-import Autho from './app/setAutho';
+
+import Autho from './app/setAuthorizationToken';
+import {setCurrentUser} from './app/authActions'
+import jwt from 'jsonwebtoken';
+
+  
+
+
+import { logout } from "./app/authActions";
 
 import { BrowserRouter , Route, NavLink, Switch } from "react-router-dom";
+
 const isActive = (path, match, location) => !!(match || path === location.pathname);
 
 class Header extends React.Component {
-  logout(e) {
 
-    localStorage.removeItem('jwtToken');
-    localStorage.removeItem('jwtUser');
-    Autho(false);
-    this.props.history.push("/");
-    window.location.reload();
+  logout = event=> {
+    event.preventDefault();
+    console.log("object")
+   logout();
+    
   }
+    
 
 
   render() {
+    
+if (localStorage.jwtToken) {
+    Autho(localStorage.jwtToken);
+    console.log(setCurrentUser(jwt.decode(localStorage.jwtToken)).user.Role) 
+    
+  }
     const isAuthenticated = localStorage.getItem('jwtToken');
 
-    const role = localStorage.getItem('jwtUser');
+    const role = setCurrentUser(jwt.decode(localStorage.jwtToken)).user.Role
     const isAdmin = (
       <li>
         <NavLink

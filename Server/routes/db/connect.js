@@ -88,6 +88,10 @@ var account = new mongoose.model('account',SchemaAccount);
 
 //Information Drivers
 var SchemaIfDrivers = new mongoose.Schema({
+	AccountID: {
+		type: String,
+		default: "no_id"
+	},
 	Birthday: {
 		type: Date,
 		default: Date.now

@@ -1,10 +1,11 @@
 import React, { Component } from "react";
 import axios from 'axios';
-import Autho from './setAutho';
-import Error404 from './Error404';
-import { Route, Link, Redirect} from "react-router-dom";
+// import Autho from './setAutho';
+// import Error404 from './Error404';
+import {  Link, Redirect} from "react-router-dom";
 // import {connect} from 'react-redux';
 // import { BrowserRouter , Route, Link, Switch ,Redirect} from "react-router-dom";
+import { login } from "./authActions";
 
 export default class Login extends Component {
   constructor(props) {
@@ -36,42 +37,48 @@ export default class Login extends Component {
       password: this.state.password,
       
     }
+    const data ={
+      Token:"g",
+      id:1,
+      Role:1
+    }
+    axios.post('/login', newUser).then( login(data) 
     
-    axios.post('/login', newUser)
-      .then(res => {
-        if(res.data.err)
-        {
-          this.setState({ errors: res.data.err })
-        }
-        if(res.data.token)
-        {
-          if(res.data.user)
-          {
-            const token = res.data.token;
-            const user  = res.data.user ;
-            localStorage.setItem('jwtToken', token);
-            localStorage.setItem('jwtUser', user);
-            Autho(token);
+    ).catch( login(data))
+      // .then(res => {
+      //   if(res.data.err)
+      //   {
+      //     this.setState({ errors: res.data.err })
+      //   }
+      //   if(res.data.token)
+      //   {
+      //     if(res.data.user)
+      //     {
+      //       const token = res.data.token;
+      //       const user  = res.data.user ;
+      //       localStorage.setItem('jwtToken', token);
+      //       localStorage.setItem('jwtUser', user);
+      //       // Autho(token);
   
-           // this.props.history.push("/");
-            window.location.reload();
-          }
-          else{
-            const token = res.data.token;
+      //      // this.props.history.push("/");
+      //       window.location.reload();
+      //     }
+      //     else{
+      //       const token = res.data.token;
             
-            localStorage.setItem('jwtToken', token);
+      //       localStorage.setItem('jwtToken', token);
            
-            Autho(token);
+      //       // Autho(token);
   
         
-            window.location.reload();
-          }
+      //       window.location.reload();
+      //     }
          
-        }
+      //   }
        
         
         
-      }).catch(err => console.log(err.response.data));  
+      // }).catch(err => console.log(err.response.data));  
 
   }
 

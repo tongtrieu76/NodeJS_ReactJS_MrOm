@@ -2,10 +2,8 @@ import React from "react";
 import validator from 'validator';
 import axios from 'axios';
 import { BrowserRouter as Redirect } from "react-router-dom";
-import Autho from './setAutho';
 import md5 from 'md5';
-
-
+import { login } from './authActions';
 export default class RegisterDriver extends React.Component {
   constructor(props) {
     super(props);
@@ -35,7 +33,7 @@ export default class RegisterDriver extends React.Component {
 
   handleSubmit = event => {
     event.preventDefault();
-let errors = {};
+    let errors = {};
 
 
     const newUser = {
@@ -51,21 +49,12 @@ let errors = {};
 
     axios.post('/api/registerDriver', newUser)
       .then(res => {
-        console.log(res.data)
-       
-
-         localStorage.setItem('jwtToken', res.data.Token);
-         localStorage.setItem('jwtid', res.data.id);
-         localStorage.setItem('jwtRole', res.data.Role);
-          Autho(res.data.Token);
-        // alert("Tạo Tài Khoản Thành Công");
-        //  this.props.history.push("/");
-       
-        // window.location.reload();
-
+        alert("Tạo Tài Khoản Thành Công");
+        login(res.data).then(
+          (res) => this.context.router.push('/'))
       })
       .catch(err => {
-       if (err.response.status === 400) {
+        if (err.response.status === 400) {
           console.log("Lỗi 400");
 
 
@@ -105,15 +94,15 @@ let errors = {};
 
             errors.CarNumber = 'Không được để trống';
           }
-          
-          
-    
+
+
+
         }
         if (err.response.status === 401) {
           console.log("Lỗi 401");
 
           errors.email = 'Email đã được đăng ký';
-         
+
         }
 
 
@@ -123,13 +112,13 @@ let errors = {};
         });
       });
 
-      errors={};
+    errors = {};
   }
   classnames1 = () => {
-   if (this.state.username) {
+    //  if (this.state.username) {
 
-      return "form-control is-valid";
-    }
+    //     return "form-control is-valid";
+    //   }
     if (this.state.errors.username) {
 
       return "form-control is-invalid";
@@ -139,13 +128,13 @@ let errors = {};
 
   }
   classnames2 = () => {
-    if (this.state.email) {
-      if (this.state.errors.email) {
+    // if (this.state.email) {
+    //   if (this.state.errors.email) {
 
-        return "form-control is-invalid";
-      }
-      return "form-control is-valid";
-    }
+    //     return "form-control is-invalid";
+    //   }
+    //   return "form-control is-valid";
+    // }
 
     if (this.state.errors.email) {
 
@@ -155,10 +144,10 @@ let errors = {};
 
   }
   classnames3 = () => {
-   if (this.state.password) {
+    //  if (this.state.password) {
 
-      return "form-control is-valid";
-    }
+    //     return "form-control is-valid";
+    //   }
     if (this.state.errors.password) {
 
       return "form-control is-invalid";
@@ -168,13 +157,13 @@ let errors = {};
 
   }
   classnames4 = () => {
-   if (this.state.passwordConfim) {
-      if (this.state.errors.passwordConfim) {
+    //  if (this.state.passwordConfim) {
+    //     if (this.state.errors.passwordConfim) {
 
-        return "form-control is-invalid";
-      }
-      return "form-control is-valid";
-    }
+    //       return "form-control is-invalid";
+    //     }
+    //     return "form-control is-valid";
+    //   }
     if (this.state.errors.passwordConfim) {
 
       return "form-control is-invalid";
@@ -186,48 +175,48 @@ let errors = {};
 
 
   classnames5 = () => {
-    if (this.state.IdentityCard) {
+    // if (this.state.IdentityCard) {
 
-      return "form-control is-valid";
-    }
-    
+    //   return "form-control is-valid";
+    // }
+
     if (this.state.errors.IdentityCard) {
 
       return "form-control is-invalid";
     }
-      return "form-control";
-    
+    return "form-control";
+
   }
 
 
   classnames6 = () => {
-    if (this.state.NumberPhone) {
+    // if (this.state.NumberPhone) {
 
-      return "form-control is-valid";
-    }
-    
- 
+    //   return "form-control is-valid";
+    // }
+
+
     if (this.state.errors.NumberPhone) {
 
       return "form-control is-invalid";
     }
-      return "form-control";
-    
+    return "form-control";
+
   }
 
 
   classnames7 = () => {
-    if (this.state.CarNumber) {
+    // if (this.state.CarNumber) {
 
-      return "form-control is-valid";
-    }
-    
+    //   return "form-control is-valid";
+    // }
+
     if (this.state.errors.CarNumber) {
 
       return "form-control is-invalid";
     }
-      return "form-control";
-    
+    return "form-control";
+
   }
   render() {
     if (localStorage.getItem('jwtToken')) {

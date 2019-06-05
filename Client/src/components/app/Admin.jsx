@@ -14,7 +14,7 @@ export default class Home extends React.Component {
                         <div className="col-md-6 order-md-1 text-md-left pr-md-5">
                             <img src={logo} className="App-logo" alt="logo" />
 
-                            <div class="text-wrap" >
+                            <div className="text-wrap" >
                                 <h1 className="text-white">
                                     ADmin
 
