@@ -181,7 +181,7 @@ class Account extends Component {
     } else if (item.Role === "Khách hàng" || item.Role === "Tài xế") {
       var x = window.confirm("Bạn có chắc chắn muốn xóa tài khoản "+ item.UserName + " này!");
       if(x){
-        const url = "http://localhost:4000/api/user/deleteacc";
+        const url = "http://localhost:4000/api/account/deleteacc";
       var status = 0;
 
       //obj data send post
@@ -220,7 +220,7 @@ class Account extends Component {
   }
   // -- event lock,unlock,active tài khoản.
   lockandunlock(item) {
-    const url = "http://localhost:4000/api/user/setstatus";
+    const url = "http://localhost:4000/api/account/setstatus";
     // if(item.Status === "Chưa kích hoạt"){//status == 0 -> 96
     //   // item.Status = 0;
     // } else if(item.Status === "Hoạt động"){//status == 96 -> 69
@@ -264,7 +264,7 @@ class Account extends Component {
       ""
     );
     if (x) {
-      const url = "http://localhost:4000/api/user/changepassword";
+      const url = "http://localhost:4000/api/account/changepassword";
       const obj = { _id: item._id, Token: item.Token, Newpass: x };
       var status = 0;
       fetch(url, {
@@ -301,6 +301,185 @@ class Account extends Component {
     }
   }
   // end
+
+  // -- event thêm người dùng
+  themnguoidung(){
+    var publicflag = 0;
+
+    //tên đăng nhập
+    var UserName = document.getElementById("UserName");
+    if(this.checkinputtext(UserName.value) !== true){
+      UserName.placeholder = ("Trường này không được để trống hoặc spam khoảng trắng!");
+      UserName.style.backgroundColor = "red";
+      publicflag++;
+    }
+
+    //mật khẩu
+    var Password = document.getElementById("Password");
+    if(this.checkinputtext(Password.value) !== true){
+      Password.placeholder = ("Trường này không được để trống hoặc spam khoảng trắng!");
+      Password.style.backgroundColor = "red";
+      publicflag++;
+    }
+    
+    //mật khẩu again
+    var PasswordAgain = document.getElementById("PasswordAgain");
+    if(this.checkinputtext(PasswordAgain.value) !== true){
+      PasswordAgain.placeholder = ("Trường này không được để trống hoặc spam khoảng trắng!");
+      PasswordAgain.style.backgroundColor = "red";
+      publicflag++;
+    }
+
+    //tên chủ tài khoản
+    var Name = document.getElementById('Name');
+    if(this.checkinputtext(Name.value) !== true){
+      Name.placeholder = ("Trường này không được để trống hoặc spam khoảng trắng!");
+      Name.style.backgroundColor = "red";
+      publicflag++;
+    }
+
+    //số điện thoại
+    var NumberPhone = document.getElementById("NumberPhone");
+    if(this.checkinputtext(NumberPhone.value) !== true){
+      NumberPhone.placeholder = ("Trường này không được để trống hoặc spam khoảng trắng!");
+      NumberPhone.style.backgroundColor = "red";
+      publicflag++;
+    }
+
+    //địa chỉ
+    var Address = document.getElementById("Address");
+    if(this.checkinputtext(Address.value) !== true){
+      Address.placeholder = ("Trường này không được để trống hoặc spam khoảng trắng!");
+      Address.style.backgroundColor = "red";
+      publicflag++;
+    }
+
+    //email
+    var Email = document.getElementById("Email");
+    var flag = 0;
+    var arr = (Email.value.split(""));
+    arr.forEach(item => {
+      if(item === "@"){
+        flag++;
+      }
+    })
+    if(flag === 0){
+      Email.placeholder = ("Trường này không được để trống hoặc spam khoảng trắng!");
+      Email.style.backgroundColor = "red";
+      publicflag++;
+    }
+
+    //chứng minh nhân dân
+    var IdentityCard = document.getElementById("IdentityCard");
+    // if(this.checkinputtext(IdentityCard.value) !== true){
+    //   IdentityCard.placeholder = ("Trường này không được để trống hoặc spam khoảng trắng!");
+    //   IdentityCard.style.backgroundColor = "red";
+    // }
+
+    //sinh nhật
+    var Birthday = document.getElementById("Birthday");
+    // if(this.checkinputtext(Birthday.value) !== true){
+    //   Birthday.placeholder = ("Trường này không được để trống hoặc spam khoảng trắng!");
+    //   Birthday.style.backgroundColor = "red";
+    // }
+
+    //trạng thái
+    var Status = document.querySelector('input[name="optradio"]:checked');
+    
+
+    //check pass and passagain
+    if(this.checkinputtext(PasswordAgain.value) === true){
+      if(Password.value !== PasswordAgain.value){
+        alert("Hai mật khẩu phải trùng nhau!");
+        PasswordAgain.style.backgroundColor = "red";
+        publicflag++;
+      } else {
+        Password.style.backgroundColor = "#fff";
+      PasswordAgain.style.backgroundColor = "#fff";
+      }
+    }
+
+    if(publicflag === 0){
+      var obj = {UserName: UserName.value,
+        Password: Password.value,
+        Name: Name.value,
+        NumberPhone: NumberPhone.value,
+        Address: Address.value,
+        Email: Email.value,
+        IdentityCard: IdentityCard.value,
+        Birthday: Birthday.value,
+        Status: Status.value};
+      const url = "http://localhost:4000/api/user/add";
+
+      //fetch post call api
+      var status = 0;
+      fetch(url,{
+        method: "POST",
+        body: JSON.stringify(obj),
+        headers: {
+          "Content-Type": "application/json"
+        }
+        })
+        .then(res => {status = res.status;return res.text();})
+        .then(res => {
+          if(status === 200 && res === "success"){
+            console.log(status + " : " + res);
+            alert("Thêm người dùng thành công!");
+            this.componentDidMount(this);
+          } else if(status === 400 && res === "Email tồn tại"){
+            console.log(status + " : " + res);
+            alert("Email tồn tại, vui lòng dùng email khác!");
+          } else if(status === 400 && res === "UserName tồn tại"){
+            console.log(status + " : " + res);
+            alert("Tên đăng nhập tồn tại, vui lòng dùng tên đăng nhập khác!");
+          } else {
+            console(status + " : " + res);
+            alert("Đã xảy ra lỗi bất ngờ, vui lòng thử lại!");
+          }
+        })
+        .catch(error => console.error("Error:", error));
+      } else {
+      alert("fail");
+    }
+  }
+
+  //check input
+  checkinputtext(x){
+    if(x === null || x === ""){
+        return false;
+    }
+    
+    //check space
+    var temped = 0;
+    var arr = x.split("");
+    for(var i=0;i<arr.length;i++){
+      if(arr[i] !== " "){
+        temped++;
+      }
+    }
+    if(temped === 0)
+    {
+        return false;
+    } else {
+        return true;
+    }
+
+  }
+  //end
+  
+  //event change backgroundcolor input khi check space,null when submit them nguoi dung
+  changeinput_name(){document.getElementById("Name").style.backgroundColor = "#fff";}
+  changeinput_username(){document.getElementById("UserName").style.backgroundColor = "#fff";}
+  changeinput_password(){document.getElementById("Password").style.backgroundColor = "#fff";}
+  changeinput_passwordagain(){document.getElementById("PasswordAgain").style.backgroundColor = "#fff";}
+  changeinput_numberphone(){document.getElementById("NumberPhone").style.backgroundColor = "#fff";}
+  changeinput_address(){document.getElementById("Address").style.backgroundColor = "#fff";}
+  changeinput_email(){document.getElementById("Email").style.backgroundColor = "#fff";}
+  changeinput_identitycard(){document.getElementById("IdentityCard").style.backgroundColor = "#fff";}
+  changeinput_birthday(){document.getElementById("Birthday").style.backgroundColor = "#fff";}
+  //end
+
+
 
   // đổi filter search sẽ đổ lại data vào table
   ham() {
@@ -436,6 +615,8 @@ class Account extends Component {
                   type="text"
                   className="form-control col-md-10"
                   placeholder="Nhập tên đăng nhập..."
+                  id="UserName"
+                  onChange={this.changeinput_username.bind(this)}
                 />
               </div>
             </div>
@@ -450,6 +631,8 @@ class Account extends Component {
                   type="password"
                   className="form-control col-md-10"
                   placeholder="Nhập mật khẩu..."
+                  id="Password"
+                  onChange={this.changeinput_password.bind(this)}
                 />
               </div>
             </div>
@@ -464,6 +647,8 @@ class Account extends Component {
                   type="password"
                   className="form-control col-md-10"
                   placeholder="Nhập lại mật khẩu..."
+                  id="PasswordAgain"
+                  onChange={this.changeinput_passwordagain.bind(this)}
                 />
               </div>
             </div>
@@ -478,6 +663,8 @@ class Account extends Component {
                   type="text"
                   className="form-control col-md-10"
                   placeholder="Nhập tên chủ tài khoản..."
+                  id="Name"
+                  onChange={this.changeinput_name.bind(this)}
                 />
               </div>
             </div>
@@ -492,6 +679,8 @@ class Account extends Component {
                   type="text"
                   className="form-control col-md-10"
                   placeholder="Nhập số điện thoại..."
+                  id="NumberPhone"
+                  onChange={this.changeinput_numberphone.bind(this)}
                 />
               </div>
             </div>
@@ -506,20 +695,24 @@ class Account extends Component {
                   type="text"
                   className="form-control col-md-10"
                   placeholder="Nhập địa chỉ..."
+                  id="Address"
+                  onChange={this.changeinput_address.bind(this)}
                 />
               </div>
             </div>
             <div className="form-group">
               <center>
                 <label className="col-md-2 label-add">
-                  Email: 
+                  Email: <span className="span-must">(*)</span>
                 </label>
               </center>
               <div className="col-md-10">
                 <input
-                  type="text"
+                  type="email"
                   className="form-control col-md-10"
                   placeholder="Nhập email..."
+                  id="Email"
+                  onChange={this.changeinput_email.bind(this)}
                 />
               </div>
             </div>
@@ -534,6 +727,8 @@ class Account extends Component {
                   type="text"
                   className="form-control col-md-10"
                   placeholder="Nhập chứng minh nhân dân..."
+                  id="IdentityCard"
+                  onChange={this.changeinput_identitycard.bind(this)}
                 />
               </div>
             </div>
@@ -548,6 +743,8 @@ class Account extends Component {
                   type="date"
                   className="form-control col-md-10"
                   max = "9999-12-31"
+                  id="Birthday"
+                  onChange={this.changeinput_birthday.bind(this)}
                 />
               </div>
             </div>
@@ -559,18 +756,18 @@ class Account extends Component {
               </center>
               <div className="col-md-10">
                 <label className="radio-inline">
-                  <input type="radio" name="optradio" defaultChecked />
+                  <input type="radio" name="optradio" value="active" defaultChecked />
                   Kích hoạt
                 </label>
                 <label className="radio-inline">
-                  <input type="radio" name="optradio" />
+                  <input type="radio" name="optradio" value="unactive" />
                   Vô hiệu hóa
                 </label>
               </div>
               <div className="form-group">
                 <div className="col-md-2" />
                 <div className="col-md-10">
-                  <button type="button" className="btn btn-success">
+                  <button type="button" className="btn btn-success"onClick={this.themnguoidung.bind(this)}>
                     Thêm
                   </button>
                   <button

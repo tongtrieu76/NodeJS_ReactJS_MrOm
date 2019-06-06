@@ -35,7 +35,7 @@ class UserDetail extends Component {
         }
 
         //lý do khóa
-        if(this.props.detail.WhyLock === "null"){
+        if(this.props.detail.WhyLock === "null" || this.props.detail.WhyLock === null){
             document.getElementById("lydokhoa").value = "Tài khoản hiện đang hoạt động!";
         } else {
             document.getElementById("lydokhoa").value = "Tsadsdsadadg!";
