@@ -59,11 +59,11 @@ var SchemaAccount = new mongoose.Schema({
 	},
 	WhyLock: {
 		type: String,
-		default: "no_whylock"
+		default: null
 	},
 	Token: {
 		type: String,
-		default: "no_token"
+		default: null
 	},
 	StatusConnect: {
 		type: Number,
@@ -142,11 +142,11 @@ var SchemaIfUsers = new mongoose.Schema({
 	},
 	Birthday: {
 		type: Date,
-		default: Date.now
+		default: null
 	},
 	IdentityCard: {
 		type: String,
-		default: "no_IdentityCard"
+		default: null
 	},
 	Address: {
 		type: String,
