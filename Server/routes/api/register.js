@@ -2,9 +2,7 @@ var express = require("express");
 const db = require("../db/connect");
 var app = express();
 var md5 = require("md5");
-
 var bodyParser = require("body-parser");
-
 app.use(bodyParser.json()); // support json encoded bodies
 app.use(bodyParser.urlencoded({ extended: true })); // support encoded bodies
 
@@ -14,14 +12,7 @@ app.post("/user", async function(req, res, next) {
   // trả về status 400 : xảy ra lỗi khi query csdl : hiển thị người dùng email đó đã được dùng
   // trả về status 200 : auto thành công -> xem body respone để hiển thị ra cho người dùng thông báo đăng ký thành công.
 
-  if (
-    req.body.Name == null ||
-    req.body.Name == "" ||
-    req.body.Email == null ||
-    req.body.Email == "" ||
-    req.body.Password == null ||
-    req.body.Password == ""
-  ) {
+  if (req.body.Name == null || req.body.Name == "" || req.body.Email == null || req.body.Email == "" || req.body.Password == null || req.body.Password == "") {
     res.setHeader("Content-Type", "text/xml; charset=UTF-16LE");
     res.status(400).end("Không được phép truy cập!");
   } else {
@@ -66,6 +57,7 @@ app.post("/user", async function(req, res, next) {
             Status: 96, //active
             Role: 0
           });
+          
           //tim xem acc tao thanh cong de lay id,token,role
           await db.Accounts.findOne({ Name: Name, UserName: UserName }).exec(
             async function(err, result) {

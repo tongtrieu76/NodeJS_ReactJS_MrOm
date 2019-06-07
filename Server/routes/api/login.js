@@ -219,4 +219,5 @@ app.post("/checktoken", function(req, res, next) {
     res.status(500).send("Đã xảy ra lỗi bất ngờ" + err);
   }
 });
+
 module.exports = app;

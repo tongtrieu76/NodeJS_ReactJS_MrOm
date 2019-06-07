@@ -21,6 +21,7 @@ app.get("/", function(req, res, next) {
     res.status(500).send("Đã xảy ra lỗi bất ngờ " + err);
   }
 });
+
 // -- -- user theo id
 app.get("/:id", function(req, res, next) {
   try {
@@ -219,93 +220,6 @@ app.post("/", function(req, res, next) {
     res.status(500).send("Đã xảy ra lỗi bất ngờ " + err);
   }
 });
-// -- post add from page admin
-app.post("/add", async function(req, res, next) {
-  await db.Accounts.findOne({ UserName: req.body.UserName }, async function(
-    err,
-    data
-  ) {
-    if (err) {
-      res.status(500).send("Đã xảy ra lỗi bất ngờ " + err);
-    } else {
-      if (data) {
-        res.status(400).send("UserName tồn tại");
-      } else {
-        await db.InformationUsers.findOne(
-          { Email: req.body.Email },
-          async function(error, rs) {
-            if (error) {
-              res.status(500).send("Đã xảy ra lỗi bất ngờ " + err);
-            } else {
-              if (rs) {
-                res.status(400).send("Email tồn tại");
-              } else {
-                if (req.body.Status === "unactive") {
-                  req.body.Status = 69;
-                } else if (req.body.Status === "active") {
-                  req.body.Status = 96;
-                } else {
-                  //bla bla
-                }
-                const code =
-                  req.body.Name +
-                  req.body.UserName +
-                  req.body.Password +
-                  Math.floor(Math.random() * 10);
-                const Token = md5(code);
-                await db.Accounts.create({
-                  Name: req.body.Name,
-                  UserName: req.body.UserName,
-                  Password: req.body.Password,
-                  Status: req.body.Status,
-                  Token: Token,
-                  Role: 0
-                });
-                await db.Accounts.findOne({
-                  Name: req.body.Name,
-                  UserName: req.body.UserName,
-                  Password: req.body.Password
-                }).exec(async function(err, data) {
-                  if (err)
-                    return res.status(500).end("Đã xảy ra lỗi bất ngờ " + err);
-                  else {
-                    if (!data) {
-                      res.status(400).send("Xảy ra lỗi khi đăng ký");
-                    } else {
-                      const _id = data._id;
-                      await db.InformationUsers.create({
-                        AccountID: _id,
-                        Email: req.body.Email,
-                        NumberPhone: req.body.NumberPhone,
-                        Address: req.body.Address,
-                        IdentityCard: req.body.IdentityCard,
-                        Birthday: req.body.Birthday
-                      });
-                      await db.InformationUsers.findOne({
-                        AccountID: _id
-                      }).exec(async function(err, data) {
-                        if (err)
-                          return res
-                            .status(500)
-                            .end("Đã xảy ra lỗi bất ngờ " + err);
-                        else {
-                          if (!data) {
-                            res.status(400).send("Xảy ra lỗi khi đăng ký");
-                          } else {
-                            res.status(200).send("success");
-                          }
-                        }
-                      });
-                    }
-                  }
-                });
-              }
-            }
-          }
-        );
-      }
-    }
-  });
-});
+
 
 module.exports = app;

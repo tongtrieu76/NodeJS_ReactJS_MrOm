@@ -235,9 +235,6 @@ app.post("/update", function(req, res, next) {
           if (req.body.Rate) {
             data.Rate = req.body.Rate;
           }
-          // if (req.body.CreateDate) {
-          //   data.CreateDate = req.body.CreateDate;
-          // }
           data.save(function(err, rs) {
             if (err) {
               console.log(err);
