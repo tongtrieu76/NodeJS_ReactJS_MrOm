@@ -87,93 +87,53 @@ app.post("/", async function(req, res, next) {
                 if (!data) {
                   res.status(400).send("Sai email hoac mat khau");
                 } else {
-                  if (data.Status == 96) {
-                    // 96 = status active
-                    var email = req.body.Email;
-                    var password = req.body.Password;
-                    if (email == data.Email && password == data.Password) {
-                      var token = {
-                        id: data.AccountID,
-                        token: data.Token,
-                        Role: data.Role
-                      };
-                      res.status(200).send(token);
+                  // 96 = status active
+                  var AccountID = data.AccountID;
+                  db.Accounts.findOne({ _id: AccountID }, (err, data) => {
+                    if (err) {
+                      console.log(err);
+                      res.status(500).send("Đã xảy ra lỗi bất ngờ");
                     } else {
-                      res.status(400).send(false);
-                    }
-                    data.save(function(err, rs) {
-                      if (err) {
-                        console.log(err);
-                        res.status(500).send();
+                      if (!data) {
+                        res.status(400).send("Sai email hoac mat khau");
                       } else {
-                        res.send(rs);
+                        if (data.Status == 96) {
+                          if (req.body.Password == data.Password) {
+                            var token_send = {
+                              id: data.AccountID,
+                              token: data.Token,
+                              Role: data.Role
+                            };
+                            res.status(200).send(token_send);
+                          } else {
+                            res.status(400).send(false);
+                          }
+                        } else if (data.Status == 69) {
+                          // 69 = status lock
+                          var trave = {
+                            UserName: data.UserName,
+                            Name: data.Name,
+                            WhyLock: data.WhyLock
+                          };
+                          res.send(400, trave);
+                        } else if (data.Status == 0) {
+                          //0 = status chưa active
+                          var trave = {
+                            UserName: data.UserName,
+                            Name: data.Name,
+                            CreateDate: data.CreateDate
+                          };
+                          res.send(200, trave);
+                        } else {
+                          res.send(400, "Bug!");
+                        }
                       }
-                    });
-                  } else if (data.Status == 69) {
-                    // 69 = status lock
-                    var trave = {
-                      UserName: data.UserName,
-                      Name: data.Name,
-                      WhyLock: data.WhyLock
-                    };
-                    res.send(400, trave);
-                  } else if (data.Status == 0) {
-                    //0 = status chưa active
-                    var trave = {
-                      UserName: data.UserName,
-                      Name: data.Name,
-                      CreateDate: data.CreateDate
-                    };
-                    res.send(200, trave);
-                  } else {
-                    res.send(400, "Bug!");
-                  }
+                    }
+                  });
                 }
               }
             }
           );
-        } else {
-          if (data.Status == 96) {
-            // 96 = status active
-            var email = req.body.Email;
-            var password = req.body.Password;
-            if (email == data.Email && password == data.Password) {
-              var token = {
-                id: data.AccountID,
-                token: data.Token,
-                Role: data.Role
-              };
-              res.status(200).send(token);
-            } else {
-              res.status(400).send(false);
-            }
-            data.save(function(err, rs) {
-              if (err) {
-                console.log(err);
-                res.status(500).send();
-              } else {
-                res.send(rs);
-              }
-            });
-          } else if (data.Status == 69) {
-            // 69 = status lock
-            var trave = {
-              UserName: data.UserName,
-              Name: data.Name,
-              WhyLock: data.WhyLock
-            };
-            res.send(400, trave);
-          } else if (data.Status == 0) {
-            //0 = status chưa active
-            var trave = {
-              UserName: data.UserName,
-              Name: data.Name,
-              CreateDate: data.CreateDate
-            };
-            res.send(200, trave);
-          } else {
-            res.send(400, "Bug!");
-          }
         }
       }
     });
