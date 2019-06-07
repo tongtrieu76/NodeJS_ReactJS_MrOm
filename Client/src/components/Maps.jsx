@@ -29,12 +29,18 @@ export default class Maps extends React.Component {
             L_Y: 10.2222,
             data_pos: null,
             getadd: null,
+            isMapInit:false,
+            route:null,
         };
+        this.setRoute = this.setRoute.bind(this);
         this.socket.on("location_driver_online", (data) => {
             this.setState({
                 data_pos: data
             })
         })
+    }
+    setRoute(route){
+        this.setState({route})
     }
     send_pos() {
 
@@ -151,11 +157,11 @@ export default class Maps extends React.Component {
         //  const Local1 = this.state.lat + "," +this.state.lat;
         console.log(this.map)
         console.log(this.state)
+        const {isMapInit} = this.state;
 
         // const showgetadd =this.state.getadd;
         return (
-
-            <div className="full slidebar_content">
+            <div className="slidebar_content">
 
                 <div className="form-group" id="book_xe">
                     <div className="input-group mt-5">
@@ -179,7 +185,7 @@ export default class Maps extends React.Component {
                 <div className="text-center"> <label > {Local}</label></div>
 
 
-                <LeafletMap  ref={this.saveMap} className="mapid" center={Local} zoom={18} onclick={this.aaaa}>
+                <LeafletMap  ref={this.saveMap}  center={Local} zoom={18} onclick={this.aaaa}>
                     <TileLayer
                         url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
                            // attribution="&copy; <a href=&quot;http://osm.org/copyright&quot;>OpenStreetMap</a> contributors"
@@ -216,7 +222,7 @@ export default class Maps extends React.Component {
                     }
 
                     {/* <Routing  map={this.map}/> */}
-                    {/* <Routing from={[57.74, 11.94]} to={[57.6792, 11.949]} map={this.map}/> */}
+                   {/* { isMapInit && <Routing from={[57.74, 11.94]} to={[57.6792, 11.949]} route={this.state.route} setRoute={this.setRoute}  map={this.map}/>}  */}
                    
                    {/* <div id="map123"> </div> */}
                     </LeafletMap>

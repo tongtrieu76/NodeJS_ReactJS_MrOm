@@ -162,6 +162,7 @@ if (localStorage.jwtToken) {
         <Route  path='/*' component={Error404} />
         
         </Switch>
+        
       </BrowserRouter>
     );
   }
