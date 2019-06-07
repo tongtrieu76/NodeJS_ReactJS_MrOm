@@ -113,7 +113,13 @@ a:hover{
   margin-right: -50%;
   transform: translate(-50%, -50%)
 }
-.leaflet-container{
-    width: 100%;
-    height: 700px;
-  }
+
+#myDIV {
+  width: 100%;
+  padding: 10px;
+  text-align: center;
+  height: 80px;
+  background: #00FF66;
+  margin-bottom: 30px;
+  display: inline-block;
+}

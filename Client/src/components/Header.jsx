@@ -1,20 +1,20 @@
 import React from 'react';
 
 import '../css/App.css';
-import Home from './app/Home';
-import Error404 from './app/Error404';
-import Login from './app/Login';
-import Register from './app/Register';
-import Admin from './app/Admin';
+import Home from './Home';
+import Error404 from './404/Error404';
+import Login from './login/Login';
+import Register from './register/Register';
+import Admin from './Admin';
 
-import Autho from './app/setAuthorizationToken';
-import {setCurrentUser} from './app/authActions'
+import Autho from './action/setAuthorizationToken';
+import {setCurrentUser,logout} from './action/authActions'
 import jwt from 'jsonwebtoken';
 
   
 
 
-import { logout } from "./app/authActions";
+// import { logout } from "./app/authActions";
 
 import { BrowserRouter , Route, NavLink, Switch } from "react-router-dom";
 

@@ -1,6 +1,6 @@
 import React from 'react';
-import img from '../../img/ohm.png';
-import logo from '../../img/mrom.png';
+import img from '../img/ohm.png';
+import logo from '../img/mrom.png';
 export default class Home extends React.Component {
     render() {
         return (

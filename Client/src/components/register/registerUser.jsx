@@ -4,7 +4,7 @@ import axios from "axios";
 import { BrowserRouter as Redirect } from "react-router-dom";
 
 import md5 from "md5";
-import { login } from "./authActions";
+import { login } from "../action/authActions";
 
 export default class RegisterUser extends React.Component {
   constructor(props) {

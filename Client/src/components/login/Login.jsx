@@ -5,7 +5,7 @@ import axios from 'axios';
 import {  Link, Redirect} from "react-router-dom";
 // import {connect} from 'react-redux';
 // import { BrowserRouter , Route, Link, Switch ,Redirect} from "react-router-dom";
-import { login } from "./authActions";
+import { login } from "../action/authActions";
 
 export default class Login extends Component {
   constructor(props) {
