@@ -2,6 +2,7 @@ import React, { Component } from "react";
 import Modal from "react-modal";
 import UserDetail from "./accounts/userdetail.jsx";
 import * as dateformat from "dateformat";
+import loading from '../../public/gif/loading3.gif';
 
 import "../../public/css/account.css";
 
@@ -19,9 +20,22 @@ const customStyles = {
     backgroundColor: "rgb(239, 248, 248)"
   }
 };
-
+const styleloading = {
+  content: {
+    top: "50%",
+    left: "50%",
+    right: "auto",
+    bottom: "auto",
+    marginRight: "-50%",
+    transform: "translate(-50%, -50%)",
+    height: "auto",
+    width: "auto",
+    backgroundColor: "rgb(255, 255, 255)",
+    overflow: "hidden"
+  }
+};
+var intervalLoading;
 class Account extends Component {
-
   //contrustor khởi tạo các state và con trỏ this
   constructor(props) {
     super(props);
@@ -35,7 +49,9 @@ class Account extends Component {
       datas_driver: [],
       modalIsOpen: false,
       modalIsOpen1: false,
-      details: {}
+      OpenLoading: false,
+      details: {},
+      dem: 9
     };
     this.openformthemnguoidung = this.openformthemnguoidung.bind(this);
     this.openformthemtaixe = this.openformthemtaixe.bind(this);
@@ -92,11 +108,14 @@ class Account extends Component {
             "isoDate"
           );
         }
+        clearInterval(intervalLoading);
         this.setState({
           isLoaded: true,
+          OpenLoading: false,
           datas: result,
           datas_user: arr_user,
-          datas_driver: arr_driver
+          datas_driver: arr_driver,
+          dem: 9
         });
         this.ham();
       })
@@ -138,8 +157,26 @@ class Account extends Component {
     var y = document.getElementById("them-tai-xe");
     x.style.display = "none";
     y.style.display = "none";
+    this.resetinput_tx(this);
+    this.resetinput(this);
   }
   // end
+
+  //open form loading...
+  openloading(){
+    this.setState({OpenLoading: true});
+    intervalLoading = setInterval(() => {
+      this.setState({dem: this.state.dem-1})
+    },1000);
+    setTimeout(()=>{
+      if(this.state.OpenLoading === true){
+        alert("Có sự cố xảy ra, vui lòng thử lại!");
+        clearInterval(intervalLoading);
+        this.setState({OpenLoading: false,dem: 9});
+      }
+    },10000);
+  }
+  //end
 
   //modal form
   // -- open modal form chi tiet
@@ -179,40 +216,43 @@ class Account extends Component {
     if (item.Role === "Admin") {
       alert("Không thể xóa tài khoản admin!");
     } else if (item.Role === "Khách hàng" || item.Role === "Tài xế") {
-      var x = window.confirm("Bạn có chắc chắn muốn xóa tài khoản "+ item.UserName + " này!");
-      if(x){
+      var x = window.confirm(
+        "Bạn có chắc chắn muốn xóa tài khoản " + item.UserName + " này!"
+      );
+      if (x) {
         const url = "http://localhost:4000/api/account/deleteacc";
-      var status = 0;
+        var status = 0;
 
-      //obj data send post
-      var obj = { _id: item._id, Token: item.Token };
-      fetch(url, {
-        method: "POST",
-        body: JSON.stringify(obj),
-        headers: {
-          "Content-Type": "application/json"
-        }
-      })
-        .then(res => {
-          status = res.status;
-          return res.text();
-        })
-        .then(response => {
-          if (status === 200 && response === "success") {
-            console.log(status + " : " + response);
-            alert("Cập nhật thành công!");
-            this.componentDidMount(this);
-          } else {
-            alert("Cập nhật thất bại!");
-            console.log("ERROR: " + status + " : " + response);
+        //obj data send post
+        var obj = { _id: item._id, Token: item.Token };
+        fetch(url, {
+          method: "POST",
+          body: JSON.stringify(obj),
+          headers: {
+            "Content-Type": "application/json"
           }
         })
-        .catch(error => {
-          alert("Đã xảy ra lỗi trong quá trình cập nhật! \nVui lòng thử lại!");
-          console.error("Error:", error);
-        });
+          .then(res => {
+            status = res.status;
+            return res.text();
+          })
+          .then(response => {
+            if (status === 200 && response === "success") {
+              console.log(status + " : " + response);
+              alert("Cập nhật thành công!");
+              this.componentDidMount(this);
+            } else {
+              alert("Cập nhật thất bại!");
+              console.log("ERROR: " + status + " : " + response);
+            }
+          })
+          .catch(error => {
+            alert(
+              "Đã xảy ra lỗi trong quá trình cập nhật! \nVui lòng thử lại!"
+            );
+            console.error("Error:", error);
+          });
       } else {
-
       }
     } else {
       alert("Bạn đã hack không thành công!");
@@ -303,69 +343,85 @@ class Account extends Component {
   // end
 
   // -- event thêm người dùng
-  themnguoidung(){
+  // -- -- user
+  themnguoidung() {
     var publicflag = 0;
 
     //tên đăng nhập
     var UserName = document.getElementById("UserName");
-    if(this.checkinputtext(UserName.value) !== true){
-      UserName.placeholder = ("Trường này không được để trống hoặc spam khoảng trắng!");
-      UserName.style.backgroundColor = "red";
+    if (this.checkinputtext(UserName.value) !== true) {
+      UserName.placeholder =
+        "Trường này không được để trống hoặc spam khoảng trắng!";
+      UserName.style.backgroundColor = "black";
+      UserName.style.color = "#fff";
       publicflag++;
     }
 
     //mật khẩu
     var Password = document.getElementById("Password");
-    if(this.checkinputtext(Password.value) !== true){
-      Password.placeholder = ("Trường này không được để trống hoặc spam khoảng trắng!");
-      Password.style.backgroundColor = "red";
+    if (this.checkinputtext(Password.value) !== true) {
+      Password.placeholder =
+        "Trường này không được để trống hoặc spam khoảng trắng!";
+      Password.style.backgroundColor = "black";
+      Password.style.color = "#fff";
       publicflag++;
     }
-    
+
     //mật khẩu again
     var PasswordAgain = document.getElementById("PasswordAgain");
-    if(this.checkinputtext(PasswordAgain.value) !== true){
-      PasswordAgain.placeholder = ("Trường này không được để trống hoặc spam khoảng trắng!");
-      PasswordAgain.style.backgroundColor = "red";
+    if (this.checkinputtext(PasswordAgain.value) !== true) {
+      PasswordAgain.placeholder =
+        "Trường này không được để trống hoặc spam khoảng trắng!";
+      PasswordAgain.style.backgroundColor = "black";
+      PasswordAgain.style.color = "#fff";
       publicflag++;
     }
 
     //tên chủ tài khoản
-    var Name = document.getElementById('Name');
-    if(this.checkinputtext(Name.value) !== true){
-      Name.placeholder = ("Trường này không được để trống hoặc spam khoảng trắng!");
-      Name.style.backgroundColor = "red";
+    var Name = document.getElementById("Name");
+    if (this.checkinputtext(Name.value) !== true) {
+      Name.placeholder =
+        "Trường này không được để trống hoặc spam khoảng trắng!";
+      Name.style.backgroundColor = "black";
+      Name.style.color = "#fff";
       publicflag++;
     }
 
     //số điện thoại
     var NumberPhone = document.getElementById("NumberPhone");
-    if(this.checkinputtext(NumberPhone.value) !== true){
-      NumberPhone.placeholder = ("Trường này không được để trống hoặc spam khoảng trắng!");
-      NumberPhone.style.backgroundColor = "red";
+    if (this.checkinputtext(NumberPhone.value) !== true) {
+      NumberPhone.placeholder =
+        "Trường này không được để trống hoặc spam khoảng trắng!";
+      NumberPhone.style.backgroundColor = "black";
+      NumberPhone.style.color = "#fff";
       publicflag++;
     }
 
     //địa chỉ
     var Address = document.getElementById("Address");
-    if(this.checkinputtext(Address.value) !== true){
-      Address.placeholder = ("Trường này không được để trống hoặc spam khoảng trắng!");
-      Address.style.backgroundColor = "red";
+    if (this.checkinputtext(Address.value) !== true) {
+      Address.placeholder =
+        "Trường này không được để trống hoặc spam khoảng trắng!";
+      Address.style.backgroundColor = "black";
+      Address.style.color = "#fff";
       publicflag++;
     }
 
     //email
     var Email = document.getElementById("Email");
     var flag = 0;
-    var arr = (Email.value.split(""));
+    var arr = Email.value.split("");
     arr.forEach(item => {
-      if(item === "@"){
+      if (item === "@") {
         flag++;
       }
-    })
-    if(flag === 0){
-      Email.placeholder = ("Trường này không được để trống hoặc spam khoảng trắng!");
-      Email.style.backgroundColor = "red";
+    });
+    if (flag === 0) {
+      Email.placeholder =
+        "Trường này không được để trống hoặc spam khoảng trắng!";
+      Email.style.backgroundColor = "black";
+      Email.style.color = "#fff";
+      // alert("Email có vẻ sai, vui xem lại trường email!");
       publicflag++;
     }
 
@@ -373,34 +429,39 @@ class Account extends Component {
     var IdentityCard = document.getElementById("IdentityCard");
     // if(this.checkinputtext(IdentityCard.value) !== true){
     //   IdentityCard.placeholder = ("Trường này không được để trống hoặc spam khoảng trắng!");
-    //   IdentityCard.style.backgroundColor = "red";
+    //   IdentityCard.style.backgroundColor = "black";
     // }
 
     //sinh nhật
     var Birthday = document.getElementById("Birthday");
     // if(this.checkinputtext(Birthday.value) !== true){
     //   Birthday.placeholder = ("Trường này không được để trống hoặc spam khoảng trắng!");
-    //   Birthday.style.backgroundColor = "red";
+    //   Birthday.style.backgroundColor = "black";
     // }
 
     //trạng thái
     var Status = document.querySelector('input[name="optradio"]:checked');
-    
 
     //check pass and passagain
-    if(this.checkinputtext(PasswordAgain.value) === true){
-      if(Password.value !== PasswordAgain.value){
+    if (this.checkinputtext(PasswordAgain.value) === true) {
+      if (Password.value !== PasswordAgain.value) {
         alert("Hai mật khẩu phải trùng nhau!");
-        PasswordAgain.style.backgroundColor = "red";
+        PasswordAgain.style.backgroundColor = "black";
+        PasswordAgain.style.color = "#fff";
+        Password.style.backgroundColor = "black";
+        Password.style.color = "#fff";
         publicflag++;
       } else {
         Password.style.backgroundColor = "#fff";
-      PasswordAgain.style.backgroundColor = "#fff";
+        Password.style.color = "black";
+        PasswordAgain.style.backgroundColor = "#fff";
+        PasswordAgain.style.color = "black";
       }
     }
 
-    if(publicflag === 0){
-      var obj = {UserName: UserName.value,
+    if (publicflag === 0) {
+      var obj = {
+        UserName: UserName.value,
         Password: Password.value,
         Name: Name.value,
         NumberPhone: NumberPhone.value,
@@ -408,28 +469,37 @@ class Account extends Component {
         Email: Email.value,
         IdentityCard: IdentityCard.value,
         Birthday: Birthday.value,
-        Status: Status.value};
+        Status: Status.value
+      };
       const url = "http://localhost:4000/api/user/add";
 
+      this.openloading(this);
       //fetch post call api
       var status = 0;
-      fetch(url,{
+      fetch(url, {
         method: "POST",
         body: JSON.stringify(obj),
         headers: {
           "Content-Type": "application/json"
         }
-        })
-        .then(res => {status = res.status;return res.text();})
+      })
         .then(res => {
-          if(status === 200 && res === "success"){
-            console.log(status + " : " + res);
+          status = res.status;
+          return res.text();
+        })
+        .then(res => async function(){
+          if (status === 200 && res === "success") {
+            
+            setTimeout(() => {
+              console.log(status + " : " + res);
             alert("Thêm người dùng thành công!");
-            this.componentDidMount(this);
-          } else if(status === 400 && res === "Email tồn tại"){
+            this.resetinput(this);
+              this.componentDidMount(this);
+            },5000);
+          } else if (status === 400 && res === "Email tồn tại") {
             console.log(status + " : " + res);
             alert("Email tồn tại, vui lòng dùng email khác!");
-          } else if(status === 400 && res === "UserName tồn tại"){
+          } else if (status === 400 && res === "UserName tồn tại") {
             console.log(status + " : " + res);
             alert("Tên đăng nhập tồn tại, vui lòng dùng tên đăng nhập khác!");
           } else {
@@ -438,48 +508,395 @@ class Account extends Component {
           }
         })
         .catch(error => console.error("Error:", error));
-      } else {
-      alert("fail");
+    } else {
+      //bla bla
     }
   }
+  //driver
+  themnguoidung_tx() {
+    var publicflag = 0;
+
+    //tên đăng nhập
+    var UserName = document.getElementById("UserName_tx");
+    if (this.checkinputtext(UserName.value) !== true) {
+      UserName.placeholder =
+        "Trường này không được để trống hoặc spam khoảng trắng!";
+      UserName.style.backgroundColor = "black";
+      UserName.style.color = "#fff";
+      publicflag++;
+    }
+
+    //mật khẩu
+    var Password = document.getElementById("Password_tx");
+    if (this.checkinputtext(Password.value) !== true) {
+      Password.placeholder =
+        "Trường này không được để trống hoặc spam khoảng trắng!";
+      Password.style.backgroundColor = "black";
+      Password.style.color = "#fff";
+      publicflag++;
+    }
+
+    //mật khẩu again
+    var PasswordAgain = document.getElementById("PasswordAgain_tx");
+    if (this.checkinputtext(PasswordAgain.value) !== true) {
+      PasswordAgain.placeholder =
+        "Trường này không được để trống hoặc spam khoảng trắng!";
+      PasswordAgain.style.backgroundColor = "black";
+      PasswordAgain.style.color = "#fff";
+      publicflag++;
+    }
+
+    //tên chủ tài khoản
+    var Name = document.getElementById("Name_tx");
+    if (this.checkinputtext(Name.value) !== true) {
+      Name.placeholder =
+        "Trường này không được để trống hoặc spam khoảng trắng!";
+      Name.style.backgroundColor = "black";
+      Name.style.color = "#fff";
+      publicflag++;
+    }
+
+    //số điện thoại
+    var NumberPhone = document.getElementById("NumberPhone_tx");
+    if (this.checkinputtext(NumberPhone.value) !== true) {
+      NumberPhone.placeholder =
+        "Trường này không được để trống hoặc spam khoảng trắng!";
+      NumberPhone.style.backgroundColor = "black";
+      NumberPhone.style.color = "#fff";
+      publicflag++;
+    }
+
+    //địa chỉ
+    var Address = document.getElementById("Address_tx");
+    if (this.checkinputtext(Address.value) !== true) {
+      Address.placeholder =
+        "Trường này không được để trống hoặc spam khoảng trắng!";
+      Address.style.backgroundColor = "black";
+      Address.style.color = "#fff";
+      publicflag++;
+    }
+
+    //email
+    var Email = document.getElementById("Email_tx");
+    var flag = 0;
+    var arr = Email.value.split("");
+    arr.forEach(item => {
+      if (item === "@") {
+        flag++;
+      }
+    });
+    if (flag === 0) {
+      Email.placeholder =
+        "Trường này không được để trống hoặc spam khoảng trắng!";
+      Email.style.backgroundColor = "black";
+      Email.style.color = "#fff";
+      // alert("Email có vẻ sai, vui xem lại trường email!");
+      publicflag++;
+    }
+
+    //chứng minh nhân dân
+    var IdentityCard = document.getElementById("IdentityCard_tx");
+    // if(this.checkinputtext(IdentityCard.value) !== true){
+    //   IdentityCard.placeholder = ("Trường này không được để trống hoặc spam khoảng trắng!");
+    //   IdentityCard.style.backgroundColor = "black";
+    // }
+
+    //sinh nhật
+    var Birthday = document.getElementById("Birthday_tx");
+    // if(this.checkinputtext(Birthday.value) !== true){
+    //   Birthday.placeholder = ("Trường này không được để trống hoặc spam khoảng trắng!");
+    //   Birthday.style.backgroundColor = "black";
+    // }
+
+    //trạng thái
+    var Status = document.querySelector('input[name="optradio"]:checked');
+
+    //check pass and passagain
+    if (this.checkinputtext(PasswordAgain.value) === true) {
+      if (Password.value !== PasswordAgain.value) {
+        alert("Hai mật khẩu phải trùng nhau!");
+        PasswordAgain.style.backgroundColor = "black";
+        PasswordAgain.style.color = "#fff";
+        Password.style.backgroundColor = "black";
+        Password.style.color = "#fff";
+        publicflag++;
+      } else {
+        Password.style.backgroundColor = "#fff";
+        Password.style.color = "black";
+        PasswordAgain.style.backgroundColor = "#fff";
+        PasswordAgain.style.color = "black";
+      }
+    }
+
+    if (publicflag === 0) {
+      var obj = {
+        UserName: UserName.value,
+        Password: Password.value,
+        Name: Name.value,
+        NumberPhone: NumberPhone.value,
+        Address: Address.value,
+        Email: Email.value,
+        IdentityCard: IdentityCard.value,
+        Birthday: Birthday.value,
+        Status: Status.value
+      };
+      const url = "http://localhost:4000/api/driver/add";
+
+      this.openloading(this);
+      var status = 0;
+      fetch(url, {
+        method: "POST",
+        body: JSON.stringify(obj),
+        headers: {
+          "Content-Type": "application/json"
+        }
+      })
+        .then(res => {
+          status = res.status;
+          return res.text();
+        })
+        .then(res => {
+          if (status === 200 && res === "success") {
+            setTimeout(()=>{
+              console.log(status + " : " + res);
+              alert("Thêm người dùng thành công!");
+              this.resetinput_tx(this);
+              this.componentDidMount(this);
+            },5000);
+          } else if (status === 400 && res === "Email tồn tại") {
+            console.log(status + " : " + res);
+            alert("Email tồn tại, vui lòng dùng email khác!");
+          } else if (status === 400 && res === "UserName tồn tại") {
+            console.log(status + " : " + res);
+            alert("Tên đăng nhập tồn tại, vui lòng dùng tên đăng nhập khác!");
+          } else {
+            console(status + " : " + res);
+            alert("Đã xảy ra lỗi bất ngờ, vui lòng thử lại!");
+          }
+        })
+        .catch(error => console.error("Error:", error));
+    } else {
+      //bla bla
+    }
+  }
+  //end
 
   //check input
-  checkinputtext(x){
-    if(x === null || x === ""){
-        return false;
+  checkinputtext(x) {
+    if (x === null || x === "") {
+      return false;
     }
-    
+
     //check space
     var temped = 0;
     var arr = x.split("");
-    for(var i=0;i<arr.length;i++){
-      if(arr[i] !== " "){
+    for (var i = 0; i < arr.length; i++) {
+      if (arr[i] !== " ") {
         temped++;
       }
     }
-    if(temped === 0)
-    {
-        return false;
+    if (temped === 0) {
+      return false;
     } else {
-        return true;
+      return true;
     }
-
   }
   //end
-  
+
   //event change backgroundcolor input khi check space,null when submit them nguoi dung
-  changeinput_name(){document.getElementById("Name").style.backgroundColor = "#fff";}
-  changeinput_username(){document.getElementById("UserName").style.backgroundColor = "#fff";}
-  changeinput_password(){document.getElementById("Password").style.backgroundColor = "#fff";}
-  changeinput_passwordagain(){document.getElementById("PasswordAgain").style.backgroundColor = "#fff";}
-  changeinput_numberphone(){document.getElementById("NumberPhone").style.backgroundColor = "#fff";}
-  changeinput_address(){document.getElementById("Address").style.backgroundColor = "#fff";}
-  changeinput_email(){document.getElementById("Email").style.backgroundColor = "#fff";}
-  changeinput_identitycard(){document.getElementById("IdentityCard").style.backgroundColor = "#fff";}
-  changeinput_birthday(){document.getElementById("Birthday").style.backgroundColor = "#fff";}
+  // -- user
+  changeinput_name() {
+    document.getElementById("Name").style.backgroundColor = "#fff";
+    document.getElementById("Name").style.color = "black";
+  }
+  changeinput_username() {
+    document.getElementById("UserName").style.backgroundColor = "#fff";
+    document.getElementById("UserName").style.color = "black";
+  }
+  changeinput_password() {
+    var pass = document.getElementById("Password");
+    var again = document.getElementById("PasswordAgain");
+    const key = pass.value;
+    const keyagain = again.value;
+    if (keyagain !== key) {
+      again.style.backgroundColor = "black";
+      again.style.color = "#fff";
+    } else {
+      again.style.backgroundColor = "#fff";
+      again.style.color = "black";
+    }
+    document.getElementById("Password").style.backgroundColor = "#fff";
+    document.getElementById("Password").style.color = "black";
+  }
+  changeinput_passwordagain() {
+    var pass = document.getElementById("Password");
+    var again = document.getElementById("PasswordAgain");
+    const key = pass.value;
+    const keyagain = again.value;
+    if (keyagain !== key) {
+      again.style.backgroundColor = "black";
+      again.style.color = "#fff";
+    } else {
+      again.style.backgroundColor = "#fff";
+      again.style.color = "black";
+    }
+  }
+  changeinput_numberphone() {
+    document.getElementById("NumberPhone").style.backgroundColor = "#fff";
+    document.getElementById("NumberPhone").style.color = "black";
+  }
+  changeinput_address() {
+    document.getElementById("Address").style.backgroundColor = "#fff";
+    document.getElementById("Address").style.color = "black";
+  }
+  changeinput_email() {
+    var x = document.getElementById("Email");
+    if (x.value === "") {
+      x.style.backgroundColor = "#fff";
+      x.style.color = "black";
+    } else {
+      var flag = 0;
+      const arr = x.value.split("");
+      arr.forEach(item => {
+        if (item === "@") {
+          flag++;
+        }
+      });
+      if (flag === 1) {
+        x.style.backgroundColor = "#fff";
+        x.style.color = "black";
+      } else {
+        x.style.backgroundColor = "black";
+        x.style.color = "#fff";
+      }
+    }
+  }
+  changeinput_identitycard() {
+    document.getElementById("IdentityCard").style.backgroundColor = "#fff";
+    document.getElementById("IdentityCard").style.color = "black";
+  }
+  changeinput_birthday() {
+    document.getElementById("Birthday").style.backgroundColor = "#fff";
+    document.getElementById("Birthday").style.color = "black";
+  }
+  //driver
+  changeinput_name_tx() {
+    document.getElementById("Name_tx").style.backgroundColor = "#fff";
+    document.getElementById("Name_tx").style.color = "black";
+  }
+  changeinput_username_tx() {
+    document.getElementById("UserName_tx").style.backgroundColor = "#fff";
+    document.getElementById("UserName_tx").style.color = "black";
+  }
+  changeinput_password_tx() {
+    var pass = document.getElementById("Password_tx");
+    var again = document.getElementById("PasswordAgain_tx");
+    const key = pass.value;
+    const keyagain = again.value;
+    if (keyagain !== key) {
+      again.style.backgroundColor = "black";
+      again.style.color = "#fff";
+    } else {
+      again.style.backgroundColor = "#fff";
+      again.style.color = "black";
+    }
+    document.getElementById("Password_tx").style.backgroundColor = "#fff";
+    document.getElementById("Password_tx").style.color = "black";
+  }
+  changeinput_passwordagain_tx() {
+    var pass = document.getElementById("Password_tx");
+    var again = document.getElementById("PasswordAgain_tx");
+    const key = pass.value;
+    const keyagain = again.value;
+    if (keyagain !== key) {
+      again.style.backgroundColor = "black";
+      again.style.color = "#fff";
+    } else {
+      again.style.backgroundColor = "#fff";
+      again.style.color = "black";
+    }
+  }
+  changeinput_numberphone_tx() {
+    document.getElementById("NumberPhone_tx").style.backgroundColor = "#fff";
+    document.getElementById("NumberPhone_tx").style.color = "black";
+  }
+  changeinput_address_tx() {
+    document.getElementById("Address_tx").style.backgroundColor = "#fff";
+    document.getElementById("Address_tx").style.color = "black";
+  }
+  changeinput_email_tx() {
+    var x = document.getElementById("Email_tx");
+    if (x.value === "") {
+      x.style.backgroundColor = "#fff";
+      x.style.color = "black";
+    } else {
+      var flag = 0;
+      const arr = x.value.split("");
+      arr.forEach(item => {
+        if (item === "@") {
+          flag++;
+        }
+      });
+      if (flag === 1) {
+        x.style.backgroundColor = "#fff";
+        x.style.color = "black";
+      } else {
+        x.style.backgroundColor = "black";
+        x.style.color = "#fff";
+      }
+    }
+  }
+  changeinput_identitycard_tx() {
+    document.getElementById("IdentityCard_tx").style.backgroundColor = "#fff";
+    document.getElementById("IdentityCard_tx").style.color = "black";
+  }
+  changeinput_birthday_tx() {
+    document.getElementById("Birthday_tx").style.backgroundColor = "#fff";
+    document.getElementById("Birthday_tx").style.color = "black";
+  }
   //end
 
-
+  // clear input when submit add user success
+  resetinput() {
+    document.getElementById("Name").value = "";
+    document.getElementById("UserName").value = "";
+    document.getElementById("Password").value = "";
+    document.getElementById("PasswordAgain").value = "";
+    document.getElementById("NumberPhone").value = "";
+    document.getElementById("Address").value = "";
+    document.getElementById("Email").value = "";
+    document.getElementById("IdentityCard").value = "";
+    document.getElementById("Birthday").value = "";
+    this.changeinput_name(this);
+    this.changeinput_username(this);
+    this.changeinput_password(this);
+    this.changeinput_passwordagain(this);
+    this.changeinput_numberphone(this);
+    this.changeinput_address(this);
+    this.changeinput_email(this);
+    this.changeinput_identitycard(this);
+    this.changeinput_birthday(this);
+  }
+  resetinput_tx() {
+    document.getElementById("Name_tx").value = "";
+    document.getElementById("UserName_tx").value = "";
+    document.getElementById("Password_tx").value = "";
+    document.getElementById("PasswordAgain_tx").value = "";
+    document.getElementById("NumberPhone_tx").value = "";
+    document.getElementById("Address_tx").value = "";
+    document.getElementById("Email_tx").value = "";
+    document.getElementById("IdentityCard_tx").value = "";
+    document.getElementById("Birthday_tx").value = "";
+    this.changeinput_name_tx(this);
+    this.changeinput_username_tx(this);
+    this.changeinput_password_tx(this);
+    this.changeinput_passwordagain_tx(this);
+    this.changeinput_numberphone_tx(this);
+    this.changeinput_address_tx(this);
+    this.changeinput_email_tx(this);
+    this.changeinput_identitycard_tx(this);
+    this.changeinput_birthday_tx(this);
+  }
 
   // đổi filter search sẽ đổ lại data vào table
   ham() {
@@ -495,14 +912,40 @@ class Account extends Component {
     }
   }
   // end
+  
+
 
   render() {
     // console.log("RENDER");
     const { datas_1 } = this.state;
     return (
       <div id="content-1" onLoad={this.ham.bind(this)}>
+        <button onClick={this.openloading.bind(this)}>Openloading</button>
         <div id="open_modal_1" />
         {/* modal */}
+        <Modal
+          isOpen={this.state.OpenLoading}
+          onRequestClose={this.closeModal}
+          style={styleloading}
+        >
+          {/* <button
+            type="button"
+            onClick={this.closeModal}
+            id="btn-close"
+            className="btn btn-light"
+          >
+            <span aria-hidden="true">&times;</span>
+          </button> */}
+          <div>
+            <p>Đang xử lý vui lòng chờ trong giây lát...</p>
+            <center>
+            <h1>{this.state.dem}</h1>
+            </center>
+            <center>
+              <img src={loading} alt={"Loading..."} />
+            </center>
+          </div>
+        </Modal>
         <Modal
           isOpen={this.state.modalIsOpen}
           onRequestClose={this.closeModal}
@@ -574,13 +1017,13 @@ class Account extends Component {
           </div>
         </Modal>
         {/* END modal */}
-        
+
         {/* Title của content */}
         <div className="col-md-12">
           <p id="title-content">Quản lý tài khoản khách hàng và tài xế</p>
         </div>
         {/* END Title của content */}
-        
+
         {/* button thêm người dùng và thêm tài xế */}
         <div className="col-md-12">
           <button
@@ -594,7 +1037,7 @@ class Account extends Component {
           </button>
         </div>
         {/* END button thêm người dùng và thêm tài xế */}
-        
+
         {/* form thêm người dùng */}
         <div className="col-md-12 group-them">
           <form className="form-horizontal" id="them-nguoi-dung">
@@ -614,7 +1057,7 @@ class Account extends Component {
                 <input
                   type="text"
                   className="form-control col-md-10"
-                  placeholder="Nhập tên đăng nhập..."
+                  placeholder="Nhập tên đăng nhập (VD: khachhangthanthiet)"
                   id="UserName"
                   onChange={this.changeinput_username.bind(this)}
                 />
@@ -630,7 +1073,7 @@ class Account extends Component {
                 <input
                   type="password"
                   className="form-control col-md-10"
-                  placeholder="Nhập mật khẩu..."
+                  placeholder="Nhập mật khẩu (VD: mromvuive<3)"
                   id="Password"
                   onChange={this.changeinput_password.bind(this)}
                 />
@@ -646,7 +1089,7 @@ class Account extends Component {
                 <input
                   type="password"
                   className="form-control col-md-10"
-                  placeholder="Nhập lại mật khẩu..."
+                  placeholder="Nhập lại mật khẩu - vui lòng nhập đúng mật khẩu nhập trước đó (VD: mromvuive<3)"
                   id="PasswordAgain"
                   onChange={this.changeinput_passwordagain.bind(this)}
                 />
@@ -662,7 +1105,7 @@ class Account extends Component {
                 <input
                   type="text"
                   className="form-control col-md-10"
-                  placeholder="Nhập tên chủ tài khoản..."
+                  placeholder="Nhập tên chủ tài khoản (VD: mromdeptrai)"
                   id="Name"
                   onChange={this.changeinput_name.bind(this)}
                 />
@@ -672,13 +1115,13 @@ class Account extends Component {
               <center>
                 <label className="col-md-2 label-add">
                   Số điện thoại: <span className="span-must">(*)</span>
-                  </label>
+                </label>
               </center>
               <div className="col-md-10">
                 <input
                   type="text"
                   className="form-control col-md-10"
-                  placeholder="Nhập số điện thoại..."
+                  placeholder="Nhập số điện thoại (VD: 0333333333)"
                   id="NumberPhone"
                   onChange={this.changeinput_numberphone.bind(this)}
                 />
@@ -688,13 +1131,13 @@ class Account extends Component {
               <center>
                 <label className="col-md-2 label-add">
                   Địa chỉ: <span className="span-must">(*)</span>
-                  </label>
+                </label>
               </center>
               <div className="col-md-10">
                 <input
                   type="text"
                   className="form-control col-md-10"
-                  placeholder="Nhập địa chỉ..."
+                  placeholder="Nhập địa chỉ (VD: 227 Nguyễn Văn Cừ P.4 Q.5 TPHCM)"
                   id="Address"
                   onChange={this.changeinput_address.bind(this)}
                 />
@@ -710,7 +1153,7 @@ class Account extends Component {
                 <input
                   type="email"
                   className="form-control col-md-10"
-                  placeholder="Nhập email..."
+                  placeholder="Nhập email (VD: noname@gmail.com)"
                   id="Email"
                   onChange={this.changeinput_email.bind(this)}
                 />
@@ -718,15 +1161,13 @@ class Account extends Component {
             </div>
             <div className="form-group">
               <center>
-                <label className="col-md-2 label-add">
-                  Số CMND: 
-                  </label>
+                <label className="col-md-2 label-add">Số CMND:</label>
               </center>
               <div className="col-md-10">
                 <input
                   type="text"
                   className="form-control col-md-10"
-                  placeholder="Nhập chứng minh nhân dân..."
+                  placeholder="Nhập chứng minh nhân dân (VD: 212456987)"
                   id="IdentityCard"
                   onChange={this.changeinput_identitycard.bind(this)}
                 />
@@ -734,15 +1175,13 @@ class Account extends Component {
             </div>
             <div className="form-group">
               <center>
-                <label className="col-md-2 label-add">
-                  Ngày sinh: 
-                  </label>
+                <label className="col-md-2 label-add">Ngày sinh:</label>
               </center>
               <div className="col-md-10">
                 <input
                   type="date"
                   className="form-control col-md-10"
-                  max = "9999-12-31"
+                  max="9999-12-31"
                   id="Birthday"
                   onChange={this.changeinput_birthday.bind(this)}
                 />
@@ -756,7 +1195,12 @@ class Account extends Component {
               </center>
               <div className="col-md-10">
                 <label className="radio-inline">
-                  <input type="radio" name="optradio" value="active" defaultChecked />
+                  <input
+                    type="radio"
+                    name="optradio"
+                    value="active"
+                    defaultChecked
+                  />
                   Kích hoạt
                 </label>
                 <label className="radio-inline">
@@ -767,7 +1211,11 @@ class Account extends Component {
               <div className="form-group">
                 <div className="col-md-2" />
                 <div className="col-md-10">
-                  <button type="button" className="btn btn-success"onClick={this.themnguoidung.bind(this)}>
+                  <button
+                    type="button"
+                    className="btn btn-success"
+                    onClick={this.themnguoidung.bind(this)}
+                  >
                     Thêm
                   </button>
                   <button
@@ -783,7 +1231,7 @@ class Account extends Component {
           </form>
         </div>
         {/* END form thêm người dùng */}
-        
+
         {/* form thêm tài xế */}
         <div className="col-md-12 group-them">
           <form className="form-horizontal" id="them-tai-xe">
@@ -795,7 +1243,7 @@ class Account extends Component {
             </center>
             <div className="form-group">
               <center>
-                <label className="col-md-2">
+                <label className="col-md-2 label-add">
                   Tên đăng nhập: <span className="span-must">(*)</span>
                 </label>
               </center>
@@ -803,13 +1251,15 @@ class Account extends Component {
                 <input
                   type="text"
                   className="form-control col-md-10"
-                  placeholder="Nhập tên đăng nhập..."
+                  placeholder="Nhập tên đăng nhập (VD: khachhangthanthiet)"
+                  id="UserName_tx"
+                  onChange={this.changeinput_username_tx.bind(this)}
                 />
               </div>
             </div>
             <div className="form-group">
               <center>
-                <label className="col-md-2">
+                <label className="col-md-2 label-add">
                   Mật khẩu: <span className="span-must">(*)</span>
                 </label>
               </center>
@@ -817,13 +1267,15 @@ class Account extends Component {
                 <input
                   type="password"
                   className="form-control col-md-10"
-                  placeholder="Nhập mật khẩu..."
+                  placeholder="Nhập mật khẩu (VD: mromvuive<3)"
+                  id="Password_tx"
+                  onChange={this.changeinput_password_tx.bind(this)}
                 />
               </div>
             </div>
             <div className="form-group">
               <center>
-                <label className="col-md-2">
+                <label className="col-md-2 label-add">
                   Nhập lại mật khẩu: <span className="span-must">(*)</span>
                 </label>
               </center>
@@ -831,13 +1283,15 @@ class Account extends Component {
                 <input
                   type="password"
                   className="form-control col-md-10"
-                  placeholder="Nhập lại mật khẩu..."
+                  placeholder="Nhập lại mật khẩu - vui lòng nhập đúng mật khẩu nhập trước đó (VD: mromvuive<3)"
+                  id="PasswordAgain_tx"
+                  onChange={this.changeinput_passwordagain_tx.bind(this)}
                 />
               </div>
             </div>
             <div className="form-group">
               <center>
-                <label className="col-md-2">
+                <label className="col-md-2 label-add">
                   Tên chủ tài khoản: <span className="span-must">(*)</span>
                 </label>
               </center>
@@ -845,52 +1299,139 @@ class Account extends Component {
                 <input
                   type="text"
                   className="form-control col-md-10"
-                  placeholder="Nhập tên chủ tài khoản..."
+                  placeholder="Nhập tên chủ tài khoản (VD: mromdeptrai)"
+                  id="Name_tx"
+                  onChange={this.changeinput_name_tx.bind(this)}
                 />
               </div>
             </div>
             <div className="form-group">
               <center>
-                <label className="col-md-2">
+                <label className="col-md-2 label-add">
+                  Số điện thoại: <span className="span-must">(*)</span>
+                </label>
+              </center>
+              <div className="col-md-10">
+                <input
+                  type="text"
+                  className="form-control col-md-10"
+                  placeholder="Nhập số điện thoại (VD: 0333333333)"
+                  id="NumberPhone_tx"
+                  onChange={this.changeinput_numberphone_tx.bind(this)}
+                />
+              </div>
+            </div>
+            <div className="form-group">
+              <center>
+                <label className="col-md-2 label-add">
+                  Địa chỉ: <span className="span-must">(*)</span>
+                </label>
+              </center>
+              <div className="col-md-10">
+                <input
+                  type="text"
+                  className="form-control col-md-10"
+                  placeholder="Nhập địa chỉ (VD: 227 Nguyễn Văn Cừ P.4 Q.5 TPHCM)"
+                  id="Address_tx"
+                  onChange={this.changeinput_address_tx.bind(this)}
+                />
+              </div>
+            </div>
+            <div className="form-group">
+              <center>
+                <label className="col-md-2 label-add">
+                  Email: <span className="span-must">(*)</span>
+                </label>
+              </center>
+              <div className="col-md-10">
+                <input
+                  type="email"
+                  className="form-control col-md-10"
+                  placeholder="Nhập email (VD: noname@gmail.com)"
+                  id="Email_tx"
+                  onChange={this.changeinput_email_tx.bind(this)}
+                />
+              </div>
+            </div>
+            <div className="form-group">
+              <center>
+                <label className="col-md-2 label-add">Số CMND:</label>
+              </center>
+              <div className="col-md-10">
+                <input
+                  type="text"
+                  className="form-control col-md-10"
+                  placeholder="Nhập chứng minh nhân dân (VD: 212456987)"
+                  id="IdentityCard_tx"
+                  onChange={this.changeinput_identitycard_tx.bind(this)}
+                />
+              </div>
+            </div>
+            <div className="form-group">
+              <center>
+                <label className="col-md-2 label-add">Ngày sinh:</label>
+              </center>
+              <div className="col-md-10">
+                <input
+                  type="date"
+                  className="form-control col-md-10"
+                  max="9999-12-31"
+                  id="Birthday_tx"
+                  onChange={this.changeinput_birthday_tx.bind(this)}
+                />
+              </div>
+            </div>
+            <div className="form-group">
+              <center>
+                <label className="col-md-2 label-add">
                   Trạng thái: <span className="span-must">(*)</span>
                 </label>
               </center>
               <div className="col-md-10">
                 <label className="radio-inline">
-                  <input type="radio" name="optradio" defaultChecked />
+                  <input
+                    type="radio"
+                    name="optradio"
+                    value="active"
+                    defaultChecked
+                  />
                   Kích hoạt
                 </label>
                 <label className="radio-inline">
-                  <input type="radio" name="optradio" />
+                  <input type="radio" name="optradio" value="unactive" />
                   Vô hiệu hóa
                 </label>
               </div>
-            </div>
-            <div className="form-group">
-              <div className="col-md-2" />
-              <div className="col-md-10">
-                <button type="button" className="btn btn-success">
-                  Thêm
-                </button>
-                <button
-                  type="button"
-                  className="btn btn-info btn-huybo"
-                  onClick={this.cancelbutton}
-                >
-                  Hủy bỏ
-                </button>
+              <div className="form-group">
+                <div className="col-md-2" />
+                <div className="col-md-10">
+                  <button
+                    type="button"
+                    className="btn btn-success"
+                    onClick={this.themnguoidung_tx.bind(this)}
+                  >
+                    Thêm
+                  </button>
+                  <button
+                    type="button"
+                    className="btn btn-info btn-huybo"
+                    onClick={this.cancelbutton}
+                  >
+                    Hủy bỏ
+                  </button>
+                </div>
               </div>
             </div>
           </form>
         </div>
         {/* END form thêm tài xế */}
-        
+
         {/* thẻ hr nhìn cho nó phân định ranh giới ---> để cute thôi :* */}
         <div className="col-md-12">
           <hr />
         </div>
         {/* END thẻ hr nhìn cho nó phân định ranh giới ---> để cute thôi :* */}
-        
+
         {/* thanh search và filter để tìm kiếm */}
         <div className="col-md-12 input-group">
           <input
@@ -919,7 +1460,7 @@ class Account extends Component {
           </div>
         </div>
         {/* END thanh search và filter để tìm kiếm */}
-        
+
         {/* table show account */}
         <div className="col-md-12 group-them" id="content-content">
           <table className="table">
