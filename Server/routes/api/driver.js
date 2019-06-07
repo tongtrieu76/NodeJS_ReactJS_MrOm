@@ -24,7 +24,7 @@ app.get("/", (req, res, next) => {
 // -- -- driver theo id
 app.get("/:id", function(req, res, next) {
   try {
-    db.InformationUsers.findOne({ AccountID: req.params.id }, function(
+    db.InformationDrivers.findOne({ AccountID: req.params.id }, function(
       err,
       result
     ) {
@@ -40,7 +40,7 @@ app.get("/:id", function(req, res, next) {
 // driver khong duoc edit thong tin ca nhan.
 app.post("/", function(req, res, next) {
   try {
-    db.InformationUsers.findOne({ AccountID: req.body.AccountID }, function(
+    db.InformationDrivers.findOne({ AccountID: req.body.AccountID }, function(
       err,
       data
     ) {
@@ -99,6 +99,98 @@ app.post("/", function(req, res, next) {
   } catch (err) {
     res.status(500).send("Đã xảy ra lỗi bất ngờ" + err);
   }
+});
+
+app.post("/add", async function(req, res, next) {
+  await db.Accounts.findOne({ UserName: req.body.UserName }, async function(
+    err,
+    data
+  ) {
+    if (err) {
+      res.status(500).send("Đã xảy ra lỗi bất ngờ " + err);
+    } else {
+      if (data) {
+        res.status(400).send("UserName tồn tại");
+      } else {
+        await db.InformationDrivers.findOne(
+          { Email: req.body.Email },
+          async function(error, rs) {
+            if (error) {
+              res.status(500).send("Đã xảy ra lỗi bất ngờ " + err);
+            } else {
+              if (rs) {
+                res.status(400).send("Email tồn tại");
+              } else {
+                if (req.body.Status === "unactive") {
+                  req.body.Status = 69;
+                } else if (req.body.Status === "active") {
+                  req.body.Status = 96;
+                } else {
+                  //bla bla
+                }
+                const code =
+                  req.body.Name +
+                  req.body.UserName +
+                  req.body.Password +
+                  Math.floor(Math.random() * 10);
+                const Token = md5(code);
+                await db.Accounts.create({
+                  Name: req.body.Name,
+                  UserName: req.body.UserName,
+                  Password: req.body.Password,
+                  Status: req.body.Status,
+                  Token: Token,
+                  Role: 2
+                });
+                await db.Accounts.findOne({
+                  Name: req.body.Name,
+                  UserName: req.body.UserName,
+                  Password: req.body.Password
+                }).exec(async function(err, data) {
+                  if (err)
+                    return res.status(500).end("Đã xảy ra lỗi bất ngờ " + err);
+                  else {
+                    if (!data) {
+                      res.status(400).send("Xảy ra lỗi khi đăng ký nodata acc");
+                    } else {
+                      const _id = data._id;
+                      console.log(data._id);
+                      await db.InformationDrivers.create({
+                        AccountID: _id,
+                        Email: req.body.Email,
+                        NumberPhone: req.body.NumberPhone,
+                        Address: req.body.Address,
+                        IdentityCard: req.body.IdentityCard,
+                        Birthday: req.body.Birthday
+                      });
+                      await db.InformationDrivers.findOne({
+                        AccountID: _id
+                      }).exec(async function(err, data) {
+                        console.log(data);
+                        if (err)
+                          return res
+                            .status(500)
+                            .end("Đã xảy ra lỗi bất ngờ " + err);
+                        else {
+                          if (!data) {
+                            res
+                              .status(400)
+                              .send("Xảy ra lỗi khi đăng ký nodata info");
+                          } else {
+                            res.status(200).send("success");
+                          }
+                        }
+                      });
+                    }
+                  }
+                });
+              }
+            }
+          }
+        );
+      }
+    }
+  });
 });
 
 module.exports = app;
