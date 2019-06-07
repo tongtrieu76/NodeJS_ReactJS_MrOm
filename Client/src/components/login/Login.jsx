@@ -1,10 +1,9 @@
 import React, { Component } from "react";
 import axios from 'axios';
-// import Autho from './setAutho';
-// import Error404 from './Error404';
-import {  Link, Redirect} from "react-router-dom";
-// import {connect} from 'react-redux';
-// import { BrowserRouter , Route, Link, Switch ,Redirect} from "react-router-dom";
+import validator from "validator";
+import md5 from "md5";
+
+import { Link, Redirect } from "react-router-dom";
 import { login } from "../action/authActions";
 
 export default class Login extends Component {
@@ -14,104 +13,106 @@ export default class Login extends Component {
 
       email: "",
       password: "",
-      errors:"",
+      errors: "",
     };
   }
 
-  validateForm() {
-    return this.state.email.length > 0 && this.state.password.length > 0;
-  }
+
 
   handleChange = event => {
     this.setState({
       [event.target.id]: event.target.value
     });
   }
-  
+
   handleSubmit = event => {
     event.preventDefault();
+    let errors = {};
 
-    const newUser = {
+    if (validator.isEmpty(this.state.email) || validator.isEmpty(this.state.password)) {
+      if (validator.isEmpty(this.state.email)) {
+        errors.email = "Không được để trống";
+      }
 
-      email: this.state.email,
-      password: this.state.password,
-      
+      if (validator.isEmpty(this.state.password)) {
+        errors.password = "Không được để trống";
+      }
+
+      this.setState({
+        errors: errors
+      });
     }
-    const data ={
-      Token:"g",
-      id:1,
-      Role:1
+    if (!validator.isEmpty(this.state.email) && !validator.isEmpty(this.state.password)) {
+
+      const newUser = {
+
+        Email: this.state.email,
+        Password: md5(this.state.password),
+
+      }
+
+      axios.post('/api/login/', newUser)
+
+        .then(res => {
+          console.log(res);
+        })
+
+        .catch(err => {
+          console.log(err.response)
+        })
+
     }
-    axios.post('/login', newUser).then( login(data) 
-    
-    ).catch( login(data))
-      // .then(res => {
-      //   if(res.data.err)
-      //   {
-      //     this.setState({ errors: res.data.err })
-      //   }
-      //   if(res.data.token)
-      //   {
-      //     if(res.data.user)
-      //     {
-      //       const token = res.data.token;
-      //       const user  = res.data.user ;
-      //       localStorage.setItem('jwtToken', token);
-      //       localStorage.setItem('jwtUser', user);
-      //       // Autho(token);
-  
-      //      // this.props.history.push("/");
-      //       window.location.reload();
-      //     }
-      //     else{
-      //       const token = res.data.token;
-            
-      //       localStorage.setItem('jwtToken', token);
-           
-      //       // Autho(token);
-  
-        
-      //       window.location.reload();
-      //     }
-         
-      //   }
-       
-        
-        
-      // }).catch(err => console.log(err.response.data));  
 
   }
+  classnames1 = () => {
+
+
+    if (this.state.errors.email) {
+      return "form-control is-invalid";
+    }
+    return "form-control";
+  };
+  classnames2 = () => {
+    if (this.state.errors.password) {
+      return "form-control is-invalid";
+    }
+
+    return "form-control";
+  };
+
+
 
   render() {
+    console.log(this.state)
 
-    if(localStorage.getItem('jwtToken'))
-    {
-      return(<Redirect to={"/"}/>)
-    }
-    const errors = this.state.errors;
-   
     return (
-      
+
       <div className="Login mt-5 mb-5">
         <h1 className="text-white text-center"> Đăng Nhập </h1>
         <form onSubmit={this.handleSubmit}>
           <div className="form-group text-light">
             <label htmlFor="email">Tài Khoản:</label>
-            <input type="email" className="form-control" id="email" aria-describedby="emailHelp" placeholder="Nhập email" value={this.state.email}
+            <input type="email" className={this.classnames1()} id="email" aria-describedby="emailHelp" placeholder="Nhập email" value={this.state.email}
               onChange={this.handleChange} />
 
+            <div className="invalid-feedback">{this.state.errors.email}</div>
+
           </div>
+
           <div className="form-group text-light">
             <label htmlFor="password">Mật Khẩu:</label>
-            <input type="password" className="form-control" id="password" placeholder="Mật khẩu" value={this.state.password}
+            <input type="password" className={this.classnames2()} id="password" placeholder="Mật khẩu" value={this.state.password}
               onChange={this.handleChange} />
+
+            <div className="invalid-feedback">{this.state.errors.password}</div>
+
           </div>
 
 
           <div className="text-center">
-            <button type="submit" className="btn btn-default" disabled={!this.validateForm()}>Đăng Nhập</button>
+            <button type="submit" className="btn btn-default" >Đăng Nhập</button>
           </div>
-          <h4 className="text-danger text-center mt-3">{errors}</h4>
+
           <div className="text-center text-light mt-4">
             Bạn chưa có tài khoản, hãy
             &nbsp;
@@ -126,8 +127,8 @@ export default class Login extends Component {
         {/* <Redirect to="/404" /> */}
       </div>
 
-  
-       
+
+
     );
   }
 }

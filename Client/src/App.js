@@ -74,7 +74,7 @@ componentDidMount() {
           </div>
 
 
-          <LeafletMap  nowLocation={this.state.nowLocation} />
+          {/* <LeafletMap  nowLocation={this.state.nowLocation} /> */}
 
 
         </div>

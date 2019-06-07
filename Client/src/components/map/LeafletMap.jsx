@@ -83,7 +83,7 @@ export default class LeafletMap extends Component {
             <a href="www.google.com"> csdffdfsfsdfdssfdfs</a>
 
             <a href="www.google.com"> csdffdfsfsdfdssfdfs</a>
-            {/* <button onClick={() => this.onClick(nowLocation)} > dfssdfsfdfsd  </button> */}
+            <button onClick={() => this.onClick(nowLocation)} > dfssdfsfdfsd  </button>
           </Popup>
         </Marker>}
 

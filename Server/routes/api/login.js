@@ -76,6 +76,7 @@ app.post("/", async function(req, res, next) {
         console.log(err);
         res.status(500).send();
       } else {
+      
         if (!data) {
           await db.InformationDrivers.findOne(
             { Email: req.body.Email },
@@ -84,6 +85,8 @@ app.post("/", async function(req, res, next) {
                 console.log(err);
                 res.status(500).send("Đã xảy ra lỗi bất ngờ");
               } else {
+               
+              
                 if (!data) {
                   res.status(400).send("Sai email hoac mat khau");
                 } else {
@@ -124,9 +127,9 @@ app.post("/", async function(req, res, next) {
                       Name: data.Name,
                       CreateDate: data.CreateDate
                     };
-                    res.send(200, trave);
+                    res.status(200).send(trave);
                   } else {
-                    res.send(400, "Bug!");
+                    res.status(400).send("Bug!");
                   }
                 }
               }

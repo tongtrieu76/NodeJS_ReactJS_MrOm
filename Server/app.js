@@ -70,7 +70,7 @@ io.on("connection", socket => {
   save_IO.socket = socket;
   console.log("New client connected");
 
-  interval = setInterval(() => getApiAndEmit(socket), 3000);
+  interval = setInterval(() => getApiAndEmit(socket), 99000);
   socket.on("disconnect", () => {
     console.log("Client disconnected");
 
@@ -119,7 +119,7 @@ io.on("connection", socket => {
 const getApiAndEmit = async socket => {
   try {
     const axios = require("axios");
-    axios.get("http://localhost:4000/api/location").then(data_data => {
+    axios.get("http://localhost:4000/api/location/").then(data_data => {
       console.log(data_data.data);
       socket.emit("location_driver_online", data_data.data);
     });

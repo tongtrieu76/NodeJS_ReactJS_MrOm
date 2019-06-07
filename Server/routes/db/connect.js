@@ -55,7 +55,7 @@ var SchemaAccount = new mongoose.Schema({
 	},
 	Status: {
 		type: Number,
-		default: 96
+		default: 1
 	},
 	WhyLock: {
 		type: String,
@@ -88,6 +88,10 @@ var account = new mongoose.model('account',SchemaAccount);
 
 //Information Drivers
 var SchemaIfDrivers = new mongoose.Schema({
+	AccountID: {
+		type: String,
+		default: "no_id"
+	},
 	Birthday: {
 		type: Date,
 		default: Date.now

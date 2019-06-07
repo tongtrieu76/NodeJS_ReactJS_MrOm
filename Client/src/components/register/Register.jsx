@@ -14,6 +14,9 @@ export default class Register extends Component {
 
 
   render() {
+    if (localStorage.getItem("jwtToken")) {
+      return (   window.location.replace('/'))
+    }
     return (
       <Router>
       <div className="container">

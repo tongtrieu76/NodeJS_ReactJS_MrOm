@@ -17,7 +17,7 @@ export function logout() {
   localStorage.removeItem('jwtToken');
   setAuthorizationToken(false);
   setCurrentUser({});
-  window.location.reload();
+  window.location.replace('/')
 
 }
 
@@ -30,8 +30,7 @@ export function login(data) {
   localStorage.setItem('jwtToken', Token);
   setAuthorizationToken(Token);
   setCurrentUser(jwt.decode(Token));
-  window.location.reload();
-
+  window.location.replace('/')
 
 
 }
