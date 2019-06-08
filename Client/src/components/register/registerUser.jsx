@@ -1,7 +1,7 @@
 import React from "react";
 import validator from "validator";
 import axios from "axios";
-import {  Redirect } from "react-router-dom";
+// import {  Redirect } from "react-router-dom";
 
 import md5 from "md5";
 import { login } from "../action/authActions";

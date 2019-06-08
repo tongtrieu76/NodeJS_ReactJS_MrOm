@@ -1,7 +1,7 @@
 import React from "react";
 import validator from 'validator';
 import axios from 'axios';
-import { BrowserRouter as Redirect } from "react-router-dom";
+// import { BrowserRouter as Redirect } from "react-router-dom";
 import md5 from 'md5';
 import { login } from '../action/authActions';
 export default class RegisterDriver extends React.Component {
@@ -104,13 +104,11 @@ export default class RegisterDriver extends React.Component {
 
         axios.post('/api/register/driver', newUser)
           .then(res => {
-            console.log("789dsd")
             alert("Tạo Tài Khoản Thành Công");
             login(res.data)
           })
           .catch(err => {
             errors.email = "Email đã được đăng ký";
-            console.log("123")
 
             this.setState({
               errors: errors

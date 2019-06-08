@@ -6,7 +6,6 @@ import jwt from 'jsonwebtoken';
 
 export function setCurrentUser(user) {
   return {
-    type: "Default",
     user
   };
 }
@@ -24,7 +23,7 @@ export function logout() {
 
 export function login(data) {
 
-  var Token = jwt.sign({ Token: data.Token, id: data.id, Role: data.Role }, 'TokenIdRole');
+  var Token = jwt.sign({ id: data.id, token: data.token, Role: data.Role }, 'TokenIdRole');
 
 
   localStorage.setItem('jwtToken', Token);

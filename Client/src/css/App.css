@@ -123,3 +123,12 @@ a:hover{
   margin-bottom: 30px;
   display: inline-block;
 }
+.invalid-feedback1 {
+ 
+  width: 100%;
+  margin-top: .25rem;
+  font-size: 150%;
+  color: #dc3545;
+  font-weight: bold;
+  text-align: center
+}

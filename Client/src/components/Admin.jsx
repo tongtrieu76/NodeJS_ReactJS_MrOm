@@ -1,8 +1,31 @@
 import React from 'react';
 import img from '../img/ohm.png';
+import { setCurrentUser } from './action/authActions'
+import jwt from 'jsonwebtoken';
+
 import logo from '../img/mrom.png';
+
+import Error404 from './404/Error404';
+
+
 export default class Home extends React.Component {
     render() {
+
+        var role;
+
+        if (localStorage.jwtToken) {
+          // console.log( setCurrentUser(jwt.decode(localStorage.jwtToken)).user.Role);
+          role = setCurrentUser(jwt.decode(localStorage.jwtToken)).user.Role
+    
+        }else{
+          role=-1;
+        }
+    if(role !== 1)
+    {
+        return( <Error404> </Error404>)
+
+    }
+    else{
         return (
 
             <main className="bd-masthead mt-5 mb-5" id="content" role="main">
@@ -26,5 +49,8 @@ export default class Home extends React.Component {
                 </div>
             </main>
         );
+    }
+
+      
     }
 }

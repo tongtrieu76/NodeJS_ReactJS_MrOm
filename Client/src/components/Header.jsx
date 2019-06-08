@@ -7,58 +7,36 @@ import Login from './login/Login';
 import Register from './register/Register';
 import Admin from './Admin';
 
-import Autho from './action/setAuthorizationToken';
-import {setCurrentUser,logout} from './action/authActions'
+// import setAuthorizationToken from './action/setAuthorizationToken';
+import { setCurrentUser } from './action/authActions'
 import jwt from 'jsonwebtoken';
 
-  
+import { logout } from './action/authActions'
 
 
-// import { logout } from "./app/authActions";
 
-import { BrowserRouter , Route, NavLink, Switch } from "react-router-dom";
+import { BrowserRouter, Route, NavLink, Switch } from "react-router-dom";
 
 const isActive = (path, match, location) => !!(match || path === location.pathname);
 
 class Header extends React.Component {
 
-  logout = event=> {
-    event.preventDefault();
-    console.log("object")
-   logout();
-    
-  }
-    
-
-
   render() {
-    
-if (localStorage.jwtToken) {
-    Autho(localStorage.jwtToken);
-    console.log(setCurrentUser(jwt.decode(localStorage.jwtToken)).user.Role) 
-    
-  }
-  const role =null;
-    const isAuthenticated = localStorage.getItem('jwtToken');
-  // if(setCurrentUser(jwt.decode(localStorage.jwtToken)).user.Role)
-  // {
-  //    role = setCurrentUser(jwt.decode(localStorage.jwtToken)).user.Role
 
-  // }
-    const isAdmin = (
-      <li>
-        <NavLink
-          exact
-          activeClassName="active"
-          isActive={isActive.bind(this, '/admin')}
-          className="nav-link text-light font-weight-bold" to='/admin'>
-          Admin
-</NavLink>
+   
+  
+    var role;
 
-      </li>
-    );
-    const userLinks = (
-      <ul className="navbar-nav ml-auto text-center">
+    if (localStorage.jwtToken) {
+      // console.log( setCurrentUser(jwt.decode(localStorage.jwtToken)).user.Role);
+      role = setCurrentUser(jwt.decode(localStorage.jwtToken)).user.Role
+
+    }else{
+      role=-1;
+    }
+
+    function TrangChu() {
+      return (
         <li>
           <NavLink
             exact
@@ -66,63 +44,160 @@ if (localStorage.jwtToken) {
             isActive={isActive.bind(this, '/')}
             className="nav-link text-light font-weight-bold" to='/'>
             Trang Chủ
-  </NavLink>
+        </NavLink>
 
         </li>
-        {
-          role ? null : isAdmin
-        }
+
+      );
+    }
+
+    function DangXuat() {
+      function handleClick() {
+     
+        logout();
+      }  
+      return (
         <li>
           <NavLink
             exact
             activeClassName="active"
-            className="nav-link text-light font-weight-bold" onClick={this.logout.bind(this)} to='#'>
+            className="nav-link text-light font-weight-bold" onClick={handleClick} to='#'>
             Đăng Xuất
-    </NavLink>
+      </NavLink>
         </li>
-      </ul>
-    );
-    const guestLinks = (
-      <ul className="navbar-nav ml-auto text-center">
-        <li>
-          <NavLink
-            exact
-            activeClassName="active"
-            isActive={isActive.bind(this, '/')}
-            className="nav-link text-light font-weight-bold" to='/'>
-            Trang Chủ
-  </NavLink>
+      )
+    }
 
-        </li>
-        <li >
-          <NavLink
-            exact
-            activeClassName="active"
-            isActive={isActive.bind(this, '/login')}
-            className="nav-link text-light font-weight-bold" to='/login'>
-            Đăng Nhập
-              </NavLink>
+    function TrangAdmin() {
+      return (
+        <ul className="navbar-nav ml-auto text-center">
+          {TrangChu()}
 
-        </li>
-        <li >
-          <NavLink
-            exact
-            activeClassName="active"
-            isActive={isActive.bind(this, '/register/user')}
-            className="nav-link text-light font-weight-bold" to='/register/user'>
-            Đăng Ký
-              </NavLink>
+          <li>
+            <NavLink
+              exact
+              activeClassName="active"
+              isActive={isActive.bind(this, '/admin')}
+              className="nav-link text-light font-weight-bold" to='/admin'>
+              Admins
+        </NavLink>
 
-        </li>
-      </ul>
+          </li>
 
-    );
+          {DangXuat()}
+        </ul>
+      );
+    }
 
+    function TrangUser() {
+      return (
+        <ul className="navbar-nav ml-auto text-center">
+          {TrangChu()}
+
+          <li>
+            <NavLink
+              exact
+              activeClassName="active"
+              isActive={isActive.bind(this, '/qwe')}
+              className="nav-link text-light font-weight-bold" to='/qwe'>
+              user
+        </NavLink>
+
+          </li>
+
+          {DangXuat()}
+        </ul>
+      );
+    }
+
+    function TrangDriver() {
+      return (
+        <ul className="navbar-nav ml-auto text-center">
+          {TrangChu()}
+
+          <li>
+            <NavLink
+              exact
+              activeClassName="active"
+              isActive={isActive.bind(this, '/qwe')}
+              className="nav-link text-light font-weight-bold" to='/qwe'>
+              Driver
+        </NavLink>
+
+          </li>
+
+          {DangXuat()}
+        </ul>
+      );
+    }
+
+
+
+    function defaults() {
+      return (
+        <ul className="navbar-nav ml-auto text-center">
+          {TrangChu()}
+
+          <li >
+            <NavLink
+              exact
+              activeClassName="active"
+              isActive={isActive.bind(this, '/login')}
+              className="nav-link text-light font-weight-bold" to='/login'>
+              Đăng Nhập
+         </NavLink>
+          </li>
+
+          <li>
+            <NavLink
+              exact
+              activeClassName="active"
+              isActive={isActive.bind(this, '/register/user')}
+              className="nav-link text-light font-weight-bold" to='/register/user'>
+              Đăng Ký
+        </NavLink>
+
+          </li>
+
+        </ul>
+      );
+    }
+
+    function ifrender() {
+      if (role !== 0 && role !== 1 && role !== 2) {
+        return (
+          defaults()
+        )
+      }
+
+      if (role === 0) {   // user
+
+        return (
+          TrangUser()
+        )
+      }
+
+      if (role === 2) {    //driver
+
+        return (
+          TrangDriver()
+        )
+      }
+      if (role === 1) {  // admin
+
+        return (
+          TrangAdmin()
+        )
+      }
+
+     
+
+    }
     return (
       <BrowserRouter>
-    
 
-      
+
+
         <nav className="navbar navbar-expand-sm navbar-light static-top">
           <div className="container">
 
@@ -147,22 +222,21 @@ if (localStorage.jwtToken) {
             <div className="collapse navbar-collapse text-info" id="navbarResponsive">
 
 
-
-              {isAuthenticated ? userLinks : guestLinks}
+              {ifrender()}
 
 
             </div>
           </div>
         </nav>
         <Switch>
-        <Route  path='/' exact component={Home} />
-        <Route  path='/login' component={Login} />
-        <Route  path='/register' component={Register} />
-        <Route  path='/admin' component={Admin} />
-        <Route  path='/*' component={Error404} />
-        
+          <Route exact path='/'  component={Home} />
+          <Route exact path='/login' component={Login} />
+          <Route exact path='/register/user' component={Register} />
+          <Route exact path='/admin' component={Admin} />
+          {/* <Route path='/*' component={Error404} />   */}
+          <Route component={Error404} />
         </Switch>
-        
+
       </BrowserRouter>
     );
   }

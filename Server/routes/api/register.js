@@ -76,7 +76,7 @@ app.post("/user", async function (req, res, next) {
               else {
                 const trave = {
                   id: result._id,
-                  Token: result.Token,
+                  token: result.Token,
                   Role: result.Role
                 };
                 await db.InformationUsers.create({
@@ -172,7 +172,7 @@ app.post("/driver", async function (req, res, next) {
               else {
                 const trave = {
                   id: result._id,
-                  Token: result.Token,
+                  token: result.Token,
                   Role: result.Role
                 };
                 await db.InformationDrivers.create({

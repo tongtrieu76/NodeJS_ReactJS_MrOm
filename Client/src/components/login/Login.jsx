@@ -3,7 +3,7 @@ import axios from 'axios';
 import validator from "validator";
 import md5 from "md5";
 
-import { Link, Redirect } from "react-router-dom";
+import { Link } from "react-router-dom";
 import { login } from "../action/authActions";
 
 export default class Login extends Component {
@@ -54,11 +54,16 @@ export default class Login extends Component {
       axios.post('/api/login/', newUser)
 
         .then(res => {
-          console.log(res);
+          login(res.data)
         })
 
         .catch(err => {
           console.log(err.response)
+          errors.errors = "Email hoặc mật khẩu không đúng";
+            
+            this.setState({
+              errors: errors
+            });
         })
 
     }
@@ -108,6 +113,8 @@ export default class Login extends Component {
 
           </div>
 
+
+          <div className="text-center invalid-feedback1 mt-3 mb-3">{this.state.errors.errors}</div>
 
           <div className="text-center">
             <button type="submit" className="btn btn-default" >Đăng Nhập</button>
