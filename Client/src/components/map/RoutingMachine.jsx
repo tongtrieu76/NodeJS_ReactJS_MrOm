@@ -10,7 +10,7 @@ class Routing extends MapLayer {
     console.log(from)
     
     console.log(to + "dfsdfsfsddfsfdsfds");
-    let leafletElement = L.Routing.control({
+    let leafletElement = L.Routing.control({    
       waypoints: [  
       L.latLng(from[0],from[1]),
       L.latLng(to[0],to[1])],

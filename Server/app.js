@@ -70,7 +70,7 @@ io.on("connection", socket => {
   save_IO.socket = socket;
   console.log("New client connected");
 
-  interval = setInterval(() => getApiAndEmit(socket), 99000);
+  interval = setInterval(() => getApiAndEmit(socket), 3000);
   socket.on("disconnect", () => {
     console.log("Client disconnected");
 
