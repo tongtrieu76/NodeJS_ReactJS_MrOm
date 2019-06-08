@@ -10,7 +10,7 @@ app.use(bodyParser.urlencoded({ extended: true })); // support encoded bodies
 
 //LOGIN, SIGNUP , CHECKTOKEN
 // -- login theo username
-app.post("/username", function(req, res, next) {
+app.post("/username", function (req, res, next) {
   // db.Accounts.findOne({ UserName: req.body.UserName }, function(err, data) {
   //   if (err) {
   //     console.log(err);
@@ -66,9 +66,9 @@ app.post("/username", function(req, res, next) {
 });
 
 // -- lgin theo email
-app.post("/", async function(req, res, next) {
+app.post("/", async function (req, res, next) {
   try {
-    await db.InformationUsers.findOne({ Email: req.body.Email }, async function(
+    await db.InformationUsers.findOne({ Email: req.body.Email }, async function (
       err,
       data
     ) {
@@ -76,17 +76,15 @@ app.post("/", async function(req, res, next) {
         console.log(err);
         res.status(500).send();
       } else {
-      
+
         if (!data) {
           await db.InformationDrivers.findOne(
             { Email: req.body.Email },
-            function(err, data) {
+            function (err, data) {
               if (err) {
                 console.log(err);
                 res.status(500).send("Đã xảy ra lỗi bất ngờ");
               } else {
-               
-              
                 if (!data) {
                   res.status(400).send("Sai email hoac mat khau");
                 } else {
@@ -101,6 +99,7 @@ app.post("/", async function(req, res, next) {
                         res.status(400).send("Sai email hoac mat khau");
                       } else {
                         if (data.Status == 96) {
+
                           if (req.body.Password == data.Password) {
                             var token_send = {
                               id: data.AccountID,
@@ -113,6 +112,7 @@ app.post("/", async function(req, res, next) {
                           }
                         } else if (data.Status == 69) {
                           // 69 = status lock
+
                           var trave = {
                             UserName: data.UserName,
                             Name: data.Name,
@@ -121,56 +121,36 @@ app.post("/", async function(req, res, next) {
                           res.send(400, trave);
                         } else if (data.Status == 0) {
                           //0 = status chưa active
+
                           var trave = {
                             UserName: data.UserName,
                             Name: data.Name,
                             CreateDate: data.CreateDate
                           };
-                          res.send(200, trave);
+                          res.status(200).send(trave);
                         } else {
-                          res.send(400, "Bug!");
+                          res.status(400).send("Bug!");
                         }
                       }
-<<<<<<< HEAD
-                    });
-                  } else if (data.Status == 69) {
-                    // 69 = status lock
-                    var trave = {
-                      UserName: data.UserName,
-                      Name: data.Name,
-                      WhyLock: data.WhyLock
-                    };
-                    res.send(400, trave);
-                  } else if (data.Status == 0) {
-                    //0 = status chưa active
-                    var trave = {
-                      UserName: data.UserName,
-                      Name: data.Name,
-                      CreateDate: data.CreateDate
-                    };
-                    res.status(200).send(trave);
-                  } else {
-                    res.status(400).send("Bug!");
-                  }
-=======
+
                     }
                   });
->>>>>>> d075f9f792045d61ebd1d34572527c92e9e2e6c9
                 }
               }
-            }
-          );
+            });
         }
       }
-    });
-  } catch (err) {
+    })
+  }
+
+  catch (err) {
     res.status(500).send("Đã xảy ra lỗi bất ngờ" + err);
   }
 });
 
-app.post("/checktoken", function(req, res, next) {
+app.post("/checktoken", function (req, res, next) {
   try {
-    db.Accounts.findOne({ AccountID: req.body.AccountID }, function(err, data) {
+    db.Accounts.findOne({ AccountID: req.body.AccountID }, function (err, data) {
       if (err) {
         console.log(err);
         res.status(500).end();

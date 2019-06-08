@@ -55,7 +55,7 @@ var SchemaAccount = new mongoose.Schema({
 	},
 	Status: {
 		type: Number,
-		default: 1
+		default: 96
 	},
 	WhyLock: {
 		type: String,

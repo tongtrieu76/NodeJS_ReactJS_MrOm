@@ -65,7 +65,8 @@ app.post("/user", async function (req, res, next) {
             UserName: UserName,
             Password: Password,
             Token: Token,
-            Role: 0  //69 sẽ là ad, 96 sẽ là driver, khác sẽ là user
+            Status:96, // 69 là lock,96 là unlock, 0 là chưa activate
+            Role: 0  // 1 sẽ là ad, 2 sẽ là driver, khác sẽ là 0 (user)
           });
 
           //tim xem acc tao thanh cong de lay id,token,role
@@ -161,7 +162,8 @@ app.post("/driver", async function (req, res, next) {
             UserName: UserName,
             Password: Password,
             Token: Token,
-            Role: 96,   //69 sẽ là ad, 96 sẽ là driver, khác sẽ là user
+            Status: 0, // 69 là lock,96 là unlock, 0 là chưa activate
+            Role: 2,  // 1 sẽ là ad, 2 sẽ là driver, khác sẽ là 0 (user)
           });
           //tim xem acc tao thanh cong de lay id,token,role
           await db.Accounts.findOne({ Name: Name, UserName: UserName }).exec(
