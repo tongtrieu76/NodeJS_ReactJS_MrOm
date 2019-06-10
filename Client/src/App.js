@@ -14,6 +14,9 @@ export default class App extends React.Component {
       toLocation: null,
       L_X: null,
       L_Y: null,
+      nowL_X: null,
+      nowL_Y: null,
+      km:null,
     };
     this.setToLocation = this.setToLocation.bind(this);
     // this.socket.on("location_driver_online", (data) => {
@@ -23,18 +26,32 @@ export default class App extends React.Component {
     // })
   }
   setToLocation(Location) {
-    var toLocation= this.state.toLocation;
-    if(toLocation) {
+    var toLocation = this.state.toLocation;
+    if (toLocation) {
 
-    this.setState({toLocation:null});
+      this.setState({ toLocation: null });
 
     }
-   else 
-   {
-    this.setState({ toLocation:Location });
+    else {
+      this.setState({ toLocation: Location });
 
-   }
+    }
   }
+  
+
+  setNowLocation(Location) {
+    var nowLocation = this.state.nowLocation;
+    if (nowLocation) {
+
+      this.setState({ nowLocation: null });
+
+    }
+    else {
+      this.setState({ nowLocation: Location });
+
+    }
+  }
+
 
   handleChange = event => {
     this.setState({
@@ -43,22 +60,23 @@ export default class App extends React.Component {
   }
 
   handleClick(e) {
-   
+
     // this.setState({
     //   toLocation: [this.state.L_X, this.state.L_Y]
     // });
-  
+
   }
   componentDidMount() {
-    navigator.geolocation.watchPosition((pos) => {
-      this.setState({
-        nowLocation: [pos.coords.latitude, pos.coords.longitude],
-      toLocation: [pos.coords.latitude, pos.coords.longitude],
-      });
-    });
+    // navigator.geolocation.watchPosition((pos) => {
+    //   this.setState({
+    //     nowLocation: {lat:pos.coords.latitude, lng:pos.coords.longitude},
+    //     toLocation: {lat:pos.coords.latitude, lng:pos.coords.longitude},
+    //   });
+    // });
   }
 
   render() {
+
     return (
       <div>
         <div className="full">
@@ -68,10 +86,34 @@ export default class App extends React.Component {
 
 
           <div className="headerleaflet">
+          
             <div className="form-group" id="book_xe">
 
+            
+              <div className="input-group mt-2">
+              <label >Điểm đón </label>
+                <label className="ml-3 mr-3" >Tọa độ x: </label>
+                <input type="text" className="form-control mr-3" id="nowL_X" required placeholder="X.." onChange={this.handleChange} />
+                <label className="ml-3 mr-3" >Tọa độ Y: </label>
+                <input type="text" className="form-control mr-3" id="nowL_Y" required placeholder="Y.." onChange={this.handleChange} />
 
-              <div className="input-group mt-4">
+
+                <div className="input-group-prepend mr-3  ">
+                  <button className="input-group-text" id="btn-timxe" onClick={() => {
+                    this.setNowLocation({
+                      lat: this.state.nowL_X, lng: this.state.nowL_Y
+                    });
+
+                    setTimeout(() => this.setState({nowLocation:{ lat: this.state.nowL_X, lng: this.state.nowL_Y }}), 0)
+                  }}>Xác Định</button>
+                </div>
+              </div>
+
+
+
+
+              <div className="input-group mt-2">
+              <label >Điểm đến </label>
                 <label className="ml-3 mr-3" >Tọa độ x: </label>
                 <input type="text" className="form-control mr-3" id="L_X" required placeholder="X.." onChange={this.handleChange} />
                 <label className="ml-3 mr-3" >Tọa độ Y: </label>
@@ -79,30 +121,40 @@ export default class App extends React.Component {
 
 
                 <div className="input-group-prepend mr-3  ">
-                  <button className="input-group-text" id="btn-timxe" onClick={()=>{
-  this.setToLocation({
-      lat:this.state.L_X, lng:this.state.L_Y
-       });
- 
-       setTimeout(()=>this.setToLocation({lat:this.state.L_X, lng:this.state.L_Y}),0)
+                  <button className="input-group-text" id="btn-timxe" onClick={() => {
+                    this.setToLocation({
+                      lat: this.state.L_X, lng: this.state.L_Y
+                    });
+
+                    setTimeout(() => this.setState({toLocation:{ lat: this.state.L_X, lng: this.state.L_Y }}), 0)
                   }}>Xác Định</button>
                 </div>
               </div>
+              
             </div>
-            {/* <div className="text-center">
-                <button type="button" className="btn btn-info" id="get_my_location"     onClick={(e) => this.handleClick(e)}>
+            <div className="text-center">
+                <button type="button" className="btn btn-info" id="get_my_location"     onClick={() => {
+                   navigator.geolocation.watchPosition((pos) => {
+//  this.setState({nowLocation:{ lat:pos.coords.latitude, lng:pos.coords.longitude}})
+                    setTimeout(() => this.setState({nowLocation:{ lat:pos.coords.latitude, lng:pos.coords.longitude}}), 0)
+      // this.setState({
+      //   nowLocation: {lat:pos.coords.latitude, lng:pos.coords.longitude},
+      //   // toLocation: {lat:pos.coords.latitude, lng:pos.coords.longitude},
+      // });
+    });
+                }}>
                   Vị trí của tôi
                                   </button>
-                <input type="text" className="form-control" placeholder="X.." value={Local}/>
+              
 
-              </div> */}
+              </div>
             <div className="text-center">
               <label > </label>
             </div>
           </div>
 
 
-          <LeafletMap nowLocation={this.state.nowLocation} toLocation={this.state.toLocation}  setToLocation={this.setToLocation} />
+          <LeafletMap nowLocation={this.state.nowLocation}  toLocation={this.state.toLocation} setToLocation={this.setToLocation} />
 
 
         </div>

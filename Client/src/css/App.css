@@ -132,3 +132,8 @@ a:hover{
   font-weight: bold;
   text-align: center
 }
+
+.leaflet-container {
+  position: sticky !important
+
+}
