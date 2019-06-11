@@ -24,7 +24,7 @@ app.get("/", (req, res, next) => {
 // -- -- driver theo id
 app.get("/:id", function(req, res, next) {
   try {
-    db.Accounts.findOne({ AccountID: req.params.id }, function(err, result) {
+    db.Accounts.findOne({ _id: req.params.id }, function(err, result) {
       if (err) return handleError(err);
       res.send(result);
     });

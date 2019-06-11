@@ -191,7 +191,7 @@ app.post("/", async function(req, res, next) {
 
 app.post("/checktoken", function(req, res, next) {
   try {
-    db.Accounts.findOne({ AccountID: req.body.AccountID }, function(err, data) {
+    db.Accounts.findOne({ _id: req.body.AccountID }, function(err, data) {
       if (err) {
         console.log(err);
         res.status(500).end();
@@ -203,21 +203,21 @@ app.post("/checktoken", function(req, res, next) {
           var token = req.body.Token;
           var role = req.body.Role;
           if (
-            id == data.AccountID &&
+            id == data._id &&
             token == data.Token &&
             role == data.Role
           ) {
             if (data.Status == 96) {
-              res.status(200).end(true);
+              res.status(200).send(true);
             } else if (data.Status == 69) {
-              res.status(400).end("Lock");
+              res.status(400).send("Lock");
             } else if (data.Status == 0) {
-              res.status(200).end("UnActive");
+              res.status(200).send("UnActive");
             } else {
-              res.status(400).end("Bug!");
+              res.status(400).send("Bug!");
             }
           } else {
-            res.status(400).end(false);
+            res.status(400).send(false);
           }
         }
       }

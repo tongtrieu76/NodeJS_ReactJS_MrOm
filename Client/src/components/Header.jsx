@@ -7,6 +7,11 @@ import Login from './login/Login';
 import Register from './register/Register';
 import Admin from './Admin';
 
+import InfoUser from './info/infoUser';
+import InfoDriver from './info/infoDriver';
+
+import axios from 'axios';
+
 // import setAuthorizationToken from './action/setAuthorizationToken';
 import { setCurrentUser } from './action/authActions'
 import jwt from 'jsonwebtoken';
@@ -19,20 +24,26 @@ import { BrowserRouter, Route, NavLink, Switch } from "react-router-dom";
 
 const isActive = (path, match, location) => !!(match || path === location.pathname);
 
+
+
+
 class Header extends React.Component {
+
 
   render() {
 
-   
-  
-    var role;
 
+
+    var role;
+    var id;
     if (localStorage.jwtToken) {
       // console.log( setCurrentUser(jwt.decode(localStorage.jwtToken)).user.Role);
       role = setCurrentUser(jwt.decode(localStorage.jwtToken)).user.Role
+      id = setCurrentUser(jwt.decode(localStorage.jwtToken)).user.id
 
-    }else{
-      role=-1;
+
+    } else {
+      role = -1;
     }
 
     function TrangChu() {
@@ -53,9 +64,9 @@ class Header extends React.Component {
 
     function DangXuat() {
       function handleClick() {
-     
+
         logout();
-      }  
+      }
       return (
         <li>
           <NavLink
@@ -89,7 +100,12 @@ class Header extends React.Component {
       );
     }
 
+
     function TrangUser() {
+
+      var url = "/user/" + id;
+     
+
       return (
         <ul className="navbar-nav ml-auto text-center">
           {TrangChu()}
@@ -98,10 +114,11 @@ class Header extends React.Component {
             <NavLink
               exact
               activeClassName="active"
-              isActive={isActive.bind(this, '/qwe')}
-              className="nav-link text-light font-weight-bold" to='/qwe'>
-              user
-        </NavLink>
+              isActive={isActive.bind(this, url)}
+              className="nav-link text-light font-weight-bold" to={url}>
+              Thông Tin Cá Nhân
+
+            </NavLink>
 
           </li>
 
@@ -111,6 +128,8 @@ class Header extends React.Component {
     }
 
     function TrangDriver() {
+      var url = "/driver/" + id;
+
       return (
         <ul className="navbar-nav ml-auto text-center">
           {TrangChu()}
@@ -119,9 +138,9 @@ class Header extends React.Component {
             <NavLink
               exact
               activeClassName="active"
-              isActive={isActive.bind(this, '/qwe')}
-              className="nav-link text-light font-weight-bold" to='/qwe'>
-              Driver
+              isActive={isActive.bind(this, url)}
+              className="nav-link text-light font-weight-bold" to={url}>
+              Thông Tin Cá Nhân
         </NavLink>
 
           </li>
@@ -190,7 +209,7 @@ class Header extends React.Component {
         )
       }
 
-     
+
 
     }
     return (
@@ -229,10 +248,13 @@ class Header extends React.Component {
           </div>
         </nav>
         <Switch>
-          <Route exact path='/'  component={Home} />
+          <Route exact path='/' component={Home} />
           <Route exact path='/login' component={Login} />
           <Route exact path='/register/user' component={Register} />
           <Route exact path='/admin' component={Admin} />
+          <Route exact path='/user/:id' component={InfoUser} />
+          <Route exact path='/driver/:id' component={InfoDriver} />
+
           {/* <Route path='/*' component={Error404} />   */}
           <Route component={Error404} />
         </Switch>

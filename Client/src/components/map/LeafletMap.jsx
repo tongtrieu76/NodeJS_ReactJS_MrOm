@@ -14,7 +14,7 @@ var Icon = L.icon({
   iconUrl: bike,
   iconSize: [60, 70],
 })
-
+var id_Socket;
 var arr = [];
 var arr1 = [];
 var min = { id: 0, minlegnt: 99999, Location_X: 0, Location_Y: 0 };
@@ -181,9 +181,23 @@ export default class LeafletMap extends Component {
 
   componentDidMount() {
 
-
     Modal.setAppElement("#text1")
+    
 
+   
+    if (!localStorage.jwtToken) {
+      // console.log( setCurrentUser(jwt.decode(localStorage.jwtToken)).user.Role);
+    //  role = setCurrentUser(jwt.decode(localStorage.jwtToken)).user.Role
+    //  id = setCurrentUser(jwt.decode(localStorage.jwtToken)).user.id
+
+      this.socket.emit("sendrole", {id:0,role:0})
+      this.socket.on("sendid", (data)=>{
+        id_Socket = data
+
+      })
+    }
+
+   
   }
 
 
@@ -201,14 +215,16 @@ export default class LeafletMap extends Component {
     }
 
     var send = {userID:id,taixeID: min.id, diadiemdon:{x:nowLocation.lat,y:nowLocation.lng},diadiemdem:{x:toLocation.lat,y:toLocation.lng}};
+    console.log(id);
 
-    // this.socket = io.connect({ reconnect: true, xyz:"abc" });
-    this.socket.emit(id,send)
+  // this.socket = io.connect("http://localhost:3000/",{ reconnect: true, xyz:"abc" });
+
+    this.socket.emit("5cfb2957e07bf838680f06c0",send)
 
 
-    this.socket.on(id , (data) => {
+    // this.socket.on(id , (data) => {
      
-    })
+    // })
 
   }
   render() {
