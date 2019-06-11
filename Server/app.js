@@ -68,14 +68,8 @@ let interval;
 var save_IO = { socket: "" };
 io.on("connection", socket => {
   save_IO.socket = socket;
-  console.log("main " + socket.id)
+  console.log(socket.id)
   console.log("New client connected");
-// console.log(socket);
-    socket.on("5cfb2957e07bf838680f06c0",(data)=>{
-      console.log(data);
-    connsole.log("main 2" + socket.id)
-
-    })
 
 
   interval = setInterval(() => getApiAndEmit(socket), 1000);
