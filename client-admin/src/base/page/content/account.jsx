@@ -1,8 +1,9 @@
 import React, { Component } from "react";
 import Modal from "react-modal";
 import UserDetail from "./accounts/userdetail.jsx";
+import DriverDetail from "./accounts/driverdetails.jsx";
 import * as dateformat from "dateformat";
-import loading from '../../public/gif/loading3.gif';
+import loading from "../../public/gif/loading2.gif";
 
 import "../../public/css/account.css";
 
@@ -67,7 +68,25 @@ class Account extends Component {
   }
   componentDidMount() {
     // console.log("DID");
-    fetch("http://localhost:4000/api/account")
+    this.loadData("");
+
+    //select id để show modal
+    Modal.setAppElement("#open_modal_1");
+  }
+  // end
+
+  //search 
+  search(){
+    const text = document.getElementById("tb-search").value;
+    this.loadData(text);
+  }
+
+
+
+
+  //Load Data
+  loadData(key){
+    fetch("http://localhost:4000/api/account/" + key )
       .then(response => response.json())
       .then(result => {
         var arr_user = [];
@@ -120,11 +139,11 @@ class Account extends Component {
         this.ham();
       })
       .catch(error => this.setState({ error, isLoading: false }));
-
-    //select id để show modal
-    Modal.setAppElement("#open_modal_1");
   }
-  // end
+
+
+
+
 
   //event display open form them nguoi dung va them tai xe
   openformthemnguoidung() {
@@ -163,18 +182,18 @@ class Account extends Component {
   // end
 
   //open form loading...
-  openloading(){
-    this.setState({OpenLoading: true});
+  openloading() {
+    this.setState({ OpenLoading: true });
     intervalLoading = setInterval(() => {
-      this.setState({dem: this.state.dem-1})
-    },1000);
-    setTimeout(()=>{
-      if(this.state.OpenLoading === true){
+      this.setState({ dem: this.state.dem - 1 });
+    }, 1000);
+    setTimeout(() => {
+      if (this.state.OpenLoading === true) {
         alert("Có sự cố xảy ra, vui lòng thử lại!");
         clearInterval(intervalLoading);
-        this.setState({OpenLoading: false,dem: 9});
+        this.setState({ OpenLoading: false, dem: 9 });
       }
-    },10000);
+    }, 10000);
   }
   //end
 
@@ -474,7 +493,6 @@ class Account extends Component {
       const url = "http://localhost:4000/api/user/add";
 
       this.openloading(this);
-      //fetch post call api
       var status = 0;
       fetch(url, {
         method: "POST",
@@ -487,19 +505,18 @@ class Account extends Component {
           status = res.status;
           return res.text();
         })
-        .then(res => async function(){
+        .then(res => {
           if (status === 200 && res === "success") {
-            
             setTimeout(() => {
               console.log(status + " : " + res);
-            alert("Thêm người dùng thành công!");
-            this.resetinput(this);
+              alert("Thêm người dùng thành công!");
+              this.resetinput(this);
               this.componentDidMount(this);
-            },5000);
+            }, 3000);
           } else if (status === 400 && res === "Email tồn tại") {
             console.log(status + " : " + res);
             alert("Email tồn tại, vui lòng dùng email khác!");
-          } else if (status === 400 && res === "UserName tồn tại") {
+          } else if (status === 400 && res === "UserName tồn tại") {  
             console.log(status + " : " + res);
             alert("Tên đăng nhập tồn tại, vui lòng dùng tên đăng nhập khác!");
           } else {
@@ -576,6 +593,67 @@ class Account extends Component {
       publicflag++;
     }
 
+    //Carr Number
+    var CarNumber = document.getElementById("CarNumber_tx");
+    if (this.checkinputtext(CarNumber.value) !== true) {
+      CarNumber.placeholder =
+        "Trường này không được để trống hoặc spam khoảng trắng!";
+        CarNumber.style.backgroundColor = "black";
+        CarNumber.style.color = "#fff";
+      publicflag++;
+    }
+
+    //Car Information
+    var CarInformation = document.getElementById("CarInformation_tx");
+    if (this.checkinputtext(CarInformation.value) !== true) {
+      CarInformation.placeholder =
+        "Trường này không được để trống hoặc spam khoảng trắng!";
+        CarInformation.style.backgroundColor = "black";
+        CarInformation.style.color = "#fff";
+      publicflag++;
+    }
+
+    //CarLicense
+    var CarLicense = document.getElementById("CarLicense_tx");
+    if (this.checkinputtext(CarLicense.value) !== true) {
+      CarLicense.placeholder =
+        "Trường này không được để trống hoặc spam khoảng trắng!";
+        CarLicense.style.backgroundColor = "black";
+        CarLicense.style.color = "#fff";
+      publicflag++;
+    }
+
+    //CarSpecials
+    var CarSpecials = document.getElementById("CarSpecials_tx");
+    if (this.checkinputtext(CarSpecials.value) !== true) {
+      CarSpecials.placeholder =
+        "Trường này không được để trống hoặc spam khoảng trắng!";
+        CarSpecials.style.backgroundColor = "black";
+        CarSpecials.style.color = "#fff";
+      publicflag++;
+    }
+
+    //CreateDate
+    var CreateDate = document.getElementById("CreateDate_tx");
+    if (this.checkinputtext(CreateDate.value) !== true) {
+      CreateDate.placeholder =
+        "Trường này không được để trống hoặc spam khoảng trắng!";
+        CreateDate.style.backgroundColor = "black";
+        CreateDate.style.color = "#fff";
+      publicflag++;
+    }
+
+    //Rate
+    var Rate = document.getElementById("Rate_tx");
+    if (this.checkinputtext(Rate.value) !== true) {
+      Rate.placeholder =
+        "Trường này không được để trống hoặc spam khoảng trắng!";
+        Rate.style.backgroundColor = "black";
+        Rate.style.color = "#fff";
+      publicflag++;
+    }
+
+
     //email
     var Email = document.getElementById("Email_tx");
     var flag = 0;
@@ -638,7 +716,13 @@ class Account extends Component {
         Email: Email.value,
         IdentityCard: IdentityCard.value,
         Birthday: Birthday.value,
-        Status: Status.value
+        Status: Status.value,
+        CarNumber: CarNumber.value,
+        CarInformation: CarInformation.value,
+        CarLicense: CarLicense.value,
+        CarSpecials: CarSpecials.value,
+        CreateDate: CreateDate.value,
+        Rate: Rate.value,
       };
       const url = "http://localhost:4000/api/driver/add";
 
@@ -657,12 +741,12 @@ class Account extends Component {
         })
         .then(res => {
           if (status === 200 && res === "success") {
-            setTimeout(()=>{
+            setTimeout(() => {
               console.log(status + " : " + res);
               alert("Thêm người dùng thành công!");
               this.resetinput_tx(this);
               this.componentDidMount(this);
-            },5000);
+            }, 3000);
           } else if (status === 400 && res === "Email tồn tại") {
             console.log(status + " : " + res);
             alert("Email tồn tại, vui lòng dùng email khác!");
@@ -854,7 +938,32 @@ class Account extends Component {
     document.getElementById("Birthday_tx").style.backgroundColor = "#fff";
     document.getElementById("Birthday_tx").style.color = "black";
   }
+  changeinput_carnumber_tx() {
+    document.getElementById("CarNumber_tx").style.backgroundColor = "#fff";
+    document.getElementById("CarNumber_tx").style.color = "black";
+  }
+  changeinput_carinformation_tx() {
+    document.getElementById("CarInformation_tx").style.backgroundColor = "#fff";
+    document.getElementById("CarInformation_tx").style.color = "black";
+  }
+  changeinput_carlicense_tx() {
+    document.getElementById("CarLicense_tx").style.backgroundColor = "#fff";
+    document.getElementById("CarLicense_tx").style.color = "black";
+  }
+  changeinput_carspecials_tx() {
+    document.getElementById("CarSpecials_tx").style.backgroundColor = "#fff";
+    document.getElementById("CarSpecials_tx").style.color = "black";
+  }
+  changeinput_datecreate_tx() {
+    document.getElementById("CreateDate_tx").style.backgroundColor = "#fff";
+    document.getElementById("CreateDate_tx").style.color = "black";
+  }
+  changeinput_rate_tx() {
+    document.getElementById("Rate_tx").style.backgroundColor = "#fff";
+    document.getElementById("Rate_tx").style.color = "black";
+  }
   //end
+
 
   // clear input when submit add user success
   resetinput() {
@@ -887,6 +996,11 @@ class Account extends Component {
     document.getElementById("Email_tx").value = "";
     document.getElementById("IdentityCard_tx").value = "";
     document.getElementById("Birthday_tx").value = "";
+    document.getElementById("CarNumber_tx").value = "";
+    document.getElementById("CarInformation_tx").value = "";
+    document.getElementById("CarLicense_tx").value = "";
+    document.getElementById("CarSpecials_tx").value = "";
+    document.getElementById("CreateDate_tx").value = "";
     this.changeinput_name_tx(this);
     this.changeinput_username_tx(this);
     this.changeinput_password_tx(this);
@@ -896,6 +1010,11 @@ class Account extends Component {
     this.changeinput_email_tx(this);
     this.changeinput_identitycard_tx(this);
     this.changeinput_birthday_tx(this);
+    this.changeinput_carnumber_tx(this);
+    this.changeinput_carinformation_tx(this);
+    this.changeinput_carlicense_tx(this);
+    this.changeinput_carspecials_tx(this);
+    this.changeinput_datecreate_tx(this);
   }
 
   // đổi filter search sẽ đổ lại data vào table
@@ -912,8 +1031,6 @@ class Account extends Component {
     }
   }
   // end
-  
-
 
   render() {
     // console.log("RENDER");
@@ -939,7 +1056,7 @@ class Account extends Component {
           <div>
             <p>Đang xử lý vui lòng chờ trong giây lát...</p>
             <center>
-            <h1>{this.state.dem}</h1>
+              <h1>{this.state.dem}</h1>
             </center>
             <center>
               <img src={loading} alt={"Loading..."} />
@@ -967,54 +1084,14 @@ class Account extends Component {
           style={customStyles}
         >
           <button
+            type="button"
             onClick={this.closeModal}
             id="btn-close"
-            className="btn btn-secondary"
+            className="btn btn-light"
           >
             <span aria-hidden="true">&times;</span>
           </button>
-          <center>
-            <h3>Thông tin chi tiết tài khoản tài xế</h3>
-          </center>
-          <div className="col-md-12">
-            <form>
-              <div>
-                <div className="form-group row">
-                  <label
-                    htmlFor="staticEmail"
-                    className="col-sm-2 col-form-label"
-                  >
-                    Email
-                  </label>
-                  <div className="col-sm-10">
-                    <input
-                      type="text"
-                      readOnly
-                      className="form-control-plaintext"
-                      id="staticEmail"
-                      defaultValue="email@example.com"
-                    />
-                  </div>
-                </div>
-                <div className="form-group row">
-                  <label
-                    htmlFor="inputPassword"
-                    className="col-sm-2 col-form-label"
-                  >
-                    Password
-                  </label>
-                  <div className="col-sm-10">
-                    <input
-                      type="password"
-                      className="form-control"
-                      id="inputPassword"
-                      placeholder="Password"
-                    />
-                  </div>
-                </div>
-              </div>
-            </form>
-          </div>
+          <DriverDetail detail={this.state.details} />
         </Modal>
         {/* END modal */}
 
@@ -1383,6 +1460,84 @@ class Account extends Component {
             </div>
             <div className="form-group">
               <center>
+                <label className="col-md-2 label-add">Biển số xe: <span className="span-must">(*)</span></label>
+              </center>
+              <div className="col-md-10">
+                <input
+                  type="text"
+                  className="form-control col-md-10"
+                  onChange={this.changeinput_carnumber_tx.bind(this)}
+                  id="CarNumber_tx"
+                />
+              </div>
+            </div>
+            <div className="form-group">
+              <center>
+                <label className="col-md-2 label-add">Thông tin xe: <span className="span-must">(*)</span></label>
+              </center>
+              <div className="col-md-10">
+                <input
+                  type="text"
+                  className="form-control col-md-10"
+                  onChange={this.changeinput_carinformation_tx.bind(this)}
+                  id="CarInformation_tx"
+                />
+              </div>
+            </div>
+            <div className="form-group">
+              <center>
+                <label className="col-md-2 label-add">Giấy phép lái xe: <span className="span-must">(*)</span></label>
+              </center>
+              <div className="col-md-10">
+                <input
+                  type="text"
+                  className="form-control col-md-10"
+                  onChange={this.changeinput_carlicense_tx.bind(this)}
+                  id="CarLicense_tx"
+                />
+              </div>
+            </div>
+            <div className="form-group">
+              <center>
+                <label className="col-md-2 label-add">Loại xe: <span className="span-must">(*)</span></label>
+              </center>
+              <div className="col-md-10">
+                <input
+                  type="text"
+                  className="form-control col-md-10"
+                  onChange={this.changeinput_carspecials_tx.bind(this)}
+                  id="CarSpecials_tx"
+                />
+              </div>
+            </div>
+            <div className="form-group">
+              <center>
+                <label className="col-md-2 label-add">Ngày đăng ký: <span className="span-must">(*)</span></label>
+              </center>
+              <div className="col-md-10">
+                <input
+                  type="date"
+                  className="form-control col-md-10"
+                  onChange={this.changeinput_datecreate_tx.bind(this)}
+                  id="CreateDate_tx"
+                />
+              </div>
+            </div>
+            <div className="form-group">
+              <center>
+                <label className="col-md-2 label-add">Uy tín: </label>
+              </center>
+              <div className="col-md-10">
+                <input
+                  type="text"
+                  className="form-control col-md-10"
+                  onChange={this.changeinput_rate_tx.bind(this)}
+                  id="Rate_tx"
+                />
+              </div>
+            </div>
+            <div className="form-group">
+              <center>
                 <label className="col-md-2 label-add">
                   Trạng thái: <span className="span-must">(*)</span>
                 </label>
@@ -1437,11 +1592,12 @@ class Account extends Component {
           <input
             type="text"
             className="form-control close-open-modal"
-            placeholder="Nhập từ khóa để tìm kiếm..."
+            placeholder="Nhập từ khóa để tìm kiếm Tên đăng nhập hoặc tên người dùng..."
+            id="tb-search"
             name="search"
           />
           <div className="input-group-btn">
-            <button
+            <button onClick={this.search.bind(this)}
               className="btn btn-outline-secondary close-open-modal"
               type="button"
             >
