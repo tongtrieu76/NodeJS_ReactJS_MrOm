@@ -36,7 +36,7 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 app.use(cookieParser());
 app.use(express.static(path.join(__dirname, "public")));
-
+  
 app.use("/api", LocationRouter);
 
 
@@ -65,53 +65,42 @@ var io = socketIO(server);
 
 //hanle socketIO server-client
 let interval;
-var save_IO = { socket: "" };
+var arrUser = [];
+var arrDriver = [];
 io.on("connection", socket => {
-  save_IO.socket = socket;
-  console.log("New client connected");
+  //connect
+  console.log(socket.id + " client connected");
 
-  interval = setInterval(() => getApiAndEmit(socket), 3000);
-  socket.on("disconnect", () => {
-    console.log("Client disconnected");
+  //push array user client.
+  var obj = {idacc: "",role: "",idsocket: ""};
+  obj.idsocket = socket.id;
+  arrUser.push(obj);
 
-    // send location: token, userID, local_X , local_Y
-    socket.on("send_location_driver_online", data => {
-      var locations = { AccountID: "", Location_X: "", Location_Y: "" };
-      Object.keys(data).map(key => {
-        locations.AccountID = data[key].AccountID;
-        locations.Location_X = data[key].Location_X;
-        locations.Location_Y = data[key].Location_Y;
-      });
-      //update data for database , userID
-      db.Locations.findOne({ AccountID: locations.AccountID }, function(err, data) {
-        if (err) {
-          console.log(err);
-          res.status(500).send();
-        } else {
-          if (!data) {
-            res.status(400).send();
-          } else {
-            if (locations.local_X) {
-              data.Location_X = locations.Location_X;
-            }
-            if (locations.local_Y) {
-              data.Location_Y = locations.Location_Y;
-            }
-
-            data.Date = Date();
-            // console.log(Date.parse(date_t));
-            data.save(function(err, rs) {
-              if (err) {
-                console.log(err);
-                res.status(500).send();
-              } else {
-                res.send(rs);
-              }
-            });
-          }
-        }
-      });
+  // handle event check id account , role , socketid
+  socket.on("sendrole",(data) => { // data: id, role
+    arrUser.forEach(item =>{
+      if(item.idsocket == socket.id){
+        item.idacc = data.id;
+        item.role = data.role;
+        break;
+      }
     });
+    socket.emit("sendid",socket.id);
+  })
+
+
+  //send location driver autopilot.
+  interval = setInterval(() => getApiAndEmit(socket), 3000);
+
+  //disconnect splice item in array.
+  socket.on("disconnect", () => {
+    for(var i=0;i<arrUser.length;i++){
+      if(arrUser[i].idsocket == socket.id){
+        arrUser.splice(i,1);
+        break;
+      }
+    }
+    console.log(socket.id + " Client disconnected");
   });
 });
 
@@ -119,7 +108,7 @@ io.on("connection", socket => {
 const getApiAndEmit = async socket => {
   try {
     const axios = require("axios");
-    axios.get("http://localhost:4000/api/location/").then(data_data => {
+    axios.get("http://localhost:4000/api/location").then(data_data => {
       console.log(data_data.data);
       socket.emit("location_driver_online", data_data.data);
     });

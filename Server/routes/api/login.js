@@ -100,16 +100,15 @@ app.post("/", async function(req, res, next) {
                         if (data.Status == 96) {
                           if (req.body.Password == data.Password) {
                             var token_send = {
-                              id: AccountID,
+                              id: data.AccountID,
                               token: data.Token,
                               Role: data.Role
                             };
                             res.status(200).send(token_send);
                           } else {
-                            res.status(400).send("Sai email hoac mat khau");
+                            res.status(400).send(false);
                           }
                         } else if (data.Status == 69) {
-
                           // 69 = status lock
                           var trave = {
                             UserName: data.UserName,
@@ -135,53 +134,42 @@ app.post("/", async function(req, res, next) {
               }
             }
           );
-        }
-        else{
-          console.log("vo else");
-          var AccountID = data.AccountID;
-          db.Accounts.findOne({ _id: AccountID }, (err, data) => {
-            if (err) {
-              console.log(err);
-              res.status(500).send("Đã xảy ra lỗi bất ngờ");
-            } else {
-              if (!data) {
-                res.status(400).send("Sai email hoac mat khau");
+        } else {
+          if (!data) {
+            res.status(400).send("Sai email hoac mat khau");
+          } else {
+            if (data.Status == 96) {
+              if (req.body.Password == data.Password) {
+                var token_send = {
+                  id: data.AccountID,
+                  token: data.Token,
+                  Role: data.Role
+                };
+                res.status(200).send(token_send);
               } else {
-                if (data.Status == 96) {
-                  if (req.body.Password == data.Password) {
-                    var token_send = {
-                      id: AccountID,
-                      token: data.Token,
-                      Role: data.Role
-                    };
-                    res.status(200).send(token_send);
-                  } else {
-                    res.status(400).send("Sai email hoac mat khau");
-                  }
-                } else if (data.Status == 69) {
-                  // 69 = status lock
-                  var trave = {
-                    UserName: data.UserName,
-                    Name: data.Name,
-                    WhyLock: data.WhyLock
-                  };
-                  res.send(400, trave);
-                } else if (data.Status == 0) {
-                  //0 = status chưa active
-                  var trave = {
-                    UserName: data.UserName,
-                    Name: data.Name,
-                    CreateDate: data.CreateDate
-                  };
-                  res.send(200, trave);
-                } else {
-                  res.send(400, "Bug!");
-                }
+                res.status(400).send(false);
               }
+            } else if (data.Status == 69) {
+              // 69 = status lock
+              var trave = {
+                UserName: data.UserName,
+                Name: data.Name,
+                WhyLock: data.WhyLock
+              };
+              res.send(400, trave);
+            } else if (data.Status == 0) {
+              //0 = status chưa active
+              var trave = {
+                UserName: data.UserName,
+                Name: data.Name,
+                CreateDate: data.CreateDate
+              };
+              res.send(200, trave);
+            } else {
+              res.send(400, "Bug!");
             }
-          });
+          }
         }
-     
       }
     });
   } catch (err) {
@@ -191,7 +179,7 @@ app.post("/", async function(req, res, next) {
 
 app.post("/checktoken", function(req, res, next) {
   try {
-    db.Accounts.findOne({ AccountID: req.body.AccountID }, function(err, data) {
+    db.Accounts.findOne({ _id: req.body.AccountID }, function(err, data) {
       if (err) {
         console.log(err);
         res.status(500).end();
@@ -208,16 +196,16 @@ app.post("/checktoken", function(req, res, next) {
             role == data.Role
           ) {
             if (data.Status == 96) {
-              res.status(200).end(true);
+              res.status(200).send(true);
             } else if (data.Status == 69) {
-              res.status(400).end("Lock");
+              res.status(400).send("Lock");
             } else if (data.Status == 0) {
-              res.status(200).end("UnActive");
+              res.status(200).send("UnActive");
             } else {
-              res.status(400).end("Bug!");
+              res.status(400).send("Bug!");
             }
           } else {
-            res.status(400).end(false);
+            res.status(400).send(false);
           }
         }
       }
