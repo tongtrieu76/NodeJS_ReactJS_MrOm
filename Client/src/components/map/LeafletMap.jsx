@@ -9,14 +9,29 @@ import bike from "../../img/bike.png"
 import { setCurrentUser } from '../action/authActions'
 import jwt from 'jsonwebtoken';
 
+import gifload from "../../img/loading.gif"
+
 
 var Icon = L.icon({
   iconUrl: bike,
   iconSize: [60, 70],
 })
+
+
+var intervalLoad;
+// var dataNguoiDatXe = {userID : "",
+//   taixeID : "",
+//   diadiemdon_x :  "",
+//   diadiemdon_y : "",
+//   diadiemden_x :  "",
+//   diadiemden_y : ""
+// }
+
+
 var id_Socket;
 var arr = [];
 var arr1 = [];
+var  arrXeOm= [];
 var min = { id: 0, minlegnt: 99999, Location_X: 0, Location_Y: 0 };
 
 const customStyles = {
@@ -28,8 +43,9 @@ const customStyles = {
     bottom: 'auto',
     marginRight: '-50%',
     transform: 'translate(-50%, -50%)',
-    height: "50%",
-    width: "50%"
+    height: "auto",
+    width: "auto",
+    overflow: 'hidden',
 
   }
 };
@@ -48,9 +64,17 @@ export default class LeafletMap extends Component {
       // getadd: null, 
       route: null,
       modalIsOpen: false,
+      modalIsOpenDriver: false,
+
       distance: 0,
       time: 0,
       minDriver: null,
+
+      dataNguoiDatXe: null,
+      dem: 15,
+      xacnhanchuyen: false,
+
+
     };
 
     this.socket.on("location_driver_online", (data) => {
@@ -63,6 +87,8 @@ export default class LeafletMap extends Component {
 
     this.openModal = this.openModal.bind(this);
     this.closeModal = this.closeModal.bind(this);
+    this.closeModalDriver = this.closeModalDriver.bind(this);
+
   }
 
 
@@ -86,7 +112,7 @@ export default class LeafletMap extends Component {
           min.minlegnt = d;
           min.Location_X = element.Location_X;
           min.Location_Y = element.Location_Y;
-          console.log(d + "   " + element.AccountID);
+          // console.log(d + "   " + element.AccountID);
 
         }
 
@@ -95,6 +121,8 @@ export default class LeafletMap extends Component {
 
       });
       console.log(arr1);
+    arrXeOm = arr1;
+
     }
 
 
@@ -178,56 +206,207 @@ export default class LeafletMap extends Component {
     this.setState({ modalIsOpen: false });
   }
 
+  closeModalDriver() {
+    this.setState({ modalIsOpenDriver: false });
+
+
+  }
 
   componentDidMount() {
 
     Modal.setAppElement("#text1")
-    
 
-   
+
+
     if (!localStorage.jwtToken) {
-      // console.log( setCurrentUser(jwt.decode(localStorage.jwtToken)).user.Role);
-    //  role = setCurrentUser(jwt.decode(localStorage.jwtToken)).user.Role
-    //  id = setCurrentUser(jwt.decode(localStorage.jwtToken)).user.id
 
-      this.socket.emit("sendrole", {id:0,role:0})
-      this.socket.on("sendid", (data)=>{
+
+      this.socket.emit("sendrole", { id: 0, role: 0 })
+      this.socket.on("sendid", (data) => {
         id_Socket = data
-
+        alert(data);
       })
     }
+    else if (localStorage.jwtToken && 0 === setCurrentUser(jwt.decode(localStorage.jwtToken)).user.Role) {
+      // console.log( setCurrentUser(jwt.decode(localStorage.jwtToken)).user.Role);
+      var role = setCurrentUser(jwt.decode(localStorage.jwtToken)).user.Role
+      var id = setCurrentUser(jwt.decode(localStorage.jwtToken)).user.id
+      this.socket.emit("sendrole", { id: id, role: role })
+      this.socket.on("sendid", (data) => {
+        id_Socket = data
+        alert(data);
 
-   
+      })
+      console.log(arrXeOm)
+
+      this.socket.on(id, (data) => {
+        // id_Socket = data
+        alert(data);
+
+        if (data.Huy === true) {
+         
+          // var min1 = 99999999;
+          // var min2 = 99999;
+
+          // console.log("arr1 ")
+          // console.log(arr1)
+          // var vitri = 0;
+          // for (var i = 0; i < arr1.length; i++) {
+          //   const element = arr1[i].minlegnt;
+
+        
+          //   if (min1 > element) {
+          //     min2 = min1;
+          //     vitri = i;
+          //     min1 = element;
+          //   } else if (min1 < element && min2 > element) {
+          //     min2 = element;
+          //     vitri = i;
+
+
+          //   }
+
+        
+          // }
+          // console.log(id)
+          for (var i = 0; i < arrXeOm.length; i++) {
+            const element = arrXeOm[i].id;
+            // console.log();
+            if(element === min.id)
+            {
+              arrXeOm.slice(i,1);
+
+            }
+            console.log(arrXeOm);
+          }
+
+         alert(JSON.stringify(arrXeOm))
+          var minlaplai = arrXeOm[0].minlegnt; 
+          var vitri =0;
+          for (var j = 0; j < arrXeOm.length; j++) {
+            const element = arrXeOm[j].minlegnt;  
+           if(minlaplai>element)
+           {
+             minlaplai = element;
+             vitri = j;
+           }
+            
+          }
+          console.log(minlaplai + "   " + vitri + "       sddsfdfdfss")
+
+          // Location_X: "10.7304458"
+          // Location_Y: "106.6106881"
+          // id: "5cf0111d1c4b6c34fc277c1f"
+          // minlegnt: 0.06846057672126504
+          const { nowLocation, toLocation } = this.props;
+          var send = {
+            userID: id,
+            taixeID: arrXeOm[vitri].id,
+            diadiemdon: { x: nowLocation.lat, y: nowLocation.lng },
+            diadiemden: { x: toLocation.lat, y: toLocation.lng },
+            id_Socket: id_Socket,
+          };
+
+          this.socket.emit("datxe", send)
+        }
+
+
+
+      })
+
+    }
+    else if (localStorage.jwtToken && 2 === setCurrentUser(jwt.decode(localStorage.jwtToken)).user.Role) {
+
+      var role1 = setCurrentUser(jwt.decode(localStorage.jwtToken)).user.Role
+      var id1 = setCurrentUser(jwt.decode(localStorage.jwtToken)).user.id
+      this.socket.emit("sendrole", { id: id1, role: role1 })
+      this.socket.on("sendid", (data) => {
+        alert(id1 + "111");
+
+        id_Socket = data
+        alert(data);
+
+      })
+
+      this.socket.on(id1, (data) => {
+        //  dataNguoiDatXe = {userID : data.userID,
+        //  taixeID : data.taixeID,
+        //  diadiemdon_x : data.diadiemdon.x,
+        //  diadiemdon_y : data.diadiemdon.y,
+        //  diadiemden_x : data.diadiemden.x,
+        //  diadiemden_y : data.diadiemden.y}
+        //  console.log(data)
+        this.setState({ modalIsOpenDriver: true, dataNguoiDatXe: data });
+        intervalLoad = setInterval(() => {
+          this.setState({ dem: this.state.dem - 1 })
+        }, 1000);
+
+        setTimeout(() => {
+          if (this.state.xacnhanchuyen === false) {
+            this.tuchoichuyen(this);
+            this.setState({ modalIsOpenDriver: false , dem:15 })
+
+          }
+
+
+        }, 15000)
+      })
+
+    }
+
+
   }
 
 
   timtaixe(e) {
     alert("sdasdasdasdadsa");
     var id;
-    const { nowLocation,toLocation } = this.props;
+    const { nowLocation, toLocation } = this.props;
 
     if (localStorage.jwtToken) {
       // console.log( setCurrentUser(jwt.decode(localStorage.jwtToken)).user.Role);
       id = setCurrentUser(jwt.decode(localStorage.jwtToken)).user.id
 
-    }else{
-      id=-1;
+    } else {
+      id = -1;
     }
 
-    var send = {userID:id,taixeID: min.id, diadiemdon:{x:nowLocation.lat,y:nowLocation.lng},diadiemdem:{x:toLocation.lat,y:toLocation.lng}};
-    console.log(id);
+    var send = {
+      userID: id,
+      taixeID: min.id,
+      diadiemdon: { x: nowLocation.lat, y: nowLocation.lng },
+      diadiemden: { x: toLocation.lat, y: toLocation.lng },
+      id_Socket: id_Socket,
+    };
+    console.log(min.id);
 
-  // this.socket = io.connect("http://localhost:3000/",{ reconnect: true, xyz:"abc" });
+    // this.socket = io.connect("http://localhost:3000/",{ reconnect: true, xyz:"abc" });
 
-    this.socket.emit("5cfb2957e07bf838680f06c0",send)
+    this.socket.emit("datxe", send)
+    
 
 
     // this.socket.on(id , (data) => {
-     
+
     // })
 
   }
+
+  nhanchuyen(e) {
+
+    this.socket.emit("nhanchuyen", { id: this.state.dataNguoiDatXe.idkhach, mess: "nhận" });
+    this.setState({ xacnhanchuyen: true })
+
+  }
+
+  tuchoichuyen(e) {
+    this.setState({ modalIsOpenDriver: false,dem:15 })
+
+    this.socket.emit("tuchoichuyen", { id: this.state.dataNguoiDatXe.idkhach, mess: "Hủy rồi", Huy: true });
+  }
   render() {
+    var datadatxe = this.state.dataNguoiDatXe;
+    console.log(datadatxe)
     // console.log(this.props.toLocation);
     const { nowLocation, toLocation } = this.props;
 
@@ -318,6 +497,8 @@ export default class LeafletMap extends Component {
           style={customStyles}
           contentLabel="Example Modal"
         >
+
+
           {minDriverss ? minDriverss.id : ""
 
 
@@ -328,6 +509,26 @@ export default class LeafletMap extends Component {
           }
 
           <button onClick={this.timtaixe.bind(this)}>   Tìm Tài Xế </button>
+        </Modal>
+
+
+        <Modal
+          isOpen={this.state.modalIsOpenDriver}
+          onAfterOpen={this.afterOpenModal}
+          onRequestClose={this.closeModalDriver}
+          style={customStyles}
+          contentLabel="Example Modal"
+        >
+          {/* <div >{datadatxe ? datadatxe : "dsdsasdasddsadsadsadsa"}</div> */}
+
+
+          <button onClick={this.nhanchuyen.bind(this)}>  Xác Nhận </button>
+          <button onClick={this.tuchoichuyen.bind(this)}>  Hủy </button>
+          <center> 
+          <h1> {this.state.dem}</h1>
+          <img src={gifload} alt="Load" />
+          </center>
+
         </Modal>
       </Map>
     );

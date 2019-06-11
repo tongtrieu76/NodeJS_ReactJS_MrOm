@@ -36,17 +36,17 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 app.use(cookieParser());
 app.use(express.static(path.join(__dirname, "public")));
-  
+
 app.use("/api", LocationRouter);
 
 
 // catch 404 and forward to error handler
-app.use(function(req, res, next) {
+app.use(function (req, res, next) {
   next(createError(404));
 });
 
 // error handler
-app.use(function(err, req, res, next) {
+app.use(function (err, req, res, next) {
   // set locals, only providing error in development
   res.locals.message = err.message;
   res.locals.error = req.app.get("env") === "development" ? err : {};
@@ -72,20 +72,59 @@ io.on("connection", socket => {
   console.log(socket.id + " client connected");
 
   //push array user client.
-  var obj = {idacc: "",role: "",idsocket: ""};
+  var obj = { idacc: "", role: "", idsocket: "" };
   obj.idsocket = socket.id;
   arrUser.push(obj);
 
   // handle event check id account , role , socketid
-  socket.on("sendrole",(data) => { // data: id, role
-    arrUser.forEach(item =>{
-      if(item.idsocket == socket.id){
+  socket.on("sendrole", (data) => {
+    // console.log(data) // data: id, role
+    arrUser.forEach(item => {
+      if (item.idsocket == socket.id) {
         item.idacc = data.id;
         item.role = data.role;
-        break;
+        // break;
+
       }
     });
-    socket.emit("sendid",socket.id);
+    console.log(arrUser);
+    socket.emit("sendid", socket.id);
+  })
+
+  socket.on("datxe", (data) => {
+// console.log(data);
+    const idsocket = data.id_Socket;
+console.log("dat xe ne");
+    var flag = 0;
+    // console.log(arrUser);
+    arrUser.forEach(item => {
+      if (item.idsocket == idsocket) {
+        flag = 1;
+        console.log("da gan cờ");
+      }
+    })
+
+    if (flag === 0) {
+      socket.emit("phanhoidatxe", "!!!!!!!!!!!!!!!")
+    }
+    else if (flag === 1) {
+     var datasend={idTaiXe:data.taixeID,idkhach:data.userID}
+      io.emit(data.taixeID, datasend)
+
+    }
+
+  })
+
+
+  socket.on("nhanchuyen",(data)=>{
+  console.log(data);
+
+  io.emit(data.id,data.mess)
+
+  })
+  
+  socket.on("tuchoichuyen",(data)=>{
+io.emit(data.id,{mess: data.mess, Huy:data.Huy})
   })
 
 
@@ -94,10 +133,11 @@ io.on("connection", socket => {
 
   //disconnect splice item in array.
   socket.on("disconnect", () => {
-    for(var i=0;i<arrUser.length;i++){
-      if(arrUser[i].idsocket == socket.id){
-        arrUser.splice(i,1);
-        break;
+    clearInterval(interval);
+    for (var i = 0; i < arrUser.length; i++) {
+      if (arrUser[i].idsocket == socket.id) {
+        arrUser.splice(i, 1);
+        // break;
       }
     }
     console.log(socket.id + " Client disconnected");
@@ -109,7 +149,7 @@ const getApiAndEmit = async socket => {
   try {
     const axios = require("axios");
     axios.get("http://localhost:4000/api/location").then(data_data => {
-      console.log(data_data.data);
+      // console.log(data_data.data);
       socket.emit("location_driver_online", data_data.data);
     });
   } catch (error) {
@@ -164,5 +204,5 @@ function onListening() {
   var addr = server.address();
   var bind = typeof addr === "string" ? "pipe " + addr : "port " + addr.port;
   debug("Listening on " + bind);
-  console.log("Server running address: "  + " port: " + port);
+  console.log("Server running address: " + " port: " + port);
 }
