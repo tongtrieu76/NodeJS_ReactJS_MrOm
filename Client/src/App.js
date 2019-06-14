@@ -8,6 +8,8 @@ import { logout } from './components/action/authActions'
 
 import axios from 'axios';
 
+
+var vitrihientai= null;
 export default class App extends React.Component {
   constructor(props) {
     super(props);
@@ -24,6 +26,8 @@ export default class App extends React.Component {
       km: null,
     };
     this.setToLocation = this.setToLocation.bind(this);
+    this.setNowLocation = this.setNowLocation.bind(this);
+
     // this.socket.on("location_driver_online", (data) => {
     //     this.setState({
     //         data_pos: data
@@ -106,16 +110,21 @@ export default class App extends React.Component {
 
   }
   componentDidMount() {
-    // navigator.geolocation.watchPosition((pos) => {
-    //   this.setState({
-    //     nowLocation: {lat:pos.coords.latitude, lng:pos.coords.longitude},
-    //     toLocation: {lat:pos.coords.latitude, lng:pos.coords.longitude},
-    //   });
-    // });
+    navigator.geolocation.watchPosition((pos) => {
+      vitrihientai = { lat:pos.coords.latitude, lng:pos.coords.longitude};
+      // this.setNowLocation({ lat:pos.coords.latitude, lng:pos.coords.longitude})
+     // this.setState({ nowLocation: { lat: pos.coords.latitude, lng: pos.coords.longitude } })
+     // setTimeout(() => this.setState({ nowLocation: { lat: pos.coords.latitude, lng: pos.coords.longitude } }), 0)
+     // this.setState({
+     //   nowLocation: {lat:pos.coords.latitude, lng:pos.coords.longitude},
+     //   // toLocation: {lat:pos.coords.latitude, lng:pos.coords.longitude},
+     // });
+   });
   }
 
   render() {
-
+    // console.log("123")
+// console.log(this.state)
     return (
       <div>
         <div className="full">
@@ -172,15 +181,20 @@ export default class App extends React.Component {
 
             </div>
             <div className="text-center">
-              <button type="button" className="btn btn-info" id="get_my_location" onClick={() => {
-                navigator.geolocation.watchPosition((pos) => {
-                  //  this.setState({nowLocation:{ lat:pos.coords.latitude, lng:pos.coords.longitude}})
-                  setTimeout(() => this.setState({ nowLocation: { lat: pos.coords.latitude, lng: pos.coords.longitude } }), 0)
-                  // this.setState({
-                  //   nowLocation: {lat:pos.coords.latitude, lng:pos.coords.longitude},
-                  //   // toLocation: {lat:pos.coords.latitude, lng:pos.coords.longitude},
-                  // });
-                });
+              <button type="button" className="btn btn-info" id="get_my_location" onClick={ () => {
+                // navigator.geolocation.watchPosition((pos) => {
+                //    this.setNowLocation({ lat:pos.coords.latitude, lng:pos.coords.longitude})
+                //   // this.setState({ nowLocation: { lat: pos.coords.latitude, lng: pos.coords.longitude } })
+                //   // setTimeout(() => this.setState({ nowLocation: { lat: pos.coords.latitude, lng: pos.coords.longitude } }), 0)
+                //   // this.setState({
+                //   //   nowLocation: {lat:pos.coords.latitude, lng:pos.coords.longitude},
+                //   //   // toLocation: {lat:pos.coords.latitude, lng:pos.coords.longitude},
+                //   // });
+                // });
+                this.setNowLocation(vitrihientai);
+                this.setState({nowLocation:vitrihientai});
+
+
               }}>
                 Vị trí của tôi
                                   </button>

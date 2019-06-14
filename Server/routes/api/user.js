@@ -224,7 +224,7 @@ app.post("/updateInfor",(req,res,next) =>{
 
 
 
-// // user
+// //user
 // app.post("/", function(req, res, next) {
 //   try {
 //     db.InformationUsers.findOne({ AccountID: req.body.AccountID }, function(

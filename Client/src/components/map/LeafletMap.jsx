@@ -8,6 +8,7 @@ import Modal from 'react-modal';
 import bike from "../../img/bike.png"
 import { setCurrentUser } from '../action/authActions'
 import jwt from 'jsonwebtoken';
+import Control from 'react-leaflet-control';
 
 import gifload from "../../img/loading.gif"
 
@@ -31,7 +32,7 @@ var intervalLoad;
 var id_Socket;
 var arr = [];
 var arr1 = [];
-var  arrXeOm= [];
+var arrXeOm = [];
 var min = { id: 0, minlegnt: 99999, Location_X: 0, Location_Y: 0 };
 
 const customStyles = {
@@ -121,7 +122,7 @@ export default class LeafletMap extends Component {
 
       });
       console.log(arr1);
-    arrXeOm = arr1;
+      arrXeOm = arr1;
 
     }
 
@@ -158,7 +159,7 @@ export default class LeafletMap extends Component {
   }
 
   onClick(location) {
-    alert(location)
+    // alert(location)
     // if (this.state.getadd) this.setState({ getadd: null });
     // this.setState({ getadd: [{X:location[0],Y:location[1]}]});
 
@@ -224,7 +225,7 @@ export default class LeafletMap extends Component {
       this.socket.emit("sendrole", { id: 0, role: 0 })
       this.socket.on("sendid", (data) => {
         id_Socket = data
-        alert(data);
+        // alert(data);
       })
     }
     else if (localStorage.jwtToken && 0 === setCurrentUser(jwt.decode(localStorage.jwtToken)).user.Role) {
@@ -234,17 +235,17 @@ export default class LeafletMap extends Component {
       this.socket.emit("sendrole", { id: id, role: role })
       this.socket.on("sendid", (data) => {
         id_Socket = data
-        alert(data);
+        // alert(data);
 
       })
       console.log(arrXeOm)
 
       this.socket.on(id, (data) => {
         // id_Socket = data
-        alert(data);
+        // alert(data);
 
         if (data.Huy === true) {
-         
+
           // var min1 = 99999999;
           // var min2 = 99999;
 
@@ -254,7 +255,7 @@ export default class LeafletMap extends Component {
           // for (var i = 0; i < arr1.length; i++) {
           //   const element = arr1[i].minlegnt;
 
-        
+
           //   if (min1 > element) {
           //     min2 = min1;
           //     vitri = i;
@@ -266,31 +267,29 @@ export default class LeafletMap extends Component {
 
           //   }
 
-        
+
           // }
           // console.log(id)
           for (var i = 0; i < arrXeOm.length; i++) {
             const element = arrXeOm[i].id;
             // console.log();
-            if(element === min.id)
-            {
-              arrXeOm.slice(i,1);
+            if (element === min.id) {
+              arrXeOm.slice(i, 1);
 
             }
             console.log(arrXeOm);
           }
 
-         alert(JSON.stringify(arrXeOm))
-          var minlaplai = arrXeOm[0].minlegnt; 
-          var vitri =0;
+          //  alert(JSON.stringify(arrXeOm))
+          var minlaplai = arrXeOm[0].minlegnt;
+          var vitri = 0;
           for (var j = 0; j < arrXeOm.length; j++) {
-            const element = arrXeOm[j].minlegnt;  
-           if(minlaplai>element)
-           {
-             minlaplai = element;
-             vitri = j;
-           }
-            
+            const element = arrXeOm[j].minlegnt;
+            if (minlaplai > element) {
+              minlaplai = element;
+              vitri = j;
+            }
+
           }
           console.log(minlaplai + "   " + vitri + "       sddsfdfdfss")
 
@@ -324,7 +323,7 @@ export default class LeafletMap extends Component {
         alert(id1 + "111");
 
         id_Socket = data
-        alert(data);
+        // alert(data);
 
       })
 
@@ -344,7 +343,7 @@ export default class LeafletMap extends Component {
         setTimeout(() => {
           if (this.state.xacnhanchuyen === false) {
             this.tuchoichuyen(this);
-            this.setState({ modalIsOpenDriver: false , dem:15 })
+            this.setState({ modalIsOpenDriver: false, dem: 15 })
 
           }
 
@@ -359,7 +358,7 @@ export default class LeafletMap extends Component {
 
 
   timtaixe(e) {
-    alert("sdasdasdasdadsa");
+    // alert("sdasdasdasdadsa");
     var id;
     const { nowLocation, toLocation } = this.props;
 
@@ -383,7 +382,7 @@ export default class LeafletMap extends Component {
     // this.socket = io.connect("http://localhost:3000/",{ reconnect: true, xyz:"abc" });
 
     this.socket.emit("datxe", send)
-    
+
 
 
     // this.socket.on(id , (data) => {
@@ -400,7 +399,7 @@ export default class LeafletMap extends Component {
   }
 
   tuchoichuyen(e) {
-    this.setState({ modalIsOpenDriver: false,dem:15 })
+    this.setState({ modalIsOpenDriver: false, dem: 15 })
 
     this.socket.emit("tuchoichuyen", { id: this.state.dataNguoiDatXe.idkhach, mess: "Hủy rồi", Huy: true });
   }
@@ -422,6 +421,15 @@ export default class LeafletMap extends Component {
     return (
 
       <Map center={nowLocation ? nowLocation : toLocation} zoom={this.state.zoom} ref={this.saveMap} onClick={this.addToMarker} id="text1">
+
+    { nowLocation && toLocation &&   <Control position="topleft" >
+          <button
+            onClick={this.openModal}
+            className="btn btn-default"
+          >
+            Đặt xe
+          </button>
+        </Control>}
         <TileLayer
           // attribution='&amp;copy <a href="http://osm.org/copyright">OpenStreetMap</a> contributors'
           url="http://{s}.tile.osm.org/{z}/{x}/{y}.png"
@@ -443,9 +451,7 @@ export default class LeafletMap extends Component {
 
           </Popup>
         </Marker>}
-        <div className="leaflet-top leaflet-left ml-5"><div className="leaflet-control-zoom leaflet-bar leaflet-control">
-          <button onClick={this.openModal}  > Đặt xe</button>
-        </div></div>
+
 
         {/* { vi tri den }
       {  fromLocation &&<Marker position={fromLocation}>
@@ -524,9 +530,9 @@ export default class LeafletMap extends Component {
 
           <button onClick={this.nhanchuyen.bind(this)}>  Xác Nhận </button>
           <button onClick={this.tuchoichuyen.bind(this)}>  Hủy </button>
-          <center> 
-          <h1> {this.state.dem}</h1>
-          <img src={gifload} alt="Load" />
+          <center>
+            <h1> {this.state.dem}</h1>
+            <img src={gifload} alt="Load" />
           </center>
 
         </Modal>
