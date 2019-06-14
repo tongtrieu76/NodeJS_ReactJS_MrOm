@@ -86,7 +86,7 @@ class Account extends Component {
 
   //Load Data
   loadData(key){
-    fetch("http://localhost:4000/api/account/" + key )
+    fetch("http://localhost:4000/api/account/admin/" + key )
       .then(response => response.json())
       .then(result => {
         var arr_user = [];
