@@ -161,7 +161,13 @@ app.post("/add", async function(req, res, next) {
                         NumberPhone: req.body.NumberPhone,
                         Address: req.body.Address,
                         IdentityCard: req.body.IdentityCard,
-                        Birthday: req.body.Birthday
+                        Birthday: req.body.Birthday,
+                        CarNumber: req.body.CarNumber,
+                        CarInformation: req.body.CarInformation,
+                        CarLicense: req.body.CarLicense,
+                        CarSpecials: req.body.CarSpecials,
+                        DateSignup: req.body.CreateDate,
+                        Rate: req.body.Rate
                       });
                       await db.InformationDrivers.findOne({
                         AccountID: _id
@@ -192,5 +198,56 @@ app.post("/add", async function(req, res, next) {
     }
   });
 });
+
+// Cập nhật thông tin
+app.post("/updateInfor",(req,res,next) =>{
+  try {
+    db.Accounts.findOne({_id : req.body.id},(err,data) =>{
+      if(err){
+        res.status(500).send("Try again");
+      } else {
+        if(!data){
+          res.status(400).send("Bad request");
+        } else {
+          if(data.Token == req.body.Token){
+            db.InformationDrivers.findOne({AccountID: req.body.id},(error,rs) =>{
+              if(error){
+                res.status(500).send("Try again");
+              } else {
+                if(!rs){
+                  res.status(400).send("Bad request");
+                } else {
+                  if(req.body.Birthday != null) data.Birthday = req.body.Birthday;
+                  if(req.body.IdentityCard != null) data.IdentityCard = req.body.IdentityCard;
+                  if(req.body.Address != null) data.Address = req.body.Address;
+                  if(req.body.Email != null) data.Email = req.body.Email;
+                  if(req.body.NumberPhone != null) data.NumberPhone = req.body.NumberPhone;
+                  if(req.body.CarNumber != null) data.CarNumber = req.body.CarNumber;
+                  if(req.body.CarInformation != null) data.CarInformation = req.body.CarInformation;
+                  if(req.body.CarLicense != null) data.CarLicense = req.body.CarLicense;
+                  if(req.body.CarSpecials != null) data.CarSpecials = req.body.CarSpecials;
+                  if(req.body.Rate != null) data.Rate = req.body.Rate;
+
+                  data.save((err,rs) =>{
+                    if(err) res.status(500).send("Try again");
+                    else {
+                      res.status(200).send("success");
+                    }
+                  });
+                }
+              }
+            });//end db find
+          } else {
+            res.status(400).send("Bad request");
+          }
+        }
+      }
+    })
+  } catch(err){
+    res.status(500).send("Try again");
+  }
+});
+
+
 
 module.exports = app;

@@ -21,10 +21,28 @@ app.get("/", (req, res, next) => {
     res.status(500).send("Đã xảy ra lỗi bất ngờ " + err);
   }
 });
+
+// -- -- account key
+app.get("/:key", (req, res, next) => {
+  try {
+    db.Accounts.find({
+      $or: [
+        { UserName: { $regex: req.params.key } },
+        { Name: { $regex: req.params.key } }
+      ]
+    }).exec((err, result) => {
+      if (err) return handleError(err);
+      res.send(result);
+    });
+  } catch (err) {
+    res.status(500).send("Đã xảy ra lỗi bất ngờ " + err);
+  }
+});
+
 // -- -- driver theo id
 app.get("/:id", function(req, res, next) {
   try {
-    db.Accounts.findOne({ _id: req.params.id }, function(err, result) {
+    db.Accounts.findOne({ AccountID: req.params.id }, function(err, result) {
       if (err) return handleError(err);
       res.send(result);
     });
@@ -194,10 +212,7 @@ app.post("/deleteacc", function(req, res, next) {
 // -- update theo UserName
 app.post("/update", function(req, res, next) {
   try {
-    db.InformationUsers.findOne({ UserName: req.body.UserName }, function(
-      err,
-      data
-    ) {
+    db.Accounts.findOne({ UserName: req.body.UserName }, function(err, data) {
       if (err) {
         console.log(err);
         res.status(500).send();
@@ -250,4 +265,172 @@ app.post("/update", function(req, res, next) {
     res.status(500).send("Đã xảy ra lỗi bất ngờ" + err);
   }
 });
+
+app.post("/updateInfor", (req, res, next) => {
+  try {
+    db.Accounts.findOne({ _id: req.body.id }, function(err, data) {
+      if (err) {
+        console.log(err);
+        res.status(500).send();
+      } else {
+        if (!data) {
+          res.status(400).send();
+        } else {
+          // change account
+          try {
+            var arrOldPass = [];
+            arrOldPass = data.OldPassword;
+            if (req.body.Password) {
+              arrOldPass.push(data.Password);
+              data.Password = req.body.Password;
+            }
+            if (req.body.Name) {
+              data.Name = req.body.Name;
+            }
+            if (req.body.OldPassword) {
+              while (arrOldPass.length > 5) {
+                arrOldPass.shift();
+              }
+              data.OldPassword = arrOldPass;
+            }
+            data.save(function(err, rs) {
+              if (err) {
+                console.log(err);
+                res.status(500).send();
+              } else {
+                res.status(200).send("success");
+              }
+            });
+          } catch (err) {
+            res.status(500).send("Đã xảy ra lỗi bất ngờ" + err);
+          }
+
+          // change infor
+          if (req.body.Token == data.Token) {
+            if (req.body.Role == 0) {
+              try {
+                db.Accounts.findOne({ _id: req.body.id }, (err, data) => {
+                  if (err) {
+                    res.status(500).send("Try again");
+                  } else {
+                    if (!data) {
+                      res.status(400).send("Bad request");
+                    } else {
+                      if (data.Token == req.body.Token) {
+                        db.InformationUsers.findOne(
+                          { AccountID: req.body.id },
+                          (error, rs) => {
+                            if (error) {
+                              res.status(500).send("Try again");
+                            } else {
+                              if (!rs) {
+                                res.status(400).send("Bad request");
+                              } else {
+                                if (req.body.Birthday != null)
+                                  data.Birthday = req.body.Birthday;
+                                if (req.body.IdentityCard != null)
+                                  data.IdentityCard = req.body.IdentityCard;
+                                if (req.body.Address != null)
+                                  data.Address = req.body.Address;
+                                if (req.body.Email != null)
+                                  data.Email = req.body.Email;
+                                if (req.body.NumberPhone != null)
+                                  data.NumberPhone = req.body.NumberPhone;
+                                if (req.body.Point != null)
+                                  data.Point = req.body.Point;
+
+                                data.save((err, rs) => {
+                                  if (err) res.status(500).send("Try again");
+                                  else {
+                                    res.status(200).send("success");
+                                  }
+                                });
+                              }
+                            }
+                          }
+                        ); //end db find
+                      } else {
+                        res.status(400).send("Bad request");
+                      }
+                    }
+                  }
+                });
+              } catch (err) {
+                res.status(500).send("Try again");
+              }
+            } else if (req.body.Role == 2) {
+              try {
+                db.Accounts.findOne({ _id: req.body.id }, (err, data) => {
+                  if (err) {
+                    res.status(500).send("Try again");
+                  } else {
+                    if (!data) {
+                      res.status(400).send("Bad request");
+                    } else {
+                      if (data.Token == req.body.Token) {
+                        db.InformationDrivers.findOne(
+                          { AccountID: req.body.id },
+                          (error, rs) => {
+                            if (error) {
+                              res.status(500).send("Try again");
+                            } else {
+                              if (!rs) {
+                                res.status(400).send("Bad request");
+                              } else {
+                                if (req.body.Birthday != null)
+                                  data.Birthday = req.body.Birthday;
+                                if (req.body.IdentityCard != null)
+                                  data.IdentityCard = req.body.IdentityCard;
+                                if (req.body.Address != null)
+                                  data.Address = req.body.Address;
+                                if (req.body.Email != null)
+                                  data.Email = req.body.Email;
+                                if (req.body.NumberPhone != null)
+                                  data.NumberPhone = req.body.NumberPhone;
+                                if (req.body.CarNumber != null)
+                                  data.CarNumber = req.body.CarNumber;
+                                if (req.body.CarInformation != null)
+                                  data.CarInformation = req.body.CarInformation;
+                                if (req.body.CarLicense != null)
+                                  data.CarLicense = req.body.CarLicense;
+                                if (req.body.CarSpecials != null)
+                                  data.CarSpecials = req.body.CarSpecials;
+                                if (req.body.Rate != null)
+                                  data.Rate = req.body.Rate;
+
+                                data.save((err, rs) => {
+                                  if (err) res.status(500).send("Try again");
+                                  else {
+                                    res.status(200).send("success");
+                                  }
+                                });
+                              }
+                            }
+                          }
+                        ); //end db find
+                      } else {
+                        res.status(400).send("Bad request");
+                      }
+                    }
+                  }
+                });
+              } catch (err) {
+                res.status(500).send("Try again");
+              }
+            } else if (req.body.Role == 0) {
+              res.status(200).send("Không có quyền chỉnh sửa thông tin admin");
+            } else {
+              res.status(400).send("Truy cập bị từ chối.");
+            }
+          } else {
+            res.status(400).send("Truy cập không được phép.");
+          }
+        }
+      }
+    });
+  } catch (err) {
+    res.status(500).send("Đã xảy ra lỗi bất ngờ" + err);
+  }
+});
+
 module.exports = app;

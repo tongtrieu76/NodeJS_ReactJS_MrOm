@@ -100,16 +100,15 @@ app.post("/", async function(req, res, next) {
                         if (data.Status == 96) {
                           if (req.body.Password == data.Password) {
                             var token_send = {
-                              id: AccountID,
+                              id: data.AccountID,
                               token: data.Token,
                               Role: data.Role
                             };
                             res.status(200).send(token_send);
                           } else {
-                            res.status(400).send("Sai email hoac mat khau");
+                            res.status(400).send(false);
                           }
                         } else if (data.Status == 69) {
-
                           // 69 = status lock
                           var trave = {
                             UserName: data.UserName,
@@ -135,53 +134,42 @@ app.post("/", async function(req, res, next) {
               }
             }
           );
-        }
-        else{
-          console.log("vo else");
-          var AccountID = data.AccountID;
-          db.Accounts.findOne({ _id: AccountID }, (err, data) => {
-            if (err) {
-              console.log(err);
-              res.status(500).send("Đã xảy ra lỗi bất ngờ");
-            } else {
-              if (!data) {
-                res.status(400).send("Sai email hoac mat khau");
+        } else {
+          if (!data) {
+            res.status(400).send("Sai email hoac mat khau");
+          } else {
+            if (data.Status == 96) {
+              if (req.body.Password == data.Password) {
+                var token_send = {
+                  id: data.AccountID,
+                  token: data.Token,
+                  Role: data.Role
+                };
+                res.status(200).send(token_send);
               } else {
-                if (data.Status == 96) {
-                  if (req.body.Password == data.Password) {
-                    var token_send = {
-                      id: AccountID,
-                      token: data.Token,
-                      Role: data.Role
-                    };
-                    res.status(200).send(token_send);
-                  } else {
-                    res.status(400).send("Sai email hoac mat khau");
-                  }
-                } else if (data.Status == 69) {
-                  // 69 = status lock
-                  var trave = {
-                    UserName: data.UserName,
-                    Name: data.Name,
-                    WhyLock: data.WhyLock
-                  };
-                  res.send(400, trave);
-                } else if (data.Status == 0) {
-                  //0 = status chưa active
-                  var trave = {
-                    UserName: data.UserName,
-                    Name: data.Name,
-                    CreateDate: data.CreateDate
-                  };
-                  res.send(200, trave);
-                } else {
-                  res.send(400, "Bug!");
-                }
+                res.status(400).send(false);
               }
+            } else if (data.Status == 69) {
+              // 69 = status lock
+              var trave = {
+                UserName: data.UserName,
+                Name: data.Name,
+                WhyLock: data.WhyLock
+              };
+              res.send(400, trave);
+            } else if (data.Status == 0) {
+              //0 = status chưa active
+              var trave = {
+                UserName: data.UserName,
+                Name: data.Name,
+                CreateDate: data.CreateDate
+              };
+              res.send(200, trave);
+            } else {
+              res.send(400, "Bug!");
             }
-          });
+          }
         }
-     
       }
     });
   } catch (err) {
@@ -203,7 +191,7 @@ app.post("/checktoken", function(req, res, next) {
           var token = req.body.Token;
           var role = req.body.Role;
           if (
-            id == data._id &&
+            id == data.AccountID &&
             token == data.Token &&
             role == data.Role
           ) {

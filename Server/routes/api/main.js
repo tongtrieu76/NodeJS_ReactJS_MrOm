@@ -36,7 +36,7 @@ app.use("/register",registerRouter);
 
 //chia router api login
 var loginRouter = require("./login");
-app.use("/login",loginRouter);
+app.use("/login",locationRouter);
 
 //export module ra để dùng
 module.exports = app;

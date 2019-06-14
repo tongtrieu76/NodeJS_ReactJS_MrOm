@@ -173,53 +173,104 @@ app.post("/add", async function(req, res, next) {
   });
 });
 
-// user
-app.post("/", function(req, res, next) {
+//Cập nhật thông tin
+
+//cập nhật thông tin
+app.post("/updateInfor",(req,res,next) =>{
   try {
-    db.InformationUsers.findOne({ AccountID: req.body.AccountID }, function(
-      err,
-      data
-    ) {
-      if (err) {
-        console.log(err);
-        res.status(500).send();
+    db.Accounts.findOne({_id : req.body.id},(err,data) =>{
+      if(err){
+        res.status(500).send("Try again");
       } else {
-        if (!data) {
-          res.status(400).send();
+        if(!data){
+          res.status(400).send("Bad request");
         } else {
-          if (req.body.Birthday) {
-            data.Birthday = req.body.Birthday;
+          if(data.Token == req.body.Token){
+            db.InformationUsers.findOne({AccountID: req.body.id},(error,rs) =>{
+              if(error){
+                res.status(500).send("Try again");
+              } else {
+                if(!rs){
+                  res.status(400).send("Bad request");
+                } else {
+                  if(req.body.Birthday != null) data.Birthday = req.body.Birthday;
+                  if(req.body.IdentityCard != null) data.IdentityCard = req.body.IdentityCard;
+                  if(req.body.Address != null) data.Address = req.body.Address;
+                  if(req.body.Email != null) data.Email = req.body.Email;
+                  if(req.body.NumberPhone != null) data.NumberPhone = req.body.NumberPhone;
+                  if(req.body.Point != null) data.Point = req.body.Point;
+
+                  data.save((err,rs) =>{
+                    if(err) res.status(500).send("Try again");
+                    else {
+                      res.status(200).send("success");
+                    }
+                  });
+                }
+              }
+            });//end db find
+          } else {
+            res.status(400).send("Bad request");
           }
-          if (req.body.IdentityCard) {
-            data.IdentityCard = req.body.IdentityCard;
-          }
-          if (req.body.Address) {
-            data.Address = req.body.Address;
-          }
-          if (req.body.Email) {
-            data.Email = req.body.Email;
-          }
-          if (req.body.NumberPhone) {
-            data.NumberPhone = req.body.NumberPhone;
-          }
-          if (req.body.Point) {
-            data.Point = req.body.Point;
-          }
-          data.save(function(err, rs) {
-            if (err) {
-              console.log(err);
-              res.status(500).send();
-            } else {
-              res.send(rs);
-            }
-          });
         }
       }
-    });
-  } catch (err) {
-    res.status(500).send("Đã xảy ra lỗi bất ngờ " + err);
+    })
+  } catch(err){
+    res.status(500).send("Try again");
   }
 });
+
+
+
+
+
+// // user
+// app.post("/", function(req, res, next) {
+//   try {
+//     db.InformationUsers.findOne({ AccountID: req.body.AccountID }, function(
+//       err,
+//       data
+//     ) {
+//       if (err) {
+//         console.log(err);
+//         res.status(500).send();
+//       } else {
+//         if (!data) {
+//           res.status(400).send();
+//         } else {
+//           if (req.body.Birthday) {
+//             data.Birthday = req.body.Birthday;
+//           }
+//           if (req.body.IdentityCard) {
+//             data.IdentityCard = req.body.IdentityCard;
+//           }
+//           if (req.body.Address) {
+//             data.Address = req.body.Address;
+//           }
+//           if (req.body.Email) {
+//             data.Email = req.body.Email;
+//           }
+//           if (req.body.NumberPhone) {
+//             data.NumberPhone = req.body.NumberPhone;
+//           }
+//           if (req.body.Point) {
+//             data.Point = req.body.Point;
+//           }
+//           data.save(function(err, rs) {
+//             if (err) {
+//               console.log(err);
+//               res.status(500).send();
+//             } else {
+//               res.send(rs);
+//             }
+//           });
+//         }
+//       }
+//     });
+//   } catch (err) {
+//     res.status(500).send("Đã xảy ra lỗi bất ngờ " + err);
+//   }
+// });
 
 
 module.exports = app;
