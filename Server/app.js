@@ -38,7 +38,6 @@ app.use(express.static(path.join(__dirname, "public")));
 
 app.use("/api", LocationRouter);
 
-
 // catch 404 and forward to error handler
 app.use(function (req, res, next) {
   next(createError(404));
@@ -76,21 +75,21 @@ io.on("connection", socket => {
   arrUser.push(obj);
 
   // handle event check id account , role , socketid
-  socket.on("sendrole", (data) => {
+  socket.on("sendrole", data => {
     // console.log(data) // data: id, role
     arrUser.forEach(item => {
       if (item.idsocket == socket.id) {
         item.idacc = data.id;
         item.role = data.role;
         // break;
-
       }
     });
     console.log(arrUser);
     socket.emit("sendid", socket.id);
-  })
+  });
 
-  socket.on("datxe", (data) => {
+
+  socket.on("datxe", data => {
     // console.log(data);
     const idsocket = data.id_Socket;
     console.log("dat xe ne");
@@ -101,7 +100,7 @@ io.on("connection", socket => {
         flag = 1;
         console.log("da gan cờ");
       }
-    })
+    });
 
     if (flag === 0) {
       socket.emit("phanhoidatxe", "!!!!!!!!!!!!!!!");
@@ -110,7 +109,9 @@ io.on("connection", socket => {
       io.emit(data.taixeID, datasend);
     }
 
-  })
+  });
+
+
 
 
   socket.on("nhanchuyen", async data => {
@@ -118,83 +119,86 @@ io.on("connection", socket => {
 
     io.emit(data.id, data.mess);
     //
-    if(data.diadiemden_X != null) diadiemden_X = data.diadiemden_X; else diadiemden_X = null;
-    if(data.diadiemden_Y != null) diadiemden_Y = data.diadiemden_Y; else diadiemden_Y = null;
-    if(data.diadiemden_X != null) diadiemdon_X = data.diadiemden_X; else diadiemdon_X = null;
-    if(data.diadiemdon_Y != null) diadiemdon_Y = data.diadiemdon_Y; else diadiemdon_Y = null;
-    if(data.taixeID != null) taixeID = data.taixeID; else taixeID = null;
-    if(data.userID != null) userID = data.userID; else userID = null;
-    if(data.date != null) date = data.date; else date = null;
-    if(data.tongtien != null) tongtien = data.tongtien; else tongtien = null;
-    if(data.sokm != null) sokm = data.sokm; else sokm = null;
-    if(data.sophut != null) sophut = data.sophut; else sophut = null;
+    if (data.diadiemden_X != null) diadiemden_X = data.diadiemden_X; else diadiemden_X = null;
+    if (data.diadiemden_Y != null) diadiemden_Y = data.diadiemden_Y; else diadiemden_Y = null;
+    if (data.diadiemden_X != null) diadiemdon_X = data.diadiemden_X; else diadiemdon_X = null;
+    if (data.diadiemdon_Y != null) diadiemdon_Y = data.diadiemdon_Y; else diadiemdon_Y = null;
+    if (data.taixeID != null) taixeID = data.taixeID; else taixeID = null;
+    if (data.userID != null) userID = data.userID; else userID = null;
+    if (data.date != null) date = data.date; else date = null;
+    if (data.tongtien != null) tongtien = data.tongtien; else tongtien = null;
+    if (data.sokm != null) sokm = data.sokm; else sokm = null;
+    if (data.sophut != null) sophut = data.sophut; else sophut = null;
     status = "Chưa hoàn thành";
     var obj = {
       diadiemden_X: diadiemden_X,
-      diadiemden_Y:diadiemden_Y,
-      diadiemdon_X:diadiemdon_X,
-      diadiemdon_Y:diadiemdon_Y,
-      taixeID:taixeID,
-      userID:userID,
-      date:date,
-      tongtien:tongtien,
-      sokm:sokm,
-      sophut:sophut,
-      status:status
+      diadiemden_Y: diadiemden_Y,
+      diadiemdon_X: diadiemdon_X,
+      diadiemdon_Y: diadiemdon_Y,
+      taixeID: taixeID,
+      userID: userID,
+      date: date,
+      tongtien: tongtien,
+      sokm: sokm,
+      sophut: sophut,
+      status: status
     };
     await db.Trips.create(obj);
   });
 
 
-//kết thúc chuyến
-socket.on("ketthucchuyen", data =>{
-  var obj = {
-    diadiemden_X: data.diadiemden_X,
-    diadiemden_Y:data.diadiemden_Y,
-    diadiemdon_X:data.diadiemdon_X,
-    diadiemdon_Y:data.diadiemdon_Y,
-    taixeID:data.taixeID,
-    userID:data.userID,
-    date:data.date
-  };
-  db.Trips.findOne(obj, (err,rs) => {
-    rs.status = "Hoàn thành";
-    rs.save(function(err, rs) {
-      if (err) {
-        console.log(err);
-        io.emit(data.userID, {mess: data, ketthucchuyen: "fail"});
-        io.emit(data.taixeID, {mess: data, ketthucchuyen: "fail"});
-      } else {
-        io.emit(data.userID, {mess: data, ketthucchuyen: "success"});
-        io.emit(data.taixeID, {mess: data, ketthucchuyen: "success"});
-      }
-    });
-  })
-});
-socket.on("huychuyen",data =>{
-  var obj = {
-    diadiemden_X: data.diadiemden_X,
-    diadiemden_Y:data.diadiemden_Y,
-    diadiemdon_X:data.diadiemdon_X,
-    diadiemdon_Y:data.diadiemdon_Y,
-    taixeID:data.taixeID,
-    userID:data.userID,
-    date:data.date
-  };
-  db.Trips.findOne(obj, (err,rs) => {
-    rs.status = "Hủy chuyến";
-    rs.save(function(err, rs) {
-      if (err) {
-        console.log(err);
-        io.emit(data.userID, {mess: data, huychuyen: "fail"});
-        io.emit(data.taixeID, {mess: data, huychuyen: "fail"});
-      } else {
-        io.emit(data.userID, {mess: data, huychuyen: "success"});
-        io.emit(data.taixeID, {mess: data, huychuyen: "success"});
-      }
-    });
-  })
-});
+
+  //kết thúc chuyến
+  socket.on("ketthucchuyen", data => {
+    var obj = {
+      diadiemden_X: data.diadiemden_X,
+      diadiemden_Y: data.diadiemden_Y,
+      diadiemdon_X: data.diadiemdon_X,
+      diadiemdon_Y: data.diadiemdon_Y,
+      taixeID: data.taixeID,
+      userID: data.userID,
+      date: data.date
+    };
+    db.Trips.findOne(obj, (err, rs) => {
+      rs.status = "Hoàn thành";
+      rs.save(function (err, rs) {
+        if (err) {
+          console.log(err);
+          io.emit(data.userID, { mess: data, ketthucchuyen: "fail" });
+          io.emit(data.taixeID, { mess: data, ketthucchuyen: "fail" });
+        } else {
+          io.emit(data.userID, { mess: data, ketthucchuyen: "success" });
+          io.emit(data.taixeID, { mess: data, ketthucchuyen: "success" });
+        }
+      });
+    })
+  });
+  socket.on("tuchoichuyen", data => {
+    var obj = {
+      diadiemden_X: data.diadiemden_X,
+      diadiemden_Y: data.diadiemden_Y,
+      diadiemdon_X: data.diadiemdon_X,
+      diadiemdon_Y: data.diadiemdon_Y,
+      taixeID: data.taixeID,
+      userID: data.userID,
+      date: data.date
+    };
+    db.Trips.findOne(obj, (err, rs) => {
+      rs.status = "Hủy chuyến";
+      rs.save(function (err, rs) {
+        if (err) {
+          console.log(err);
+          io.emit(data.userID, { mess: data, huychuyen: "fail" });
+          io.emit(data.taixeID, { mess: data, huychuyen: "fail" });
+        } else {
+          io.emit(data.userID, { mess: data, huychuyen: "success" });
+          io.emit(data.taixeID, { mess: data, huychuyen: "success" });
+        }
+      });
+    })
+  });
+
+
 
   //send location driver autopilot.
   interval = setInterval(() => getApiAndEmit(socket), 3000);
@@ -210,6 +214,7 @@ socket.on("huychuyen",data =>{
     }
     console.log(socket.id + " Client disconnected");
   });
+
 });
 
 //hanle emit : GET API location_driver_online send client in SOCKET
