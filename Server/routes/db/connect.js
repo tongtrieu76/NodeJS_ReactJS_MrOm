@@ -81,6 +81,10 @@ var SchemaAccount = new mongoose.Schema({
 	Role: {
 		type: Number,
 		default: 0
+	},
+	Image:{
+		type: String,
+		default: "no_image"
 	}
 });
 var account = new mongoose.model('account',SchemaAccount);
@@ -135,6 +139,10 @@ var SchemaIfDrivers = new mongoose.Schema({
 	Rate: {
 		type: String,
 		default: 5
+	},
+	ImageBike:{
+		type: String,
+		default: null
 	}
 })
 var drivers = new mongoose.model('informationdriver',SchemaIfDrivers);

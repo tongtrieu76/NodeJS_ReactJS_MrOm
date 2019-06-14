@@ -149,7 +149,7 @@ const getApiAndEmit = async socket => {
   try {
     const axios = require("axios");
     axios.get("http://localhost:4000/api/location").then(data_data => {
-      // console.log(data_data.data);
+      console.log(data_data.data);
       socket.emit("location_driver_online", data_data.data);
     });
   } catch (error) {
