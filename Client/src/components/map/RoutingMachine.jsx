@@ -25,7 +25,7 @@ class Routing extends MapLayer {
 // console.log(distance)
 
     });
-this.props.setRoute(leafletElement);
+    this.props.setRoute(leafletElement);
     return leafletElement.getPlan();
   }
 }

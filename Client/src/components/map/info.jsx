@@ -14,3 +14,18 @@ export default class Info extends React.Component {
         );
     }
 }
+
+
+
+
+
+// diadiemden_X: "",
+// diadiemden_Y: "",
+// diadiemdon_X:"",
+// diadiemdon_Y:"",
+// taixeID: "",
+// userID: "",
+// date: new date(),
+// tongtien:"",
+// sokm:"",
+// sophut:""

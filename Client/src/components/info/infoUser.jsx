@@ -47,7 +47,7 @@ export default class InfoUser extends React.Component {
 
             await axios.get(`/api/account/${param}`)
             .then(({ data: user1 }) => {
-                // console.log('user', user1);
+                console.log('user', user1);
                 this.setState({
                     Name: user1.Name,
                     imagePreviewUrl: user1.Image,
@@ -98,6 +98,7 @@ export default class InfoUser extends React.Component {
     handleSubmit = event => {
         event.preventDefault();
 
+var Name = this.state.Name;
 
 
     }

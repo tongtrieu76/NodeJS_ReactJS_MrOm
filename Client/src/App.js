@@ -112,19 +112,22 @@ export default class App extends React.Component {
   componentDidMount() {
     navigator.geolocation.watchPosition((pos) => {
       vitrihientai = { lat:pos.coords.latitude, lng:pos.coords.longitude};
-      // this.setNowLocation({ lat:pos.coords.latitude, lng:pos.coords.longitude})
+     
+   });
+
+    // this.setNowLocation({ lat:pos.coords.latitude, lng:pos.coords.longitude})
      // this.setState({ nowLocation: { lat: pos.coords.latitude, lng: pos.coords.longitude } })
      // setTimeout(() => this.setState({ nowLocation: { lat: pos.coords.latitude, lng: pos.coords.longitude } }), 0)
      // this.setState({
      //   nowLocation: {lat:pos.coords.latitude, lng:pos.coords.longitude},
      //   // toLocation: {lat:pos.coords.latitude, lng:pos.coords.longitude},
      // });
-   });
   }
 
   render() {
     // console.log("123")
 // console.log(this.state)
+console.log(vitrihientai)
     return (
       <div>
         <div className="full">

@@ -23,7 +23,7 @@ app.get("/", (req, res, next) => {
 });
 
 // -- -- account key
-app.get("/:key", (req, res, next) => {
+app.get("/admin/:key", (req, res, next) => {
   try {
     db.Accounts.find({
       $or: [

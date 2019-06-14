@@ -178,8 +178,54 @@ var SchemaIfUsers = new mongoose.Schema({
 	}
 })
 var users = new mongoose.model('informationuser',SchemaIfUsers);
+
+//trip
+var SchemaTrips = new mongoose.Schema({
+    diadiemden_X: {
+        type: String,
+        default: null
+    },
+    diadiemden_Y: {
+        type: String,
+        default: null
+    },
+    diadiemdon_X: {
+        type: String,
+        default: null
+    },
+    diadiemdon_Y: {
+        type: String,
+        default: null
+    },
+    taixeID: {
+        type: String,
+        default: null
+    },
+    userID: {
+        type: String,
+        default: null
+    },
+    date: {
+        type: Date,
+        default: Date.now
+    },
+    tongtien: {
+        type: Number,
+        default: 0
+    },
+    sokm: {
+        type: Number,
+        default: 0
+    },
+    status: {
+        type: String,
+        default: "Hoàn thành"
+    }
+})
+var trips = new mongoose.model('trip',SchemaTrips);
 //exports
 exports.Locations = locations;
 exports.Accounts = account;
 exports.InformationDrivers = drivers;
 exports.InformationUsers = users;
+exports.Trips = trips;

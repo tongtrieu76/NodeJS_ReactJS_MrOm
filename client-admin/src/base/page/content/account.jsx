@@ -86,7 +86,13 @@ class Account extends Component {
 
   //Load Data
   loadData(key){
-    fetch("http://localhost:4000/api/account/" + key )
+    var url = "";
+    if(key == ""){
+      url= "http://localhost:4000/api/account/";
+    } else {
+      url = "http://localhost:4000/api/account/" + key;
+    }
+    fetch(url)
       .then(response => response.json())
       .then(result => {
         var arr_user = [];
