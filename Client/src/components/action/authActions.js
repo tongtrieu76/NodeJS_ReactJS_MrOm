@@ -10,13 +10,13 @@ export function setCurrentUser(user) {
   };
 }
 
-export function logout() {
+export async function logout() {
 
-  console.log("0");
+ await window.location.replace('/')
   localStorage.removeItem('jwtToken');
   setAuthorizationToken(false);
   setCurrentUser({});
-  window.location.replace('/')
+ 
 
 }
 
