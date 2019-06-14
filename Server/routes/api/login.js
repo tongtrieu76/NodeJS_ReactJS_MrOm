@@ -76,7 +76,9 @@ app.post("/", async function(req, res, next) {
         console.log(err);
         res.status(500).send();
       } else {
+        
         if (!data) {
+
           await db.InformationDrivers.findOne(
             { Email: req.body.Email },
             function(err, data) {
@@ -89,6 +91,7 @@ app.post("/", async function(req, res, next) {
                 } else {
                   // 96 = status active
                   var AccountID = data.AccountID;
+                  
                   db.Accounts.findOne({ _id: AccountID }, (err, data) => {
                     if (err) {
                       console.log(err);
@@ -97,6 +100,7 @@ app.post("/", async function(req, res, next) {
                       if (!data) {
                         res.status(400).send("Sai email hoac mat khau");
                       } else {
+                        console.log("bo qua db dau");
                         if (data.Status == 96) {
                           if (req.body.Password == data.Password) {
                             var token_send = {
@@ -124,7 +128,8 @@ app.post("/", async function(req, res, next) {
                             Name: data.Name,
                             CreateDate: data.CreateDate
                           };
-                          res.send(200, trave);
+                        
+                          res.status(200).send(trave)
                         } else {
                           res.send(400, "Bug!");
                         }

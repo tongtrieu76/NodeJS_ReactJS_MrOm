@@ -125,7 +125,7 @@ io.on("connection", socket => {
     if (data.diadiemdon_Y != null) diadiemdon_Y = data.diadiemdon_Y; else diadiemdon_Y = null;
     if (data.taixeID != null) taixeID = data.taixeID; else taixeID = null;
     if (data.userID != null) userID = data.userID; else userID = null;
-    if (data.date != null) date = data.date; else date = null;
+    // if (data.date != null) date = data.date; else date = null;
     if (data.tongtien != null) tongtien = data.tongtien; else tongtien = null;
     if (data.sokm != null) sokm = data.sokm; else sokm = null;
     if (data.sophut != null) sophut = data.sophut; else sophut = null;
@@ -137,7 +137,7 @@ io.on("connection", socket => {
       diadiemdon_Y: diadiemdon_Y,
       taixeID: taixeID,
       userID: userID,
-      date: date,
+      // date: date,
       tongtien: tongtien,
       sokm: sokm,
       sophut: sophut,
@@ -157,7 +157,7 @@ io.on("connection", socket => {
       diadiemdon_Y: data.diadiemdon_Y,
       taixeID: data.taixeID,
       userID: data.userID,
-      date: data.date
+      // date: data.date
     };
     db.Trips.findOne(obj, (err, rs) => {
       rs.status = "Hoàn thành";
@@ -181,7 +181,7 @@ io.on("connection", socket => {
       diadiemdon_Y: data.diadiemdon_Y,
       taixeID: data.taixeID,
       userID: data.userID,
-      date: data.date
+      // date: data.date
     };
     db.Trips.findOne(obj, (err, rs) => {
       rs.status = "Hủy chuyến";

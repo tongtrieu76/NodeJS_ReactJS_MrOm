@@ -162,7 +162,7 @@ app.post("/driver", async function (req, res, next) {
             UserName: UserName,
             Password: Password,
             Token: Token,
-            Status: 0, // 69 là lock,96 là unlock, 0 là chưa activate
+            Status: 96, // 69 là lock,96 là unlock, 0 là chưa activate
             Role: 2,  // 1 sẽ là ad, 2 sẽ là driver, khác sẽ là 0 (user)
           });
           //tim xem acc tao thanh cong de lay id,token,role
