@@ -90,7 +90,7 @@ class Account extends Component {
     if(key == ""){
       url= "http://localhost:4000/api/account/";
     } else {
-      url = "http://localhost:4000/api/account/" + key;
+      url = "http://localhost:4000/api/account/admin/" + key;
     }
     fetch(url)
       .then(response => response.json())
@@ -172,7 +172,7 @@ class Account extends Component {
       y.style.display = "none";
     }
 
-    document.getElementById("content-1").style.height = "90vh";
+    // document.getElementById("content-1").style.height = "90vh";
   }
   // end
 
@@ -1043,7 +1043,9 @@ class Account extends Component {
     const { datas_1 } = this.state;
     return (
       <div id="content-1" onLoad={this.ham.bind(this)}>
-        <button onClick={this.openloading.bind(this)}>Openloading</button>
+    {
+      // <button onClick={this.openloading.bind(this)}>Openloading</button> 
+  }
         <div id="open_modal_1" />
         {/* modal */}
         <Modal

@@ -23,6 +23,6 @@
 }
 
 #content-2 {
-    min-height: 90vh;
+    /* min-height: 90vh; */
     overflow: auto;
 }

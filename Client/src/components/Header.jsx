@@ -9,7 +9,7 @@ import Admin from './Admin';
 
 import InfoUser from './info/infoUser';
 import InfoDriver from './info/infoDriver';
-
+import Adminpage from './client-admin/src/admin/home';
 import axios from 'axios';
 
 // import setAuthorizationToken from './action/setAuthorizationToken';
@@ -61,7 +61,21 @@ class Header extends React.Component {
 
       );
     }
+    // function TrangChuAdmin() {
+    //   return (
+    //     <li>
+    //       <NavLink
+    //         exact
+    //         activeClassName="active"
+    //         isActive={isActive.bind(this, '/adminpage')}
+    //         className="nav-link text-light font-weight-bold" to='/adminpage'>
+    //        Admin
+    //     </NavLink>
 
+    //     </li>
+
+    //   );
+    // }
     function DangXuat() {
       function handleClick() {
 
@@ -177,7 +191,9 @@ class Header extends React.Component {
         </NavLink>
 
           </li>
-
+{
+  // TrangChuAdmin()
+}
         </ul>
       );
     }
@@ -217,7 +233,7 @@ class Header extends React.Component {
 
 
 
-        <nav className="navbar navbar-expand-sm navbar-light static-top">
+        <nav className="navbar navbar-expand-sm navbar-light static-top ">
           <div className="container">
 
             <p className="text-white">
@@ -238,7 +254,7 @@ class Header extends React.Component {
             >
               <span className="navbar-toggler-icon" />
             </button>
-            <div className="collapse navbar-collapse text-info" id="navbarResponsive">
+            <div className="collapse navbar-collapse text-info nabar25" id="navbarResponsive">
 
 
               {ifrender()}
@@ -247,17 +263,21 @@ class Header extends React.Component {
             </div>
           </div>
         </nav>
+        <div className="nabar75">
         <Switch>
-          <Route exact path='/' component={Home} />
-          <Route exact path='/login' component={Login} />
-          <Route exact path='/register/user' component={Register} />
-          <Route exact path='/admin' component={Admin} />
-          <Route exact path='/user/:id' component={InfoUser} />
-          <Route exact path='/driver/:id' component={InfoDriver} />
+        <Route exact path='/' component={Home} />
+        <Route exact path='/login' component={Login} />
+        <Route exact path='/register/user' component={Register} />
+        <Route exact path='/admin' component={Adminpage} />
+        <Route exact path='/user/:id' component={InfoUser} />
+        <Route exact path='/driver/:id' component={InfoDriver} />
+     
 
-          {/* <Route path='/*' component={Error404} />   */}
-          <Route component={Error404} />
-        </Switch>
+        {/* <Route path='/*' component={Error404} />   */}
+        <Route component={Error404} />
+      </Switch>
+        </div>
+       
 
       </BrowserRouter>
     );

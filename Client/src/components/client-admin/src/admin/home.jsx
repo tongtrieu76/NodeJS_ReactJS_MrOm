@@ -8,15 +8,14 @@ class Admin extends Component {
   render() {
     return(
       <div>
-        <div className="col-md-12" id="f1">
-          <Header />
-        </div>
+      
         <div className="col-md-12" id="f2">
-          <Content />
+        <div className="row">
+        <Content />
         </div>
-        <div className="col-md-12" id="f3">
-          <Footer />
+      
         </div>
+        
       </div>
     )
   }

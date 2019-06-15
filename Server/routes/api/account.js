@@ -43,7 +43,7 @@ app.get("/admin/:key", (req, res, next) => {
 app.get("/:id", function(req, res, next) {
   try {
     db.Accounts.findOne({ _id: req.params.id }, function(err, result) {
-      if (err) return handleError(err);
+      if (err) return res.status(500).send("Xay ra loi bat ngo");
       res.send(result);
     });
   } catch (err) {

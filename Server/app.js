@@ -104,9 +104,10 @@ io.on("connection", socket => {
 
     if (flag === 0) {
       socket.emit("phanhoidatxe", "!!!!!!!!!!!!!!!");
+      
     } else if (flag === 1) {
-      var datasend = { idTaiXe: data.taixeID, idkhach: data.userID };
-      io.emit(data.taixeID, datasend);
+      // var datasend = { idTaiXe: data.taixeID, idkhach: data.userID };
+      io.emit(data.taixeID, data);
     }
 
   });
@@ -115,6 +116,8 @@ io.on("connection", socket => {
 
 
   socket.on("nhanchuyen", async data => {
+    console.log("nhanchuyen");
+
     console.log(data);
 
     io.emit(data.id, data.mess);
@@ -149,50 +152,70 @@ io.on("connection", socket => {
 
 
   //kết thúc chuyến
-  socket.on("ketthucchuyen", data => {
-    var obj = {
-      diadiemden_X: data.diadiemden_X,
-      diadiemden_Y: data.diadiemden_Y,
-      diadiemdon_X: data.diadiemdon_X,
-      diadiemdon_Y: data.diadiemdon_Y,
-      taixeID: data.taixeID,
-      userID: data.userID,
-      // date: data.date
-    };
-    db.Trips.findOne(obj, (err, rs) => {
-      rs.status = "Hoàn thành";
-      rs.save(function (err, rs) {
-        if (err) {
-          console.log(err);
-          io.emit(data.userID, { mess: data, ketthucchuyen: "fail" });
-          io.emit(data.taixeID, { mess: data, ketthucchuyen: "fail" });
-        } else {
-          io.emit(data.userID, { mess: data, ketthucchuyen: "success" });
-          io.emit(data.taixeID, { mess: data, ketthucchuyen: "success" });
-        }
-      });
+  socket.on("ketthucchuyen", async data => {
+    console.log("kethucchuyen");
+    // var obj = {
+    //   "diadiemden_X": data.diadiemden_X +"",
+    //   "diadiemdon_X": data.diadiemdon_X+"",
+    //   "diadiemden_Y": data.diadiemden_Y+"",
+    //   "diadiemdon_Y": data.diadiemdon_Y+"",
+    //   "taixeID": data.taixeID+"",
+    //   "userID": data.userID+"",
+    //   // date: data.date
+    // };
+    console.log(obj);
+    var ddden_X= data.diadiemden_X +""
+    var dddon_X = data.diadiemdon_X+""
+
+    var ddden_Y= data.diadiemden_Y +""
+    var dddon_Y = data.diadiemdon_Y+""
+
+
+   await db.Trips.findOne({
+     diadiemden_X:ddden_X,
+    //  diadiemdon_X:dddon_X,
+    //  diadiemden_Y:ddden_Y,
+    //  diadiemdon_Y:dddon_Y
+  },  async (err,rs)=>{
+    rs.status = "Hoàn thành";
+  await  rs.save(function (err, rs) {
+      if (err) {
+        console.log(err);
+        io.emit(data.userID, { mess: data, ketthucchuyen: "fail" });
+        io.emit(data.taixeID, { mess: data, ketthucchuyen: "fail" });
+      } else {
+        io.emit(data.userID, { mess: data, ketthucchuyen: "success" ,success:"true"});
+        io.emit(data.taixeID, { mess: data, ketthucchuyen: "success" ,success:"true"});
+      }
+    });
+    console.log(rs)
     })
+
+
+    // if (err) {
+    //   console.log(err);
+    //   io.emit(data.userID, { mess: data, ketthucchuyen: "fail" });
+    //   io.emit(data.taixeID, { mess: data, ketthucchuyen: "fail" });
+    // } else {
+    //   io.emit(data.userID, { mess: data, ketthucchuyen: "success" });
+    //   io.emit(data.taixeID, { mess: data, ketthucchuyen: "success" });
+    // }
+    
   });
-  socket.on("tuchoichuyen", data => {
-    var obj = {
-      diadiemden_X: data.diadiemden_X,
-      diadiemden_Y: data.diadiemden_Y,
-      diadiemdon_X: data.diadiemdon_X,
-      diadiemdon_Y: data.diadiemdon_Y,
-      taixeID: data.taixeID,
-      userID: data.userID,
-      // date: data.date
-    };
-    db.Trips.findOne(obj, (err, rs) => {
+  socket.on("tuchoichuyen",async data => {
+    var ddden_X= data.diadiemden_X +""
+
+
+   await db.Trips.findOne({   diadiemden_X:ddden_X,}, async(err, rs) => {
       rs.status = "Hủy chuyến";
-      rs.save(function (err, rs) {
+     await rs.save(function (err, rs) {
         if (err) {
           console.log(err);
           io.emit(data.userID, { mess: data, huychuyen: "fail" });
           io.emit(data.taixeID, { mess: data, huychuyen: "fail" });
         } else {
-          io.emit(data.userID, { mess: data, huychuyen: "success" });
-          io.emit(data.taixeID, { mess: data, huychuyen: "success" });
+          io.emit(data.userID, { mess: data, huychuyen: "fail" ,success:"false"});
+          io.emit(data.taixeID, { mess: data, huychuyen: "fail" ,success:"false"});
         }
       });
     })

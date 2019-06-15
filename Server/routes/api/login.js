@@ -68,30 +68,103 @@ app.post("/username", function(req, res, next) {
 // -- lgin theo email
 app.post("/", async function(req, res, next) {
   try {
-    await db.InformationUsers.findOne({ Email: req.body.Email }, async function(
-      err,
-      data
-    ) {
+    await  db.Accounts.findOne({ UserName : req.body.Email },async (err, data) => {
       if (err) {
         console.log(err);
-        res.status(500).send();
+        res.status(500).send("Đã xảy ra lỗi bất ngờ");
       } else {
+        if (data) {
         
-        if (!data) {
-
-          await db.InformationDrivers.findOne(
-            { Email: req.body.Email },
-            function(err, data) {
+          if (data.Status == 96 && data.Role == 1) {
+            if (req.body.Password == data.Password) {
+              var token_send = {
+                id:req.body.Email,
+                token: data.Token,
+                Role: data.Role
+              };
+              res.status(200).send(token_send);
+            } else {
+              res.status(400).send("Sai email hoac mat khau");
+            }
+          }
+          else
+          {
+            await db.InformationUsers.findOne({ Email: req.body.Email }, async function(
+              err,
+              data
+            ) {
               if (err) {
                 console.log(err);
-                res.status(500).send("Đã xảy ra lỗi bất ngờ");
+                res.status(500).send();
               } else {
+                
                 if (!data) {
-                  res.status(400).send("Sai email hoac mat khau");
-                } else {
-                  // 96 = status active
+        
+                  await db.InformationDrivers.findOne(
+                    { Email: req.body.Email },
+                    function(err, data) {
+                      if (err) {
+                        console.log(err);
+                        res.status(500).send("Đã xảy ra lỗi bất ngờ");
+                      } else {
+                        if (!data) {
+                          res.status(400).send("Sai email hoac mat khau");
+                        } else {
+                          // 96 = status active
+                          var AccountID = data.AccountID;
+                          
+                          db.Accounts.findOne({ _id: AccountID }, (err, data) => {
+                            if (err) {
+                              console.log(err);
+                              res.status(500).send("Đã xảy ra lỗi bất ngờ");
+                            } else {
+                              if (!data) {
+                                res.status(400).send("Sai email hoac mat khau");
+                              } else {
+                                console.log("bo qua db dau");
+                                if (data.Status == 96) {
+                                  if (req.body.Password == data.Password) {
+                                    var token_send = {
+                                      id: AccountID,
+                                      token: data.Token,
+                                      Role: data.Role
+                                    };
+                                    res.status(200).send(token_send);
+                                  } else {
+                                    res.status(400).send("Sai email hoac mat khau");
+                                  }
+                                } else if (data.Status == 69) {
+        
+                                  // 69 = status lock
+                                  var trave = {
+                                    UserName: data.UserName,
+                                    Name: data.Name,
+                                    WhyLock: data.WhyLock
+                                  };
+                                  res.send(400, trave);
+                                } else if (data.Status == 0) {
+                                  //0 = status chưa active
+                                  var trave = {
+                                    UserName: data.UserName,
+                                    Name: data.Name,
+                                    CreateDate: data.CreateDate
+                                  };
+                                
+                                  res.status(200).send(trave)
+                                } else {
+                                  res.send(400, "Bug!");
+                                }
+                              }
+                            }
+                          });
+                        }
+                      }
+                    }
+                  );
+                }
+                else{
+                  console.log("vo else");
                   var AccountID = data.AccountID;
-                  
                   db.Accounts.findOne({ _id: AccountID }, (err, data) => {
                     if (err) {
                       console.log(err);
@@ -100,7 +173,6 @@ app.post("/", async function(req, res, next) {
                       if (!data) {
                         res.status(400).send("Sai email hoac mat khau");
                       } else {
-                        console.log("bo qua db dau");
                         if (data.Status == 96) {
                           if (req.body.Password == data.Password) {
                             var token_send = {
@@ -113,7 +185,6 @@ app.post("/", async function(req, res, next) {
                             res.status(400).send("Sai email hoac mat khau");
                           }
                         } else if (data.Status == 69) {
-
                           // 69 = status lock
                           var trave = {
                             UserName: data.UserName,
@@ -128,8 +199,7 @@ app.post("/", async function(req, res, next) {
                             Name: data.Name,
                             CreateDate: data.CreateDate
                           };
-                        
-                          res.status(200).send(trave)
+                          res.send(200, trave);
                         } else {
                           res.send(400, "Bug!");
                         }
@@ -137,58 +207,17 @@ app.post("/", async function(req, res, next) {
                     }
                   });
                 }
+             
               }
-            }
-          );
+            });
+          }
         }
-        else{
-          console.log("vo else");
-          var AccountID = data.AccountID;
-          db.Accounts.findOne({ _id: AccountID }, (err, data) => {
-            if (err) {
-              console.log(err);
-              res.status(500).send("Đã xảy ra lỗi bất ngờ");
-            } else {
-              if (!data) {
-                res.status(400).send("Sai email hoac mat khau");
-              } else {
-                if (data.Status == 96) {
-                  if (req.body.Password == data.Password) {
-                    var token_send = {
-                      id: AccountID,
-                      token: data.Token,
-                      Role: data.Role
-                    };
-                    res.status(200).send(token_send);
-                  } else {
-                    res.status(400).send("Sai email hoac mat khau");
-                  }
-                } else if (data.Status == 69) {
-                  // 69 = status lock
-                  var trave = {
-                    UserName: data.UserName,
-                    Name: data.Name,
-                    WhyLock: data.WhyLock
-                  };
-                  res.send(400, trave);
-                } else if (data.Status == 0) {
-                  //0 = status chưa active
-                  var trave = {
-                    UserName: data.UserName,
-                    Name: data.Name,
-                    CreateDate: data.CreateDate
-                  };
-                  res.send(200, trave);
-                } else {
-                  res.send(400, "Bug!");
-                }
-              }
-            }
-          });
-        }
-     
       }
-    });
+    })
+
+          
+    
+
   } catch (err) {
     res.status(500).send("Đã xảy ra lỗi bất ngờ" + err);
   }

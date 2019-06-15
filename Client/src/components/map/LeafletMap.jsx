@@ -191,8 +191,17 @@ export default class LeafletMap extends Component {
           alert(data.mess);
         }
         else
+        if(data.success === "true")
         {
-          alert(data.mess);
+            alert("Hoàn tất")
+            setTimeout(() => {
+            window.location.replace('/')},5000);
+        }
+        if(data.success === "false")
+        {
+            alert("Tài xế hủy chuyến")
+            setTimeout(() => {
+            window.location.replace('/')},5000);
         }
 
         
@@ -215,7 +224,22 @@ export default class LeafletMap extends Component {
         this.setState({vitritaixe:{lat:user.Location_X,lng:user.Location_Y}})
       });
       socket.on(id1, user => {
-        this.setState({ modalIsOpenDriver: true, dataNguoiDatXe: user });
+     
+        if(user.success === "true" )
+        {
+            alert("Hoàn tất")
+            window.location.replace('/')
+        }
+        else if(user.success === "false")
+        {
+          window.location.replace('/')
+          
+        }
+        else
+        {
+          this.setState({ modalIsOpenDriver: true, dataNguoiDatXe: user });
+
+        }
         // intervalLoad = setInterval(() => {
         //   this.setState({ dem: this.state.dem - 1 })
         // }, 1000);
@@ -321,18 +345,31 @@ export default class LeafletMap extends Component {
   }
 
    tuchoichuyen(e) {
-    this.setState({ modalIsOpenDriver: false,dataNguoiDatXe:null });
+    this.setState({ modalIsOpenDriver: false});
 
     socket.emit("tuchoichuyen", {
-      id: this.state.dataNguoiDatXe.userID
+      diadiemden_X:this.state.dataNguoiDatXe.diadiemden.x,
+      diadiemden_Y:this.state.dataNguoiDatXe.diadiemden.y,
+      diadiemdon_X:this.state.dataNguoiDatXe.diadiemdon.x,
+      diadiemdon_Y:this.state.dataNguoiDatXe.diadiemdon.y,
+      taixeID:this.state.dataNguoiDatXe.taixeID,
+      userID: this.state.dataNguoiDatXe.userID,
     });
   }
 
+  tuchoichuyenHuy(e){
+    this.setState({ modalIsOpenDriver: false});
+  }
   ketthucchuyen(e) {
-    this.setState({ modalIsOpenDriver: false,dataNguoiDatXe:null });
+    this.setState({ modalIsOpenDriver: false});
 
     socket.emit("ketthucchuyen", {
-      id: this.state.dataNguoiDatXe.userID
+      diadiemden_X:this.state.dataNguoiDatXe.diadiemden.x,
+      diadiemden_Y:this.state.dataNguoiDatXe.diadiemden.y,
+      diadiemdon_X:this.state.dataNguoiDatXe.diadiemdon.x,
+      diadiemdon_Y:this.state.dataNguoiDatXe.diadiemdon.y,
+      taixeID:this.state.dataNguoiDatXe.taixeID,
+      userID: this.state.dataNguoiDatXe.userID,
     });
   }
   render() {
@@ -573,7 +610,7 @@ if( localStorage.jwtToken &&
             <div className="text-center">
 
             <button className="btn btn-dark" onClick={this.nhanchuyen.bind(this)}> Xác Nhận </button>
-            <button className="btn btn-dark" onClick={this.tuchoichuyen.bind(this)}> Hủy </button>
+            <button className="btn btn-dark" onClick={this.tuchoichuyenHuy.bind(this)}> Hủy </button>
   
            </div>
   

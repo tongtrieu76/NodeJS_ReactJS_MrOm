@@ -1,8 +1,9 @@
 import React, { Component } from "react";
 import Account from "./content/account.jsx";
-import Header from "./header.jsx";
-import inforAccount from "./content/inforAccount.jsx";
-
+// import Header from "./header.jsx";
+// import inforAccount from "./content/inforAccount.jsx";
+import thongke from "./content/thongke.jsx";
+import trips from "./content/trips";
 //css
 import "../public/css/account.css";
 import "../public/css/menu.css";
@@ -83,8 +84,8 @@ class Content extends Component {
         <div id="content_1xx" className="col-md-10">
           <div id="style-content">
             <Route exact path="/" component={Account} />
-            <Route path="/b" component={inforAccount} />
-            <Route path="/c" component={Header} />
+            <Route path="/b" component={trips} />
+            <Route path="/c" component={thongke} />
           </div>
         </div>
       </BrowserRouter>

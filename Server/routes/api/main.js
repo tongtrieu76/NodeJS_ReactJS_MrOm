@@ -38,5 +38,7 @@ app.use("/register",registerRouter);
 var loginRouter = require("./login");
 app.use("/login",loginRouter);
 
+var tripRouter = require("./trips");
+app.use("/trip", tripRouter);
 //export module ra để dùng
 module.exports = app;

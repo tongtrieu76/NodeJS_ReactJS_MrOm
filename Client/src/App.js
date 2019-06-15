@@ -9,7 +9,7 @@ import { logout } from './components/action/authActions'
 import axios from 'axios';
 
 
-var vitrihientai= null;
+var vitrihientai = null;
 export default class App extends React.Component {
   constructor(props) {
     super(props);
@@ -111,113 +111,123 @@ export default class App extends React.Component {
   }
   componentDidMount() {
     navigator.geolocation.watchPosition((pos) => {
-      vitrihientai = { lat:pos.coords.latitude, lng:pos.coords.longitude};
-     
-   });
+      vitrihientai = { lat: pos.coords.latitude, lng: pos.coords.longitude };
+
+    });
 
     // this.setNowLocation({ lat:pos.coords.latitude, lng:pos.coords.longitude})
-     // this.setState({ nowLocation: { lat: pos.coords.latitude, lng: pos.coords.longitude } })
-     // setTimeout(() => this.setState({ nowLocation: { lat: pos.coords.latitude, lng: pos.coords.longitude } }), 0)
-     // this.setState({
-     //   nowLocation: {lat:pos.coords.latitude, lng:pos.coords.longitude},
-     //   // toLocation: {lat:pos.coords.latitude, lng:pos.coords.longitude},
-     // });
+    // this.setState({ nowLocation: { lat: pos.coords.latitude, lng: pos.coords.longitude } })
+    // setTimeout(() => this.setState({ nowLocation: { lat: pos.coords.latitude, lng: pos.coords.longitude } }), 0)
+    // this.setState({
+    //   nowLocation: {lat:pos.coords.latitude, lng:pos.coords.longitude},
+    //   // toLocation: {lat:pos.coords.latitude, lng:pos.coords.longitude},
+    // });
   }
 
   render() {
     // console.log("123")
-// console.log(this.state)
-console.log(vitrihientai)
-    return (
-      <div>
-        <div className="full">
-          <Header />
-        </div>
-        <div className="full">
+    // console.log(this.state)
+    console.log(vitrihientai)
+    if (localStorage.jwtToken && setCurrentUser(jwt.decode(localStorage.jwtToken)).user.Role === 1) {
+      // console.log( setCurrentUser(jwt.decode(localStorage.jwtToken)).user.Role);
+
+      return (<div>
+        <Header />
+      </div>)
+    }
+    else {
+      return (
+        <div>
+          <div className="full">
+            <Header />
+          </div>
+          <div className="full">
 
 
-          <div className="headerleaflet">
+            <div className="headerleaflet123">
 
-            <div className="form-group" id="book_xe">
-
-
-              <div className="input-group mt-2">
-                <label >Điểm đón </label>
-                <label className="ml-3 mr-3" >Tọa độ x: </label>
-                <input type="text" className="form-control mr-3" id="nowL_X" required placeholder="X.." onChange={this.handleChange} />
-                <label className="ml-3 mr-3" >Tọa độ Y: </label>
-                <input type="text" className="form-control mr-3" id="nowL_Y" required placeholder="Y.." onChange={this.handleChange} />
+              <div className="form-group" id="book_xe">
 
 
-                <div className="input-group-prepend mr-3  ">
-                  <button className="input-group-text" id="btn-timxe" onClick={() => {
-                    this.setNowLocation({
-                      lat: this.state.nowL_X, lng: this.state.nowL_Y
-                    });
+                <div className="input-group mt-2">
+                  <label >Điểm đón </label>
+                  <label className="ml-3 mr-3" >Tọa độ x: </label>
+                  <input type="text" className="form-control mr-3" id="nowL_X" required placeholder="X.." onChange={this.handleChange} />
+                  <label className="ml-3 mr-3" >Tọa độ Y: </label>
+                  <input type="text" className="form-control mr-3" id="nowL_Y" required placeholder="Y.." onChange={this.handleChange} />
 
-                    setTimeout(() => this.setState({ nowLocation: { lat: this.state.nowL_X, lng: this.state.nowL_Y } }), 0)
-                  }}>Xác Định</button>
+
+                  <div className="input-group-prepend mr-3  ">
+                    <button className="input-group-text" id="btn-timxe" onClick={() => {
+                      this.setNowLocation({
+                        lat: this.state.nowL_X, lng: this.state.nowL_Y
+                      });
+
+                      setTimeout(() => this.setState({ nowLocation: { lat: this.state.nowL_X, lng: this.state.nowL_Y } }), 0)
+                    }}>Xác Định</button>
+                  </div>
                 </div>
-              </div>
 
 
 
 
-              <div className="input-group mt-2">
-                <label >Điểm đến </label>
-                <label className="ml-3 mr-3" >Tọa độ x: </label>
-                <input type="text" className="form-control mr-3" id="L_X" required placeholder="X.." onChange={this.handleChange} />
-                <label className="ml-3 mr-3" >Tọa độ Y: </label>
-                <input type="text" className="form-control mr-3" id="L_Y" required placeholder="Y.." onChange={this.handleChange} />
+                <div className="input-group mt-2">
+                  <label >Điểm đến </label>
+                  <label className="ml-3 mr-3" >Tọa độ x: </label>
+                  <input type="text" className="form-control mr-3" id="L_X" required placeholder="X.." onChange={this.handleChange} />
+                  <label className="ml-3 mr-3" >Tọa độ Y: </label>
+                  <input type="text" className="form-control mr-3" id="L_Y" required placeholder="Y.." onChange={this.handleChange} />
 
 
-                <div className="input-group-prepend mr-3  ">
-                  <button className="input-group-text" id="btn-timxe" onClick={() => {
-                    this.setToLocation({
-                      lat: this.state.L_X, lng: this.state.L_Y
-                    });
+                  <div className="input-group-prepend mr-3  ">
+                    <button className="input-group-text" id="btn-timxe" onClick={() => {
+                      this.setToLocation({
+                        lat: this.state.L_X, lng: this.state.L_Y
+                      });
 
-                    setTimeout(() => this.setState({ toLocation: { lat: this.state.L_X, lng: this.state.L_Y } }), 0)
-                  }}>Xác Định</button>
+                      setTimeout(() => this.setState({ toLocation: { lat: this.state.L_X, lng: this.state.L_Y } }), 0)
+                    }}>Xác Định</button>
+                  </div>
                 </div>
+
               </div>
-
-            </div>
-            <div className="text-center">
-              <button type="button" className="btn btn-info" id="get_my_location" onClick={ () => {
-                // navigator.geolocation.watchPosition((pos) => {
-                //    this.setNowLocation({ lat:pos.coords.latitude, lng:pos.coords.longitude})
-                //   // this.setState({ nowLocation: { lat: pos.coords.latitude, lng: pos.coords.longitude } })
-                //   // setTimeout(() => this.setState({ nowLocation: { lat: pos.coords.latitude, lng: pos.coords.longitude } }), 0)
-                //   // this.setState({
-                //   //   nowLocation: {lat:pos.coords.latitude, lng:pos.coords.longitude},
-                //   //   // toLocation: {lat:pos.coords.latitude, lng:pos.coords.longitude},
-                //   // });
-                // });
-                this.setNowLocation(vitrihientai);
-                this.setState({nowLocation:vitrihientai});
+              <div className="text-center">
+                <button type="button" className="btn btn-info" id="get_my_location" onClick={() => {
+                  // navigator.geolocation.watchPosition((pos) => {
+                  //    this.setNowLocation({ lat:pos.coords.latitude, lng:pos.coords.longitude})
+                  //   // this.setState({ nowLocation: { lat: pos.coords.latitude, lng: pos.coords.longitude } })
+                  //   // setTimeout(() => this.setState({ nowLocation: { lat: pos.coords.latitude, lng: pos.coords.longitude } }), 0)
+                  //   // this.setState({
+                  //   //   nowLocation: {lat:pos.coords.latitude, lng:pos.coords.longitude},
+                  //   //   // toLocation: {lat:pos.coords.latitude, lng:pos.coords.longitude},
+                  //   // });
+                  // });
+                  this.setNowLocation(vitrihientai);
+                  this.setState({ nowLocation: vitrihientai });
 
 
-              }}>
-                Vị trí của tôi
+                }}>
+                  Vị trí của tôi
                                   </button>
 
 
+              </div>
+              <div className="text-center">
+                <label > </label>
+              </div>
             </div>
-            <div className="text-center">
-              <label > </label>
-            </div>
+
+
+            <LeafletMap nowLocation={this.state.nowLocation} toLocation={this.state.toLocation} setToLocation={this.setToLocation} />
+
+
           </div>
 
 
-          <LeafletMap nowLocation={this.state.nowLocation} toLocation={this.state.toLocation} setToLocation={this.setToLocation} />
-
-
         </div>
+      );
+    }
 
-
-      </div>
-    );
   }
 }
  //  "proxy": "http://localhost:5000",
