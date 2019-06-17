@@ -133,6 +133,40 @@ export default class LeafletMap extends Component {
       console.log(arrXeOm);
 
       socket.on(id, data => {
+        if(data.mess ==="Tài Xế Từ Chối Chuyến"){
+          alert(data.mess+ "\n Vui lòng tìm tài xế lại" )
+
+
+          for (var i = 0; i < arrXeOm.length; i++) {
+            const element = arrXeOm[i];
+            if(element.id === data.taixeID)
+            {
+            arrXeOm.splice(i,1)
+
+            }
+            
+          }
+          // arrXeOm.forEach(element => {
+          //   if(element.id ===data.taixeID)
+          //   {
+          //     element.minlegnt = 999999;
+
+          //   }
+          // });
+          var d = arrXeOm[0].minlegnt;
+          var temp = { id: 0, minlegnt: 99999, Location_X: 0, Location_Y: 0 };
+          arrXeOm.forEach(element => {
+            if (d < arrXeOm.minlegnt) {
+              temp.id = element.AccountID;
+              temp.minlegnt = d;
+              temp.Location_X = element.Location_X;
+              temp.Location_Y = element.Location_Y;
+              // console.log(d + "   " + element.AccountID);
+            }
+          });
+          this.setState({minDriver:temp ,modalIsOpen:true})
+          // this.openModal(this)
+        }
         if (data.Huy === true) {
           // var min1 = 99999999;
           // var min2 = 99999;
@@ -195,16 +229,15 @@ export default class LeafletMap extends Component {
         {
             alert("Hoàn tất")
             setTimeout(() => {
-            window.location.replace('/')},5000);
+            window.location.replace('/')},2000);
         }
         if(data.success === "false")
         {
             alert("Tài xế hủy chuyến")
             setTimeout(() => {
-            window.location.replace('/')},5000);
+            window.location.replace('/')},2000);
         }
 
-        
       });
     } else if (
       localStorage.jwtToken &&
@@ -345,7 +378,6 @@ export default class LeafletMap extends Component {
   }
 
    tuchoichuyen(e) {
-    this.setState({ modalIsOpenDriver: false});
 
     socket.emit("tuchoichuyen", {
       diadiemden_X:this.state.dataNguoiDatXe.diadiemden.x,
@@ -355,10 +387,22 @@ export default class LeafletMap extends Component {
       taixeID:this.state.dataNguoiDatXe.taixeID,
       userID: this.state.dataNguoiDatXe.userID,
     });
+    this.setState({ modalIsOpenDriver: false,dataNguoiDatXe:null});
+
   }
 
   tuchoichuyenHuy(e){
-    this.setState({ modalIsOpenDriver: false});
+    socket.emit("tuchoinhanchuyen", {
+      diadiemden_X:this.state.dataNguoiDatXe.diadiemden.x,
+      diadiemden_Y:this.state.dataNguoiDatXe.diadiemden.y,
+      diadiemdon_X:this.state.dataNguoiDatXe.diadiemdon.x,
+      diadiemdon_Y:this.state.dataNguoiDatXe.diadiemdon.y,
+      taixeID:this.state.dataNguoiDatXe.taixeID,
+      userID: this.state.dataNguoiDatXe.userID,
+    })
+
+    this.setState({ modalIsOpenDriver: false,dataNguoiDatXe:null});
+
   }
   ketthucchuyen(e) {
     this.setState({ modalIsOpenDriver: false});
@@ -377,6 +421,7 @@ export default class LeafletMap extends Component {
     // var datadatxe = this.state.dataNguoiDatXe;
     // console.log(datadatxe);
     console.log(this.state);
+    console.log(min)
     // console.log(this.props.toLocation);
     const { nowLocation, toLocation } = this.props;
     const minDriverss = this.state.minDriver;
@@ -388,7 +433,8 @@ export default class LeafletMap extends Component {
 var vitritaixe = this.state.vitritaixe
       
       var xacnhanchuyen = this.state.xacnhanchuyen;
-    function timtaixe(e) {
+
+    function timtaixe() {
       var id = -1;
 
       if (localStorage.jwtToken) {
@@ -396,7 +442,7 @@ var vitritaixe = this.state.vitritaixe
       }
       var send = {
         userID: id,
-        taixeID: min.id,
+        taixeID:  minDriverss.id ,
         diadiemdon: { x: nowLocation.lat, y: nowLocation.lng },
         diadiemden: { x: toLocation.lat, y: toLocation.lng },
         id_Socket: id_Socket,
@@ -419,17 +465,17 @@ var vitritaixe = this.state.vitritaixe
         minDriverss.minlegnt !== 99999
       ) {
         if (Math.ceil(datadriver.Length / 1000) <= 5) {
-          ToTal = Math.ceil(datadriver.Length / 1000) * 5000;
+          ToTal = Math.ceil(datadriver.Length / 1000) * 2000;
         } else if (
           Math.ceil(datadriver.Length / 1000) > 5 &&
           Math.ceil(datadriver.Length / 1000) <= 10
         ) {
-          ToTal = 5 * 5000 + (Math.ceil(datadriver.Length / 1000) - 5) * 6000;
+          ToTal = 5 * 2000 + (Math.ceil(datadriver.Length / 1000) - 5) * 2000;
         } else {
           ToTal =
-            5 * 5000 +
-            5 * 6000 +
-            (Math.ceil(datadriver.Length / 1000) - 11) * 7000;
+            5 * 2000 +
+            5 * 2000 +
+            (Math.ceil(datadriver.Length / 1000) - 11) * 2000;
         }
 
         return (
@@ -747,29 +793,31 @@ else{
         {renderinforTaiXe()}
       </Modal>
 
-      <Modal
-        isOpen={this.state.modalIsOpenDriver}
-        onAfterOpen={this.afterOpenModal}
-        onRequestClose={this.closeModalDriver}
-        style={customStyles}
-        contentLabel="Example Modal"
-      >
-        {/* <div >{datadatxe ? datadatxe : "dsdsasdasddsadsadsadsa"}</div> */}
+     { 
+      //  <Modal
+      //   isOpen={this.state.modalIsOpenDriver}
+      //   onAfterOpen={this.afterOpenModal}
+      //   onRequestClose={this.closeModalDriver}
+      //   style={customStyles}
+      //   contentLabel="Example Modal"
+      // >
+      //   {/* <div >{datadatxe ? datadatxe : "dsdsasdasddsadsadsadsa"}</div> */}
 
-        {rendernhanxecuataixe()}
-          {dataNguoiDatXe &&
+      //   {rendernhanxecuataixe()}
+      //     {dataNguoiDatXe &&
           
-            <div className="text-center">
+      //       <div className="text-center">
 
-            <button className="btn btn-dark" onClick={this.nhanchuyen.bind(this)}> Xác Nhận </button>
-            <button className="btn btn-dark" onClick={this.tuchoichuyen.bind(this)}> Hủy </button>
+      //       <button className="btn btn-dark" onClick={this.nhanchuyen.bind(this)}> Xác Nhận </button>
+      //       <button className="btn btn-dark" onClick={this.tuchoichuyenHuy.bind(this)}> Hủy </button>
   
-           </div>
+      //      </div>
   
           
-          }
+      //     }
        
-      </Modal>
+      // </Modal>
+    }
     </Map>
   );
 }

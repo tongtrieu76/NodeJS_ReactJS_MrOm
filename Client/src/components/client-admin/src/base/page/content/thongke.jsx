@@ -3,7 +3,7 @@ import "../../public/css/inforAccount.css";
 class thongke extends Component {
   constructor(props) {
     super(props);
-    this.state = {
+    this.state = {  
       error: null,
       isLoaded: false,
       datas: [],

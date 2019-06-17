@@ -221,7 +221,12 @@ io.on("connection", socket => {
     })
   });
 
+  socket.on("tuchoinhanchuyen", data => {
+    io.emit(data.userID,{mess:"Tài Xế Từ Chối Chuyến"})
 
+
+  
+  });
 
   //send location driver autopilot.
   interval = setInterval(() => getApiAndEmit(socket), 3000);
